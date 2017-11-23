@@ -130,6 +130,7 @@
 				13E0A4751FC6F0C500B70863 /* Info.plist */,
 				13E0A4761FC6F0C500B70863 /* main.m */,
 				13E0A49A1FC6FE6F00B70863 /* Images.xcassets */,
+				13E0A4CB1FC708D500B70863 /* FlickrApp-Prefix.pch */,
 			);
 			path = FlickrApp;
 			sourceTree = "<group>";
@@ -586,6 +587,7 @@
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREFIX_HEADER = "FlickrApp/FlickrApp-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
@@ -639,6 +641,7 @@
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_PREFIX_HEADER = "FlickrApp/FlickrApp-Prefix.pch";
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
