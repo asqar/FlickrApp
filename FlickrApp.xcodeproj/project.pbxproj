@@ -16,6 +16,7 @@
 		13E0A4771FC6F0C500B70863 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13E0A4761FC6F0C500B70863 /* main.m */; };
 		13E0A4841FC6F2E100B70863 /* FlickrAppUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 13E0A4831FC6F2E100B70863 /* FlickrAppUITests.m */; };
 		13E0A4921FC6F2FA00B70863 /* FlickrAppTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 13E0A4911FC6F2FA00B70863 /* FlickrAppTests.m */; };
+		13E0A49B1FC6FE6F00B70863 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13E0A49A1FC6FE6F00B70863 /* Images.xcassets */; };
 		30C220C60ADFF169DFAC3E1B /* libPods-FlickrApp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B1DAB30C33ED51DD4662A679 /* libPods-FlickrApp.a */; };
 		95E4D7A29D20319CFB378EBD /* libPods-FlickrAppTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 29CAE3EF4C866B6FF9352F4E /* libPods-FlickrAppTests.a */; };
 /* End PBXBuildFile section */
@@ -54,6 +55,7 @@
 		13E0A48F1FC6F2FA00B70863 /* FlickrAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FlickrAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		13E0A4911FC6F2FA00B70863 /* FlickrAppTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FlickrAppTests.m; sourceTree = "<group>"; };
 		13E0A4931FC6F2FA00B70863 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		13E0A49A1FC6FE6F00B70863 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		29CAE3EF4C866B6FF9352F4E /* libPods-FlickrAppTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-FlickrAppTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		31BE269C12191A57D977E74A /* Pods-FlickrAppUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FlickrAppUITests.release.xcconfig"; path = "Pods/Target Support Files/Pods-FlickrAppUITests/Pods-FlickrAppUITests.release.xcconfig"; sourceTree = "<group>"; };
 		353E9AB82244D977022F96E8 /* Pods-FlickrApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FlickrApp.release.xcconfig"; path = "Pods/Target Support Files/Pods-FlickrApp/Pods-FlickrApp.release.xcconfig"; sourceTree = "<group>"; };
@@ -127,6 +129,7 @@
 				13E0A4721FC6F0C500B70863 /* LaunchScreen.storyboard */,
 				13E0A4751FC6F0C500B70863 /* Info.plist */,
 				13E0A4761FC6F0C500B70863 /* main.m */,
+				13E0A49A1FC6FE6F00B70863 /* Images.xcassets */,
 			);
 			path = FlickrApp;
 			sourceTree = "<group>";
@@ -289,6 +292,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				13E0A4741FC6F0C500B70863 /* LaunchScreen.storyboard in Resources */,
+				13E0A49B1FC6FE6F00B70863 /* Images.xcassets in Resources */,
 				13E0A4711FC6F0C500B70863 /* Assets.xcassets in Resources */,
 				13E0A46F1FC6F0C500B70863 /* Main.storyboard in Resources */,
 			);
