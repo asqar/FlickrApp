@@ -337,6 +337,7 @@
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-FlickrApp/Pods-FlickrApp-resources.sh",
 				"${PODS_ROOT}/KVNProgress/KVNProgress/Resources/KVNProgressView.xib",
+				"${PODS_CONFIGURATION_BUILD_DIR}/MWPhotoBrowser/MWPhotoBrowser.bundle",
 				"${PODS_ROOT}/SAMKeychain/Support/SAMKeychain.bundle",
 			);
 			name = "[CP] Copy Pods Resources";
@@ -407,6 +408,7 @@
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-FlickrAppTests/Pods-FlickrAppTests-resources.sh",
 				"${PODS_ROOT}/KVNProgress/KVNProgress/Resources/KVNProgressView.xib",
+				"${PODS_CONFIGURATION_BUILD_DIR}/MWPhotoBrowser/MWPhotoBrowser.bundle",
 				"${PODS_ROOT}/SAMKeychain/Support/SAMKeychain.bundle",
 			);
 			name = "[CP] Copy Pods Resources";
@@ -444,6 +446,7 @@
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-FlickrAppUITests/Pods-FlickrAppUITests-resources.sh",
 				"${PODS_ROOT}/KVNProgress/KVNProgress/Resources/KVNProgressView.xib",
+				"${PODS_CONFIGURATION_BUILD_DIR}/MWPhotoBrowser/MWPhotoBrowser.bundle",
 				"${PODS_ROOT}/SAMKeychain/Support/SAMKeychain.bundle",
 			);
 			name = "[CP] Copy Pods Resources";
