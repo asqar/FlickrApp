@@ -22,3 +22,13 @@
 
 #import "AppDelegate.h"
 #define XAppDelegate ((AppDelegate *)[[UIApplication sharedApplication] delegate])
+
+#import "Language.h"
+#define MyLocalizedString(key, alt) [Language get:key alter:alt]
+
+#define PER_PAGE 10
+#define THUMBNAIL_PHOTO_URL_FORMAT @"http://farm%d.static.flickr.com/%@/%@_%@_m.jpg"
+#define PHOTO_URL_FORMAT @"http://farm%d.static.flickr.com/%@/%@_%@.jpg"
+
+#define FLICKR_SEARCH_API_KEY @"fbc1edb4f93131e0ea4a399b928dabc9" // need to hide and encrypt it
+
