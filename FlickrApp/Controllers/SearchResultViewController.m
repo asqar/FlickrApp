@@ -10,7 +10,7 @@
 #import "PhotoFetcher.h"
 #import "Entities.h"
 #import "PhotoCell.h"
-#import "DejalActivityView.h"
+#import "UIViewController+LoadingView.h"
 #import <MWPhotoBrowser/MWPhotoBrowser.h>
 #import <FMMosaicLayout/FMMosaicLayout.h>
 
@@ -54,7 +54,7 @@ static const NSInteger kFMMosaicColumnCount = 2;
         [weakSelf loadPhotosUpdating:NO];
     }];
     
-    [self showDejalBezelActivityView:MyLocalizedString(@"Loading...", nil)];
+    [self showLoadingView:MyLocalizedString(@"Loading...", nil)];
     [self loadPhotosUpdating:YES];
 }
 
@@ -68,16 +68,6 @@ static const NSInteger kFMMosaicColumnCount = 2;
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
-}
-
-- (void) showDejalBezelActivityView: (NSString *) msg
-{
-    if ([DejalBezelActivityView currentActivityView] != nil)
-    {
-        [DejalBezelActivityView currentActivityView].activityLabel.text = msg;
-    } else {
-        [DejalBezelActivityView activityViewForView: self.view withLabel: msg width:250.0f];
-    }
 }
 
 #pragma mark - Search
@@ -106,7 +96,7 @@ static const NSInteger kFMMosaicColumnCount = 2;
         
         NSLog(@"%@ %@", operation, mappingResult);
         
-        [DejalBezelActivityView removeViewAnimated: YES];
+        [self hideLoadingView];
         [KVNProgress dismiss];
         
         _fetchedResultsController = nil;
@@ -116,7 +106,7 @@ static const NSInteger kFMMosaicColumnCount = 2;
         [self.collectionView.infiniteScrollingView stopAnimating];
     } failure:^(NSURLSessionTask *operation, NSError *error) {
         [KVNProgress dismiss];
-        [DejalBezelActivityView removeViewAnimated: YES];
+        [self hideLoadingView];
 #ifdef DEBUG
         NSLog(@"%@", error);
 #endif

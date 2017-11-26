@@ -17,6 +17,7 @@
 		1356AD891FCB2D1C00BB4140 /* PerformanceTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1356AD881FCB2D1C00BB4140 /* PerformanceTests.m */; };
 		1356AD8B1FCB2D8D00BB4140 /* ExpectationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1356AD8A1FCB2D8D00BB4140 /* ExpectationTests.m */; };
 		1356AD8E1FCB3E8C00BB4140 /* ABJSONResponseSerializer.m in Sources */ = {isa = PBXBuildFile; fileRef = 1356AD8D1FCB3E8C00BB4140 /* ABJSONResponseSerializer.m */; };
+		1356AD911FCB51BD00BB4140 /* UIViewController+LoadingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1356AD901FCB51BD00BB4140 /* UIViewController+LoadingView.m */; };
 		137288991FC86F1700793448 /* PopularFeedsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 137288981FC86F1700793448 /* PopularFeedsViewController.m */; };
 		1372889C1FC8712200793448 /* FeedCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1372889B1FC8712200793448 /* FeedCell.m */; };
 		13E0A4691FC6F0C500B70863 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13E0A4681FC6F0C500B70863 /* AppDelegate.m */; };
@@ -72,6 +73,8 @@
 		1356AD8A1FCB2D8D00BB4140 /* ExpectationTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ExpectationTests.m; sourceTree = "<group>"; };
 		1356AD8C1FCB3E8C00BB4140 /* ABJSONResponseSerializer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ABJSONResponseSerializer.h; sourceTree = "<group>"; };
 		1356AD8D1FCB3E8C00BB4140 /* ABJSONResponseSerializer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ABJSONResponseSerializer.m; sourceTree = "<group>"; };
+		1356AD8F1FCB51BD00BB4140 /* UIViewController+LoadingView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIViewController+LoadingView.h"; sourceTree = "<group>"; };
+		1356AD901FCB51BD00BB4140 /* UIViewController+LoadingView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+LoadingView.m"; sourceTree = "<group>"; };
 		137288971FC86F1700793448 /* PopularFeedsViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PopularFeedsViewController.h; sourceTree = "<group>"; };
 		137288981FC86F1700793448 /* PopularFeedsViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PopularFeedsViewController.m; sourceTree = "<group>"; };
 		1372889A1FC8712200793448 /* FeedCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FeedCell.h; sourceTree = "<group>"; };
@@ -323,6 +326,8 @@
 				13E0A4B61FC7083400B70863 /* SearchViewController.m */,
 				137288971FC86F1700793448 /* PopularFeedsViewController.h */,
 				137288981FC86F1700793448 /* PopularFeedsViewController.m */,
+				1356AD8F1FCB51BD00BB4140 /* UIViewController+LoadingView.h */,
+				1356AD901FCB51BD00BB4140 /* UIViewController+LoadingView.m */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -698,6 +703,7 @@
 				13E0A4BE1FC7083400B70863 /* Entities.m in Sources */,
 				137288991FC86F1700793448 /* PopularFeedsViewController.m in Sources */,
 				1372889C1FC8712200793448 /* FeedCell.m in Sources */,
+				1356AD911FCB51BD00BB4140 /* UIViewController+LoadingView.m in Sources */,
 				13E0A4BF1FC7083400B70863 /* Photo.m in Sources */,
 				13E0A4C21FC7083400B70863 /* PhotoFetcher.m in Sources */,
 				13E0A4C51FC7083400B70863 /* UserDefaults.m in Sources */,

@@ -13,6 +13,7 @@
 #import "DejalActivityView.h"
 #import <MWPhotoBrowser/MWPhotoBrowser.h>
 #import <FMMosaicLayout/FMMosaicLayout.h>
+#import "UIViewController+LoadingView.h"
 
 static const CGFloat kFMHeaderFooterHeight  = 44.0;
 static const NSInteger kFMMosaicColumnCount = 2;
@@ -66,7 +67,7 @@ static const NSInteger kFMMosaicColumnCount = 2;
         [weakSelf loadFeedsUpdating:NO];
     }];
     
-    [self showDejalBezelActivityView:MyLocalizedString(@"Loading...", nil)];
+    [self showLoadingView:MyLocalizedString(@"Loading...", nil)];
     
     [self loadFeedsUpdating:NO];
 }
@@ -79,16 +80,6 @@ static const NSInteger kFMMosaicColumnCount = 2;
 - (void) translateUI
 {
     self.title = MyLocalizedString(@"Popular Feeds", nil);
-}
-
-- (void) showDejalBezelActivityView: (NSString *) msg
-{
-    if ([DejalBezelActivityView currentActivityView] != nil)
-    {
-        [DejalBezelActivityView currentActivityView].activityLabel.text = msg;
-    } else {
-        [DejalBezelActivityView activityViewForView: self.view withLabel: msg width:250.0f];
-    }
 }
 
 #pragma mark - Load
@@ -104,7 +95,7 @@ static const NSInteger kFMMosaicColumnCount = 2;
     [[FeedFetcher sharedFetcher] fetchManyFromPath:@"" synchronoulsy:NO success:^(NSURLSessionTask *operation, id mappingResult) {
         NSLog(@"%@ %@", operation, mappingResult);
         
-        [DejalBezelActivityView removeViewAnimated: YES];
+        [self hideLoadingView];
         [KVNProgress dismiss];
         
         _fetchedResultsController = nil;
@@ -114,7 +105,7 @@ static const NSInteger kFMMosaicColumnCount = 2;
         [self.collectionView.infiniteScrollingView stopAnimating];
     } failure:^(NSURLSessionTask *operation, NSError *error) {
         [KVNProgress dismiss];
-        [DejalBezelActivityView removeViewAnimated: YES];
+        [self hideLoadingView];
 #ifdef DEBUG
         NSLog(@"%@", error);
 #endif
