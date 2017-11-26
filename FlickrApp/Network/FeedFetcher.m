@@ -23,7 +23,7 @@
 
 - (id) initMe
 {
-    self = [super initWithEntity:[Feed class] serviceName:[NSString stringWithFormat:@"services/feeds/photos_public.gne?format=json&format=json&nojsoncallback=1&"] singleName:@"feed" pluralName:@"feeds"];
+    self = [super initWithEntity:[Feed class] serviceName:[NSString stringWithFormat:@"services/feeds/photos_public.gne?format=json&format=json&nojsoncallback=1"] singleName:@"feed" pluralName:@"feeds"];
     return self;
 }
 

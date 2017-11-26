@@ -33,7 +33,6 @@
                           options:0 progress:^(NSInteger receivedSize, NSInteger expectedSize){
                               [self.progressView setProgress: receivedSize / expectedSize];
                           } completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL){
-                              NSLog(@"%@ %@", imageURL, error);
                               self.progressView.hidden = YES;
                           }];
     

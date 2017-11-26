@@ -58,6 +58,16 @@ static const NSInteger kFMMosaicColumnCount = 2;
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
     
+    __weak typeof(self) weakSelf = self;
+    [self.collectionView addPullToRefreshWithActionHandler:^{
+        [weakSelf loadFeedsUpdating:YES];
+    }];
+    [self.collectionView addInfiniteScrollingWithActionHandler:^{
+        [weakSelf loadFeedsUpdating:NO];
+    }];
+    
+    [self showDejalBezelActivityView:MyLocalizedString(@"Loading...", nil)];
+    
     [self loadFeedsUpdating:NO];
 }
 
@@ -69,6 +79,16 @@ static const NSInteger kFMMosaicColumnCount = 2;
 - (void) translateUI
 {
     self.title = MyLocalizedString(@"Popular Feeds", nil);
+}
+
+- (void) showDejalBezelActivityView: (NSString *) msg
+{
+    if ([DejalBezelActivityView currentActivityView] != nil)
+    {
+        [DejalBezelActivityView currentActivityView].activityLabel.text = msg;
+    } else {
+        [DejalBezelActivityView activityViewForView: self.view withLabel: msg width:250.0f];
+    }
 }
 
 #pragma mark - Load
@@ -97,7 +117,7 @@ static const NSInteger kFMMosaicColumnCount = 2;
 #ifdef DEBUG
         NSLog(@"%@", error);
 #endif
-        [KVNProgress showErrorWithStatus:MyLocalizedString(@"Technical error. Try again later", nil)];
+        //[KVNProgress showErrorWithStatus:MyLocalizedString(@"Technical error. Try again later", nil)];
     }];
 }
 

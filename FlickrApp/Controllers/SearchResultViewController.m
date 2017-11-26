@@ -119,7 +119,7 @@ static const NSInteger kFMMosaicColumnCount = 2;
 #ifdef DEBUG
         NSLog(@"%@", error);
 #endif
-        [KVNProgress showErrorWithStatus:MyLocalizedString(@"Technical error. Try again later", nil)];
+        //[KVNProgress showErrorWithStatus:MyLocalizedString(@"Technical error. Try again later", nil)];
     }];
 }
 

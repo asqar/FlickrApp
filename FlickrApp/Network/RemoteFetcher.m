@@ -70,6 +70,7 @@
     
     AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
     manager.requestSerializer = [AFJSONRequestSerializer serializer];
+    manager.responseSerializer = [AFJSONResponseSerializer serializer];
     
     NSString *urlPath = [NSString stringWithFormat: @"%@%@%@", [self serverUrl], self.serviceName, restServiceUrl];
 

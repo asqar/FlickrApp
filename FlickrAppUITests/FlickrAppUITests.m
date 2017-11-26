@@ -32,9 +32,37 @@
     [super tearDown];
 }
 
-- (void)testExample {
-    // Use recording to get started writing UI tests.
-    // Use XCTAssert and related functions to verify your tests produce the correct results.
+- (void)testPullToRefresh {
+    XCUIApplication *app = [[XCUIApplication alloc] init];
+    [app swipeDown];
+    
+    [[app.collectionViews.cells.otherElements elementBoundByIndex:0] tap];
+    
+    [app swipeLeft];
+    [app swipeLeft];
+    [app swipeLeft];
+    
+    XCUIElement *currentNavigationBar = [app.navigationBars elementBoundByIndex:0];
+    XCTAssertTrue([currentNavigationBar.identifier hasPrefix:@"4 of "]);
+}
+
+- (void)testSearch {
+    XCUIApplication *app = [[XCUIApplication alloc] init];
+    
+    [app.navigationBars[@"Popular Feeds"].buttons[@"Search"] tap];
+    
+    XCUIElement *pullToRefreshTable = [app.tables elementBoundByIndex:0];
+    [[pullToRefreshTable childrenMatchingType:XCUIElementTypeSearchField].element tap];
+    [[pullToRefreshTable childrenMatchingType:XCUIElementTypeSearchField].element typeText:@"Kittens\n"];
+    
+    [[app.collectionViews.cells.otherElements elementBoundByIndex:0] tap];
+    
+    [app swipeLeft];
+    [app swipeLeft];
+    [app swipeLeft];
+    
+    XCUIElement *currentNavigationBar = [app.navigationBars elementBoundByIndex:0];
+    XCTAssertTrue([currentNavigationBar.identifier hasPrefix:@"4 of "]);
 }
 
 @end
