@@ -32,7 +32,7 @@
     [super tearDown];
 }
 
-- (void)testPullToRefresh {
+- (void)testFeeds {
     XCUIApplication *app = [[XCUIApplication alloc] init];
     [app swipeDown];
     

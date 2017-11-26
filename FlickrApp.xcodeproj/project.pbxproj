@@ -14,12 +14,14 @@
 		1356AD811FC9C47700BB4140 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 1356AD7C1FC9C47700BB4140 /* InfoPlist.strings */; };
 		1356AD861FC9C65F00BB4140 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 1356AD841FC9C65F00BB4140 /* main.m */; };
 		1356AD871FC9C65F00BB4140 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1356AD851FC9C65F00BB4140 /* Info.plist */; };
+		1356AD891FCB2D1C00BB4140 /* PerformanceTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1356AD881FCB2D1C00BB4140 /* PerformanceTests.m */; };
+		1356AD8B1FCB2D8D00BB4140 /* ExpectationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1356AD8A1FCB2D8D00BB4140 /* ExpectationTests.m */; };
+		1356AD8E1FCB3E8C00BB4140 /* ABJSONResponseSerializer.m in Sources */ = {isa = PBXBuildFile; fileRef = 1356AD8D1FCB3E8C00BB4140 /* ABJSONResponseSerializer.m */; };
 		137288991FC86F1700793448 /* PopularFeedsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 137288981FC86F1700793448 /* PopularFeedsViewController.m */; };
 		1372889C1FC8712200793448 /* FeedCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1372889B1FC8712200793448 /* FeedCell.m */; };
 		13E0A4691FC6F0C500B70863 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13E0A4681FC6F0C500B70863 /* AppDelegate.m */; };
 		13E0A4711FC6F0C500B70863 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13E0A4701FC6F0C500B70863 /* Assets.xcassets */; };
 		13E0A4841FC6F2E100B70863 /* FlickrAppUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 13E0A4831FC6F2E100B70863 /* FlickrAppUITests.m */; };
-		13E0A4921FC6F2FA00B70863 /* FlickrAppTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 13E0A4911FC6F2FA00B70863 /* FlickrAppTests.m */; };
 		13E0A49B1FC6FE6F00B70863 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13E0A49A1FC6FE6F00B70863 /* Images.xcassets */; };
 		13E0A4BE1FC7083400B70863 /* Entities.m in Sources */ = {isa = PBXBuildFile; fileRef = 13E0A49E1FC7083300B70863 /* Entities.m */; };
 		13E0A4BF1FC7083400B70863 /* Photo.m in Sources */ = {isa = PBXBuildFile; fileRef = 13E0A49F1FC7083300B70863 /* Photo.m */; };
@@ -66,6 +68,10 @@
 		1356AD831FC9C65F00BB4140 /* FlickrApp-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "FlickrApp-Prefix.pch"; sourceTree = "<group>"; };
 		1356AD841FC9C65F00BB4140 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		1356AD851FC9C65F00BB4140 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		1356AD881FCB2D1C00BB4140 /* PerformanceTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PerformanceTests.m; sourceTree = "<group>"; };
+		1356AD8A1FCB2D8D00BB4140 /* ExpectationTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ExpectationTests.m; sourceTree = "<group>"; };
+		1356AD8C1FCB3E8C00BB4140 /* ABJSONResponseSerializer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ABJSONResponseSerializer.h; sourceTree = "<group>"; };
+		1356AD8D1FCB3E8C00BB4140 /* ABJSONResponseSerializer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ABJSONResponseSerializer.m; sourceTree = "<group>"; };
 		137288971FC86F1700793448 /* PopularFeedsViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PopularFeedsViewController.h; sourceTree = "<group>"; };
 		137288981FC86F1700793448 /* PopularFeedsViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PopularFeedsViewController.m; sourceTree = "<group>"; };
 		1372889A1FC8712200793448 /* FeedCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FeedCell.h; sourceTree = "<group>"; };
@@ -78,7 +84,6 @@
 		13E0A4831FC6F2E100B70863 /* FlickrAppUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FlickrAppUITests.m; sourceTree = "<group>"; };
 		13E0A4851FC6F2E100B70863 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		13E0A48F1FC6F2FA00B70863 /* FlickrAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FlickrAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		13E0A4911FC6F2FA00B70863 /* FlickrAppTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FlickrAppTests.m; sourceTree = "<group>"; };
 		13E0A4931FC6F2FA00B70863 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		13E0A49A1FC6FE6F00B70863 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		13E0A49D1FC7083300B70863 /* SearchAttempt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SearchAttempt.h; sourceTree = "<group>"; };
@@ -234,7 +239,8 @@
 		13E0A4901FC6F2FA00B70863 /* FlickrAppTests */ = {
 			isa = PBXGroup;
 			children = (
-				13E0A4911FC6F2FA00B70863 /* FlickrAppTests.m */,
+				1356AD881FCB2D1C00BB4140 /* PerformanceTests.m */,
+				1356AD8A1FCB2D8D00BB4140 /* ExpectationTests.m */,
 				13E0A4931FC6F2FA00B70863 /* Info.plist */,
 			);
 			path = FlickrAppTests;
@@ -265,6 +271,8 @@
 				13E0A4A61FC7083300B70863 /* RemoteFetcher.m */,
 				13E0A4D01FC71BC800B70863 /* FeedFetcher.h */,
 				13E0A4D11FC71BC800B70863 /* FeedFetcher.m */,
+				1356AD8C1FCB3E8C00BB4140 /* ABJSONResponseSerializer.h */,
+				1356AD8D1FCB3E8C00BB4140 /* ABJSONResponseSerializer.m */,
 			);
 			path = Network;
 			sourceTree = "<group>";
@@ -683,6 +691,7 @@
 				13E0A4C31FC7083400B70863 /* DejalActivityView.m in Sources */,
 				13E0A4C61FC7083400B70863 /* Language.m in Sources */,
 				13E0A4C91FC7083400B70863 /* SearchAttemptCell.m in Sources */,
+				1356AD8E1FCB3E8C00BB4140 /* ABJSONResponseSerializer.m in Sources */,
 				13E0A4C81FC7083400B70863 /* SearchViewController.m in Sources */,
 				13E0A4D51FC71BFF00B70863 /* Feed.m in Sources */,
 				13E0A4CA1FC7083400B70863 /* PhotoCell.m in Sources */,
@@ -713,7 +722,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				13E0A4921FC6F2FA00B70863 /* FlickrAppTests.m in Sources */,
+				1356AD891FCB2D1C00BB4140 /* PerformanceTests.m in Sources */,
+				1356AD8B1FCB2D8D00BB4140 /* ExpectationTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

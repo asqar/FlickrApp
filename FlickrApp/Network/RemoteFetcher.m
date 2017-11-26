@@ -12,6 +12,14 @@
 #import "UserDefaults.h"
 #import "RealmJsonDeserializer.h"
 #import <Realm+JSON/RLMObject+JSON.h>
+#import "ABJSONResponseSerializer.h"
+
+typedef enum {
+    GET,
+    POST,
+    PUT,
+    DELETE,
+} RestMethod;
 
 @interface RemoteFetcher() {
 }
@@ -51,33 +59,33 @@
     return @"https://api.flickr.com/";
 }
 
-- (void)fetchOneFromPath: (NSString *) restServiceUrl synchronoulsy: (BOOL) synchronously  success:(void (^)(NSURLSessionTask *operation, id mappingResult))success
-                  failure:(void (^)(NSURLSessionTask *operation, NSError *error))failure
-{
-    [self fetchItemsFromPath: restServiceUrl one:YES synchronoulsy:synchronously success:success failure:failure];
-}
-
-- (void)fetchManyFromPath: (NSString *) restServiceUrl synchronoulsy: (BOOL) synchronously  success:(void (^)(NSURLSessionTask *operation, id mappingResult))success
-                   failure:(void (^)(NSURLSessionTask *operation, NSError *error))failure
-{
-    [self fetchItemsFromPath: restServiceUrl one:NO synchronoulsy:synchronously success:success failure:failure];
-}
-
-- (void)fetchItemsFromPath: (NSString *) restServiceUrl one: (BOOL) one synchronoulsy: (BOOL) synchronously  success:(void (^)(NSURLSessionTask *operation, id mappingResult))success
+- (void)fetchItemsWithMethod: (RestMethod) method fromPath: (NSString *) restServiceUrl parameters:(id)parameters one: (BOOL) one synchronoulsy: (BOOL) synchronously  success:(void (^)(NSURLSessionTask *operation, id mappingResult))success
                    failure:(void (^)(NSURLSessionTask *operation, NSError *error))failure;
 {
+#ifdef DEBUG_VERBOSE
     NSDate *methodStart = [NSDate date];
+#endif
     
     AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
     manager.requestSerializer = [AFJSONRequestSerializer serializer];
-    manager.responseSerializer = [AFJSONResponseSerializer serializer];
-    
-    NSString *urlPath = [NSString stringWithFormat: @"%@%@%@", [self serverUrl], self.serviceName, restServiceUrl];
+    manager.responseSerializer = [ABJSONResponseSerializer serializer];
 
-    [manager GET:urlPath parameters:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+    id progressBlock = ^(NSProgress * _Nonnull downloadProgress) {
         
-        //NSLog(@"%@ : %@", urlPath, responseObject);
-
+    };
+    
+    id failureBlock = ^(NSURLSessionTask *operation, NSError *error) {
+#ifdef DEBUG
+        NSLog(@"Error: %@", error);
+#endif
+        failure(operation, error);
+    };
+    
+    id successBlock =^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+#ifdef DEBUG_VERBOSE
+        NSLog(@"%@ : %@", task.originalRequest.URL.absoluteString, responseObject);
+#endif
+        
         dispatch_block_t block = ^{
             RLMRealm *realm = [RLMRealm defaultRealm];
             [realm beginWriteTransaction];
@@ -87,12 +95,14 @@
             } else {
                 result = [_entityClass deserializeMany: responseObject];
             }
-            //NSLog(@"%@", result);
+#ifdef DEBUG_VERBOSE
+            NSLog(@"%@", result);
+#endif
             [realm commitWriteTransaction];
             
+#ifdef DEBUG_VERBOSE
             NSDate *methodFinish = [NSDate date];
             NSTimeInterval executionTime = [methodFinish timeIntervalSinceDate:methodStart];
-#ifdef DEBUG
             NSLog(@"executionTime = %f", executionTime);
 #endif
             success(task, result);
@@ -103,138 +113,64 @@
         } else {
             dispatch_async(dispatch_get_main_queue(), block);
         }
-    } failure: ^(NSURLSessionTask *operation, NSError *error) {
-#ifdef DEBUG
-        NSLog(@"Error: %@", error);
-#endif
-        failure(operation, error);
-    }];
+    };
+    
+    NSString *urlPath = [NSString stringWithFormat: @"%@%@%@", [self serverUrl], self.serviceName, restServiceUrl];
+    switch (method) {
+        case GET:
+            [manager GET:urlPath parameters:parameters progress:progressBlock success:successBlock failure:failureBlock];
+            break;
+        case POST:
+            [manager POST:urlPath parameters:parameters progress:progressBlock success:successBlock failure: failureBlock];
+            break;
+        case PUT:
+            [manager PUT:urlPath parameters:parameters success:successBlock failure: failureBlock];
+            break;
+        case DELETE:
+            [manager DELETE:urlPath parameters:parameters success:successBlock failure: failureBlock];
+            break;
+        default:
+            break;
+    }
+}
+
+- (void)fetchOneFromPath: (NSString *) restServiceUrl synchronoulsy: (BOOL) synchronously  success:(void (^)(NSURLSessionTask *operation, id mappingResult))success
+                 failure:(void (^)(NSURLSessionTask *operation, NSError *error))failure
+{
+    [self fetchItemsWithMethod: GET fromPath: restServiceUrl parameters:nil one:YES synchronoulsy:synchronously success:success failure:failure];
+}
+
+- (void)fetchManyFromPath: (NSString *) restServiceUrl synchronoulsy: (BOOL) synchronously  success:(void (^)(NSURLSessionTask *operation, id mappingResult))success
+                  failure:(void (^)(NSURLSessionTask *operation, NSError *error))failure
+{
+    [self fetchItemsWithMethod: GET fromPath: restServiceUrl parameters:nil one:NO synchronoulsy:synchronously success:success failure:failure];
 }
 
 - (void) postObject: (id) o synchronoulsy: (BOOL) synchronously  success:(void (^)(NSURLSessionTask *operation, id mappingResult))success
             failure:(void (^)(NSURLSessionTask *operation, NSError *error))failure
 {
-    NSString *restServiceUrl = [NSString stringWithFormat:@"/%@/%@", _serviceName, _pluralName];
-    
-    [self postObject:o toPath:restServiceUrl synchronoulsy:synchronously success:success failure:failure];
+    [self postObject:o toPath:_pluralName synchronoulsy:synchronously success:success failure:failure];
 }
 
 - (void) postObject: (id) o toPath: (NSString *) path synchronoulsy: (BOOL) synchronously  success:(void (^)(NSURLSessionTask *operation, id mappingResult))success
             failure:(void (^)(NSURLSessionTask *operation, NSError *error))failure
 {
-
-    
-    NSDate *methodStart = [NSDate date];
-    
-    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
-    manager.requestSerializer = [AFJSONRequestSerializer serializer];
-    [manager POST:[NSString stringWithFormat: @"%@%@", [self serverUrl], path] parameters:o  success: ^(NSURLSessionTask *task, id responseObject) {
-        NSDictionary *d = responseObject;
-        
-        dispatch_block_t block = ^{
-            RLMRealm *realm = [RLMRealm defaultRealm];
-            [realm beginWriteTransaction];
-            RLMObject *result = [_entityClass deserializeOne: d];
-            [realm commitWriteTransaction];
-            
-            NSDate *methodFinish = [NSDate date];
-            NSTimeInterval executionTime = [methodFinish timeIntervalSinceDate:methodStart];
-#ifdef DEBUG
-            NSLog(@"executionTime = %f", executionTime);
-#endif
-            success(task, result);
-        };
-        
-        if (synchronously) {
-            block();
-        } else {
-            dispatch_async(dispatch_get_main_queue(), block);
-        }
-        
-    } failure: ^(NSURLSessionTask *operation, NSError *error) {
-#ifdef DEBUG
-        NSLog(@"Error: %@", error);
-#endif
-        failure(operation, error);
-    }];
+    NSString *restServiceUrl = [NSString stringWithFormat:@"/%@/%@", _serviceName, path];
+    [self fetchItemsWithMethod: POST fromPath: restServiceUrl parameters:nil one:YES synchronoulsy:synchronously success:success failure:failure];
 }
 
 - (void) putObject: (id) o : (int) objectId synchronoulsy: (BOOL) synchronously  success:(void (^)(NSURLSessionTask *operation, id mappingResult))success
            failure:(void (^)(NSURLSessionTask *operation, NSError *error))failure;
 {
     NSString *restServiceUrl = [NSString stringWithFormat:@"%@/%@/%d", _serviceName, _pluralName, objectId];
-    
-    NSDate *methodStart = [NSDate date];
-    
-    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
-    manager.requestSerializer = [AFJSONRequestSerializer serializer];
-    [manager PUT:[NSString stringWithFormat: @"%@%@", [self serverUrl], restServiceUrl] parameters:o success: ^(NSURLSessionTask *task, id responseObject) {
-        NSDictionary *d = responseObject;
-        
-        dispatch_block_t block = ^{
-            RLMRealm *realm = [RLMRealm defaultRealm];
-            [realm beginWriteTransaction];
-            RLMObject *result = [_entityClass deserializeOne: d];
-            [realm commitWriteTransaction];
-            
-            NSDate *methodFinish = [NSDate date];
-            NSTimeInterval executionTime = [methodFinish timeIntervalSinceDate:methodStart];
-#ifdef DEBUG
-            NSLog(@"executionTime = %f", executionTime);
-#endif
-            success(task, result);
-        };
-        
-        if (synchronously) {
-            block();
-        } else {
-            dispatch_async(dispatch_get_main_queue(), block);
-        }
-    } failure: ^(NSURLSessionTask *operation, NSError *error) {
-#ifdef DEBUG
-        NSLog(@"Error: %@", error);
-#endif
-        failure(operation, error);
-    }];
+    [self fetchItemsWithMethod: PUT fromPath: restServiceUrl parameters:nil one:YES synchronoulsy:synchronously success:success failure:failure];
 }
 
 - (void) deleteObject: (id) o : (int) objectId synchronoulsy: (BOOL) synchronously  success:(void (^)(NSURLSessionTask *operation, id mappingResult))success
               failure:(void (^)(NSURLSessionTask *operation, NSError *error))failure;
 {
     NSString *restServiceUrl = [NSString stringWithFormat:@"%@/%@/%d", _serviceName, _pluralName, objectId];
-    
-    NSDate *methodStart = [NSDate date];
-    
-    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
-    manager.requestSerializer = [AFJSONRequestSerializer serializer];
-    [manager DELETE:[NSString stringWithFormat: @"%@%@", [self serverUrl], restServiceUrl] parameters:nil success: ^(NSURLSessionTask *task, id responseObject) {
-        NSDictionary *d = responseObject;
-        
-        dispatch_block_t block = ^{
-            RLMRealm *realm = [RLMRealm defaultRealm];
-            [realm beginWriteTransaction];
-            RLMObject *result = [_entityClass deserializeOne: d];
-            [realm commitWriteTransaction];
-            
-            NSDate *methodFinish = [NSDate date];
-            NSTimeInterval executionTime = [methodFinish timeIntervalSinceDate:methodStart];
-#ifdef DEBUG
-            NSLog(@"executionTime = %f", executionTime);
-#endif
-            success(task, result);
-        };
-        
-        if (synchronously) {
-            block();
-        } else {
-            dispatch_async(dispatch_get_main_queue(), block);
-        }
-    } failure: ^(NSURLSessionTask *operation, NSError *error) {
-#ifdef DEBUG
-        NSLog(@"Error: %@", error);
-#endif
-        failure(operation, error);
-    }];
+    [self fetchItemsWithMethod: DELETE fromPath: restServiceUrl parameters:nil one:YES synchronoulsy:synchronously success:success failure:failure];
 }
 
 @end

@@ -114,6 +114,7 @@ static const NSInteger kFMMosaicColumnCount = 2;
         [self.collectionView.infiniteScrollingView stopAnimating];
     } failure:^(NSURLSessionTask *operation, NSError *error) {
         [KVNProgress dismiss];
+        [DejalBezelActivityView removeViewAnimated: YES];
 #ifdef DEBUG
         NSLog(@"%@", error);
 #endif
