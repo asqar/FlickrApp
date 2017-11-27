@@ -32,7 +32,14 @@
     if (self == nil)
         return nil;
     
-    self.searchAttempt = [SearchAttempt objectForPrimaryKey:searchQuery];
+    [[RLMRealm defaultRealm] beginWriteTransaction];
+    SearchAttempt *searchAttempt = [[SearchAttempt alloc] init];
+    searchAttempt.searchTerm = searchQuery;
+    searchAttempt.dateSearched = [NSDate date];
+    [[RLMRealm defaultRealm] addOrUpdateObject: searchAttempt];
+    [[RLMRealm defaultRealm] commitWriteTransaction];
+    
+    self.searchAttempt = searchAttempt;
     return self;
 }
 

@@ -29,7 +29,7 @@
     if (self == nil)
         return nil;
     self.url = [NSURL URLWithString: feed.media];
-    self.caption = feed.title;
+    self.caption = [NSString stringWithFormat:@"@%@", feed.author];
     return self;
 }
 

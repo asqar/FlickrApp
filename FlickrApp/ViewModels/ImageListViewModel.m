@@ -42,8 +42,6 @@
     @weakify(self)
     [self.didBecomeActiveSignal subscribeNext:^(id x) {
         @strongify(self);
-        
-        [self downloadImagesUpdating:YES];
     }];
     
     return self;
@@ -57,6 +55,12 @@
 -(NSInteger)numberOfItemsInSection:(NSInteger)section
 {
     return [self.fetchedResultsController numberOfRowsForSectionIndex:section];
+}
+
+// to be overriden
+- (ImageViewModel *) objectAtIndexPath: (NSIndexPath *) indexPath
+{
+    return nil;
 }
 
 #pragma mark - Search
@@ -76,6 +80,7 @@
         [self processDownloadedResults: mappingResult];
 
         _fetchedResultsController = nil;
+        
         [(RACSubject *)self.updatedContentSignal sendNext:nil];
     } failure:^(NSURLSessionTask *operation, NSError *error) {
         [self.dismissLoadingSignal doNext: nil];

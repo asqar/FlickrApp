@@ -64,12 +64,14 @@ static const NSInteger kFMMosaicColumnCount = 2;
         [KVNProgress dismiss];
     }];
     [self.viewModel.startLoadingSignal subscribeNext:^(id x) {
-        @strongify(self);
-        [self showSpinner];
+        
     }];
     [self.viewModel.errorMessageSignal subscribeNext:^(id x) {
         [KVNProgress showErrorWithStatus:MyLocalizedString(@"Technical error. Try again later", nil)];
     }];
+    
+    [self showSpinner];
+    [self.viewModel downloadImagesUpdating:YES];
 }
 
 - (void) showSpinner

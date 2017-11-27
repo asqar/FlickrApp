@@ -31,10 +31,15 @@
     @weakify(self)
     [self.didBecomeActiveSignal subscribeNext:^(id x) {
         @strongify(self);
-        [self.fetchedResultsController performFetch];
+        [self loadHistory];
     }];
     
     return self;
+}
+
+- (void) loadHistory
+{
+    [self.fetchedResultsController performFetch];
 }
 
 -(NSInteger)numberOfSections

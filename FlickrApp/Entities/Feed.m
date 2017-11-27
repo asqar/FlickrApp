@@ -54,7 +54,22 @@
     if ([a isKindOfClass:[NSDictionary class]]) {
         a = [((NSDictionary *) a) objectForKey:@"photo"];
     }
-    return [Feed createOrUpdateInRealm:[RLMRealm defaultRealm] withJSONArray: a];
+    NSArray *result = [Feed createOrUpdateInRealm:[RLMRealm defaultRealm] withJSONArray: a];
+    
+    NSString *pattern = @"(?<=\").+(?=\")";
+    NSError  *error = nil;
+    NSRegularExpression* regex = [NSRegularExpression regularExpressionWithPattern: pattern options:0 error:&error];
+    
+    for (Feed *item in result){
+        NSString *searchedString = item.author;
+        NSArray* matches = [regex matchesInString:searchedString options:0 range: NSMakeRange(0, [searchedString length])];
+        NSTextCheckingResult *match = matches.firstObject;
+        if (match) {
+            NSString* matchText = [searchedString substringWithRange:[match range]];
+            item.author = matchText;
+        }
+    }
+    return result;
 }
 
 @end

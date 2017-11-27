@@ -9,7 +9,8 @@
 #import <XCTest/XCTest.h>
 #import "FeedFetcher.h"
 #import "PhotoFetcher.h"
-#import "Entities.h"
+#import "Feed.h"
+#import "Photo.h"
 
 @interface ExpectationTests : XCTestCase
 

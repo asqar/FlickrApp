@@ -18,6 +18,5 @@
 @property (nonatomic, readonly) SearchAttempt *searchAttempt;
 
 -(instancetype)initWithSearchAttempt: (SearchAttempt *) searchAttempt;
--(instancetype)initWithQuery:(NSString *)queryString;
 
 @end

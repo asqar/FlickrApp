@@ -38,12 +38,8 @@
     
     [[app.collectionViews.cells.otherElements elementBoundByIndex:0] tap];
     
-    [app swipeLeft];
-    [app swipeLeft];
-    [app swipeLeft];
-    
     XCUIElement *currentNavigationBar = [app.navigationBars elementBoundByIndex:0];
-    XCTAssertTrue([currentNavigationBar.identifier hasPrefix:@"4 of "]);
+    XCTAssertTrue([currentNavigationBar.identifier hasPrefix:@"1 of "]);
 }
 
 - (void)testSearch {
@@ -57,12 +53,8 @@
     
     [[app.collectionViews.cells.otherElements elementBoundByIndex:0] tap];
     
-    [app swipeLeft];
-    [app swipeLeft];
-    [app swipeLeft];
-    
     XCUIElement *currentNavigationBar = [app.navigationBars elementBoundByIndex:0];
-    XCTAssertTrue([currentNavigationBar.identifier hasPrefix:@"4 of "]);
+    XCTAssertTrue([currentNavigationBar.identifier hasPrefix:@"1 of "]);
 }
 
 @end

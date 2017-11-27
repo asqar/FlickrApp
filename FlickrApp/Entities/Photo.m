@@ -43,8 +43,6 @@
 + (instancetype) deserializeOne: (NSDictionary *) d
 {
     Photo *item = [Photo createOrUpdateInRealm:[RLMRealm defaultRealm] withJSONDictionary: d];
-    // establish relations if needed
-    // item.blablabla = [BLablabla objectWithId: @(blablablaId)];
     return item;
 }
 
@@ -56,12 +54,7 @@
     if ([a isKindOfClass:[NSDictionary class]]) {
         a = [((NSDictionary *) a) objectForKey:@"photo"];
     }
-    NSArray *result = [Photo createOrUpdateInRealm:[RLMRealm defaultRealm] withJSONArray: a];
-//    for (Photo *item in result){
-        // establish relations if needed
-        // item.blablabla = [BLablabla objectWithId: @(blablablaId)];
-//    }
-    return result;
+    return [Photo createOrUpdateInRealm:[RLMRealm defaultRealm] withJSONArray: a];
 }
 
 @end

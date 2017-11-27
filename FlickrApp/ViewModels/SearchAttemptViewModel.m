@@ -29,18 +29,4 @@
     return self;
 }
 
--(instancetype)initWithQuery:(NSString *)queryString
-{
-    [[RLMRealm defaultRealm] beginWriteTransaction];
-    
-    SearchAttempt *searchAttempt = [[SearchAttempt alloc] init];
-    searchAttempt.searchTerm = queryString;
-    searchAttempt.dateSearched = [NSDate date];
-    [[RLMRealm defaultRealm] addOrUpdateObject: searchAttempt];
-    
-    [[RLMRealm defaultRealm] commitWriteTransaction];
-    
-    return [self initWithSearchAttempt: searchAttempt];
-}
-
 @end

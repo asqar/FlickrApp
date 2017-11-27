@@ -14,6 +14,8 @@
 
 @property (nonatomic, readonly) RACSignal *updatedContentSignal;
 
+- (void) loadHistory;
+
 -(NSInteger)numberOfSections;
 -(NSInteger)numberOfItemsInSection:(NSInteger)section;
 - (SearchAttemptViewModel *) objectAtIndexPath: (NSIndexPath *) indexPath;

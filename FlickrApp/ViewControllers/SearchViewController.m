@@ -39,6 +39,8 @@
         [self.tableView.pullToRefreshView stopAnimating];
         [self.tableView.infiniteScrollingView stopAnimating];
     }];
+    
+    [self.viewModel loadHistory];
 }
 
 - (void) viewWillAppear:(BOOL)animated
