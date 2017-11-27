@@ -81,13 +81,13 @@
 
         _fetchedResultsController = nil;
         
-        [(RACSubject *)self.updatedContentSignal sendNext:nil];
+        [(RACSubject *)self.updatedContentSignal sendNext:^(id x) {}];
     } failure:^(NSURLSessionTask *operation, NSError *error) {
-        [self.dismissLoadingSignal doNext: nil];
+        [(RACSubject *)self.dismissLoadingSignal sendNext:^(id x) {}];
         
 #ifdef DEBUG
         NSLog(@"%@", error);
-        //[self.errorMessageSignal doNext: error];
+        //[self.errorMessageSignal sendNext:^(id x) {}];
 #endif
     }];
 }
@@ -100,7 +100,8 @@
         _fetchedResultsController = [[RBQFetchedResultsController alloc] initWithFetchRequest:self.fetchRequest sectionNameKeyPath:nil cacheName:nil];
         [_fetchedResultsController setDelegate:self];
         [_fetchedResultsController performFetch];
-        [(RACSubject *)self.dismissLoadingSignal sendNext:nil];
+        
+        [(RACSubject *)self.dismissLoadingSignal sendNext:^(id x) {}];
     }
     
     return _fetchedResultsController;
@@ -108,7 +109,7 @@
 
 - (void)controllerDidChangeContent:(RBQFetchedResultsController *)controller
 {
-    [(RACSubject *)self.updatedContentSignal sendNext:nil];
+    [(RACSubject *)self.updatedContentSignal sendNext:^(id x) {}];
 }
 
 - (void)controllerWillChangeContent:(nonnull RBQFetchedResultsController *)controller

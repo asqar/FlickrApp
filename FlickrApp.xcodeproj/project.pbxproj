@@ -29,6 +29,11 @@
 		1356ADB31FCBD9FE00BB4140 /* SearchResultViewModelTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1356ADB21FCBD9FE00BB4140 /* SearchResultViewModelTests.m */; };
 		1356ADB51FCBDA3200BB4140 /* PopularFeedsViewModelTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1356ADB41FCBDA3200BB4140 /* PopularFeedsViewModelTests.m */; };
 		1356ADB71FCBDA4B00BB4140 /* SearchAttemptViewModelTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1356ADB61FCBDA4B00BB4140 /* SearchAttemptViewModelTests.m */; };
+		1356ADB81FCC1F7300BB4140 /* SearchAttempt.m in Sources */ = {isa = PBXBuildFile; fileRef = 13E0A4A11FC7083300B70863 /* SearchAttempt.m */; };
+		1356ADB91FCC1F9200BB4140 /* Photo.m in Sources */ = {isa = PBXBuildFile; fileRef = 13E0A49F1FC7083300B70863 /* Photo.m */; };
+		1356ADBA1FCC1F9500BB4140 /* Feed.m in Sources */ = {isa = PBXBuildFile; fileRef = 13E0A4D41FC71BFF00B70863 /* Feed.m */; };
+		1356ADBD1FCC267800BB4140 /* BaseViewModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 1356ADBC1FCC267800BB4140 /* BaseViewModel.m */; };
+		1356ADC01FCC28DB00BB4140 /* BaseViewModelTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 1356ADBF1FCC28DB00BB4140 /* BaseViewModelTestCase.m */; };
 		137288991FC86F1700793448 /* PopularFeedsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 137288981FC86F1700793448 /* PopularFeedsViewController.m */; };
 		13E0A4691FC6F0C500B70863 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13E0A4681FC6F0C500B70863 /* AppDelegate.m */; };
 		13E0A4711FC6F0C500B70863 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13E0A4701FC6F0C500B70863 /* Assets.xcassets */; };
@@ -105,6 +110,10 @@
 		1356ADB21FCBD9FE00BB4140 /* SearchResultViewModelTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SearchResultViewModelTests.m; sourceTree = "<group>"; };
 		1356ADB41FCBDA3200BB4140 /* PopularFeedsViewModelTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PopularFeedsViewModelTests.m; sourceTree = "<group>"; };
 		1356ADB61FCBDA4B00BB4140 /* SearchAttemptViewModelTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SearchAttemptViewModelTests.m; sourceTree = "<group>"; };
+		1356ADBB1FCC267800BB4140 /* BaseViewModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BaseViewModel.h; sourceTree = "<group>"; };
+		1356ADBC1FCC267800BB4140 /* BaseViewModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BaseViewModel.m; sourceTree = "<group>"; };
+		1356ADBE1FCC28DB00BB4140 /* BaseViewModelTestCase.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BaseViewModelTestCase.h; sourceTree = "<group>"; };
+		1356ADBF1FCC28DB00BB4140 /* BaseViewModelTestCase.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BaseViewModelTestCase.m; sourceTree = "<group>"; };
 		137288971FC86F1700793448 /* PopularFeedsViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PopularFeedsViewController.h; sourceTree = "<group>"; };
 		137288981FC86F1700793448 /* PopularFeedsViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PopularFeedsViewController.m; sourceTree = "<group>"; };
 		13E0A4641FC6F0C500B70863 /* FlickrApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FlickrApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -227,6 +236,8 @@
 				1356AD991FCB6F9300BB4140 /* PopularFeedsViewModel.m */,
 				1356ADA81FCBB25000BB4140 /* SearchAttemptViewModel.h */,
 				1356ADA91FCBB25000BB4140 /* SearchAttemptViewModel.m */,
+				1356ADBB1FCC267800BB4140 /* BaseViewModel.h */,
+				1356ADBC1FCC267800BB4140 /* BaseViewModel.m */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -287,6 +298,8 @@
 		13E0A4901FC6F2FA00B70863 /* FlickrAppTests */ = {
 			isa = PBXGroup;
 			children = (
+				1356ADBE1FCC28DB00BB4140 /* BaseViewModelTestCase.h */,
+				1356ADBF1FCC28DB00BB4140 /* BaseViewModelTestCase.m */,
 				1356ADAE1FCBD9D000BB4140 /* SearchViewModelTests.m */,
 				1356ADB01FCBD9E600BB4140 /* ImageViewModelTests.m */,
 				1356ADB21FCBD9FE00BB4140 /* SearchResultViewModelTests.m */,
@@ -758,6 +771,7 @@
 				13E0A4C51FC7083400B70863 /* UserDefaults.m in Sources */,
 				13E0A4D21FC71BC800B70863 /* FeedFetcher.m in Sources */,
 				13E0A4691FC6F0C500B70863 /* AppDelegate.m in Sources */,
+				1356ADBD1FCC267800BB4140 /* BaseViewModel.m in Sources */,
 				13E0A4C11FC7083400B70863 /* RemoteFetcher.m in Sources */,
 				13E0A4C01FC7083400B70863 /* SearchAttempt.m in Sources */,
 				1356ADA71FCBA5C900BB4140 /* ImageListViewController.m in Sources */,
@@ -784,10 +798,14 @@
 				1356ADB31FCBD9FE00BB4140 /* SearchResultViewModelTests.m in Sources */,
 				1356ADAF1FCBD9D000BB4140 /* SearchViewModelTests.m in Sources */,
 				1356AD891FCB2D1C00BB4140 /* PerformanceTests.m in Sources */,
+				1356ADB91FCC1F9200BB4140 /* Photo.m in Sources */,
 				1356ADB11FCBD9E600BB4140 /* ImageViewModelTests.m in Sources */,
+				1356ADBA1FCC1F9500BB4140 /* Feed.m in Sources */,
 				1356ADB51FCBDA3200BB4140 /* PopularFeedsViewModelTests.m in Sources */,
+				1356ADC01FCC28DB00BB4140 /* BaseViewModelTestCase.m in Sources */,
 				1356AD8B1FCB2D8D00BB4140 /* ExpectationTests.m in Sources */,
 				1356ADB71FCBDA4B00BB4140 /* SearchAttemptViewModelTests.m in Sources */,
+				1356ADB81FCC1F7300BB4140 /* SearchAttempt.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -846,6 +864,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -902,6 +921,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";

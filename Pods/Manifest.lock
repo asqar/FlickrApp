@@ -25,6 +25,7 @@ PODS:
     - DACircularProgress (~> 2.3)
     - MBProgressHUD (~> 0.9)
     - SDWebImage (!= 3.7.2, ~> 3.7)
+  - OCMock (3.4.1)
   - RBQFetchedResultsController (5.0.2):
     - RBQSafeRealmObject
     - Realm (>= 1.0.0)
@@ -62,6 +63,7 @@ DEPENDENCIES:
   - FMMosaicLayout
   - KVNProgress
   - MWPhotoBrowser
+  - OCMock
   - RBQFetchedResultsController (from `https://github.com/asqar/RBQFetchedResultsController.git`)
   - ReactiveCocoa
   - ReactiveViewModel
@@ -95,6 +97,7 @@ SPEC CHECKSUMS:
   KVNProgress: 8167b1f19e2758290c0b6143020ed9dcbb0477a1
   MBProgressHUD: 1569cf7ace17a8bac47aabfbb8580a49690386d1
   MWPhotoBrowser: 5836d7aa041dc05a13de380c246826578adc5ea5
+  OCMock: 2cd0716969bab32a2283ff3a46fd26a8c8b4c5e3
   RBQFetchedResultsController: 24877a429680be6d22709a2e527bcb766877bf4e
   RBQSafeRealmObject: 128e6ece2acceeb7dea9d00b8fa40ba4c489c3fa
   ReactiveCocoa: e2db045570aa97c695e7aa97c2bcab222ae51f4a
@@ -107,6 +110,6 @@ SPEC CHECKSUMS:
   SVPullToRefresh: ba2e718695a43253d8bea6852d2960097dc15d8c
   TwitterCore: e0420b01e02e7d20e94690e37f43e75de219ab8d
 
-PODFILE CHECKSUM: 9c0e4bde2552343298954ce8fecef7a9a48caed0
+PODFILE CHECKSUM: f24c90ab9b57b89fd0ced6fd5bd57496658431e2
 
 COCOAPODS: 1.4.0.beta.2

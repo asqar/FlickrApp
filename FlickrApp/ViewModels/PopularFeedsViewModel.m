@@ -27,7 +27,7 @@
 {
     RLMSortDescriptor *sd1 = [RLMSortDescriptor sortDescriptorWithKeyPath:@"datePublished" ascending:YES];
     NSArray *sortDescriptors = @[ sd1 ];
-    RBQFetchRequest *fetchRequest = [RBQFetchRequest fetchRequestWithEntityName:@"Feed" inRealm:[RLMRealm defaultRealm] predicate:nil];
+    RBQFetchRequest *fetchRequest = [RBQFetchRequest fetchRequestWithEntityName:@"Feed" inRealm:self.realm predicate:nil];
     [fetchRequest setSortDescriptors:sortDescriptors];
     return fetchRequest;
 }

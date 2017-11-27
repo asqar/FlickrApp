@@ -6,11 +6,12 @@
 //  Copyright © 2017 Askar Bakirov. All rights reserved.
 //
 
-#import <XCTest/XCTest.h>
+#import "BaseViewModelTestCase.h"
 #import "SearchViewModel.h"
 #import "SearchAttempt.h"
+#import <OCMock/OCMock.h>
 
-@interface SearchViewModelTests : XCTestCase
+@interface SearchViewModelTests : BaseViewModelTestCase
 
 @end
 
@@ -28,6 +29,27 @@
 
 - (void)testContent
 {
+    [self.realm beginWriteTransaction];
+    SearchAttempt *searchAttempt1 = [[SearchAttempt alloc] init];
+    searchAttempt1.searchTerm = @"kittens";
+    searchAttempt1.dateSearched = [NSDate date];
+    [self.realm addObject:searchAttempt1];
+    
+    SearchAttempt *searchAttempt2 = [[SearchAttempt alloc] init];
+    searchAttempt2.searchTerm = @"puppies";
+    searchAttempt2.dateSearched = [NSDate date];
+    [self.realm addObject:searchAttempt2];
+    
+    NSError *error = nil;
+    [self.realm commitWriteTransaction:&error];
+    XCTAssertNil(error, @"error should be nill");
+    
+    id mockViewModel = [OCMockObject partialMockForObject:[[SearchViewModel alloc] init]];
+    [[[mockViewModel stub] andReturn: self.realm] realm];
+    
+    XCTAssertNotNil(mockViewModel, @"The view model should not be nil.");
+    XCTAssertEqual([mockViewModel numberOfSections], 1);
+    XCTAssertEqual([mockViewModel numberOfItemsInSection:0], 2);
 }
 
 @end

@@ -6,11 +6,11 @@
 //  Copyright © 2017 Askar Bakirov. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#import "BaseViewModel.h"
 
 @class Photo, Feed;
 
-@interface ImageViewModel : NSObject
+@interface ImageViewModel : BaseViewModel
 
 @property (nonatomic, strong) NSURL *url;
 @property (nonatomic, strong) NSString *caption;

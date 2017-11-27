@@ -40,13 +40,13 @@
              ];
 }
 
-+ (instancetype) deserializeOne: (NSDictionary *) d
++ (instancetype) deserializeOne: (NSDictionary *) d inRealm: (RLMRealm *) realm
 {
-    Feed *item = [Feed createOrUpdateInRealm:[RLMRealm defaultRealm] withJSONDictionary: d];
+    Feed *item = [Feed createOrUpdateInRealm:realm withJSONDictionary: d];
     return item;
 }
 
-+ (NSArray *) deserializeMany: (NSArray *) a
++ (NSArray *) deserializeMany: (NSArray *) a inRealm: (RLMRealm *) realm
 {
     if ([a isKindOfClass:[NSDictionary class]]) {
         a = [((NSDictionary *) a) objectForKey:@"items"];
@@ -54,7 +54,7 @@
     if ([a isKindOfClass:[NSDictionary class]]) {
         a = [((NSDictionary *) a) objectForKey:@"photo"];
     }
-    NSArray *result = [Feed createOrUpdateInRealm:[RLMRealm defaultRealm] withJSONArray: a];
+    NSArray *result = [Feed createOrUpdateInRealm:realm withJSONArray: a];
     
     NSString *pattern = @"(?<=\").+(?=\")";
     NSError  *error = nil;

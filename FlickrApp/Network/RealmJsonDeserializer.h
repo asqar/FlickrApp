@@ -10,7 +10,7 @@
 
 @protocol RealmJsonDeserializer
 
-+ (instancetype) deserializeOne: (NSDictionary *) d;
-+ (NSArray *) deserializeMany: (NSArray *) a;
++ (instancetype) deserializeOne: (NSDictionary *) d inRealm: (RLMRealm *) realm;
++ (NSArray *) deserializeMany: (NSArray *) a inRealm: (RLMRealm *) realm;
 
 @end

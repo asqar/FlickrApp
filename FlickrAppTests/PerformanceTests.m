@@ -6,11 +6,11 @@
 //  Copyright © 2017 Askar Bakirov. All rights reserved.
 //
 
-#import <XCTest/XCTest.h>
+#import "BaseViewModelTestCase.h"
 #import "FeedFetcher.h"
 #import "PhotoFetcher.h"
 
-@interface PerformanceTests : XCTestCase
+@interface PerformanceTests : BaseViewModelTestCase
 
 @end
 

@@ -6,11 +6,11 @@
 //  Copyright © 2017 Askar Bakirov. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import "BaseViewModel.h"
 
 @class SearchAttempt;
 
-@interface SearchAttemptViewModel : NSObject
+@interface SearchAttemptViewModel : BaseViewModel
 
 @property (nonatomic, strong) NSString *queryString;
 @property (nonatomic, strong) NSString *dateString;

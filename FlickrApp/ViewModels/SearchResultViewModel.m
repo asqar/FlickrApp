@@ -32,12 +32,12 @@
     if (self == nil)
         return nil;
     
-    [[RLMRealm defaultRealm] beginWriteTransaction];
+    [self.realm beginWriteTransaction];
     SearchAttempt *searchAttempt = [[SearchAttempt alloc] init];
     searchAttempt.searchTerm = searchQuery;
     searchAttempt.dateSearched = [NSDate date];
-    [[RLMRealm defaultRealm] addOrUpdateObject: searchAttempt];
-    [[RLMRealm defaultRealm] commitWriteTransaction];
+    [self.realm addOrUpdateObject: searchAttempt];
+    [self.realm commitWriteTransaction];
     
     self.searchAttempt = searchAttempt;
     return self;
@@ -58,7 +58,7 @@
     RLMSortDescriptor *sd1 = [RLMSortDescriptor sortDescriptorWithKeyPath:@"orderIndex" ascending:YES];
     NSArray *sortDescriptors = @[ sd1 ];
     
-    RBQFetchRequest *fetchRequest = [RBQFetchRequest fetchRequestWithEntityName:@"Photo" inRealm:[RLMRealm defaultRealm] predicate:nil];
+    RBQFetchRequest *fetchRequest = [RBQFetchRequest fetchRequestWithEntityName:@"Photo" inRealm:self.realm predicate:nil];
     fetchRequest.predicate = [NSPredicate predicateWithFormat:@"searchAttempt.searchTerm == %@", self.searchAttempt.searchTerm];
     [fetchRequest setSortDescriptors:sortDescriptors];
     return fetchRequest;
@@ -72,7 +72,7 @@
 
 - (void) processDownloadedResults: (NSArray *) results
 {
-    [[RLMRealm defaultRealm] transactionWithBlock: ^ {
+    [self.realm transactionWithBlock: ^ {
         
         NSInteger orderIndex = [self numberOfItemsInSection:0] + 1;
         for (Photo *item in results) {

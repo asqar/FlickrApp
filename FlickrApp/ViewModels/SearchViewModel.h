@@ -6,11 +6,11 @@
 //  Copyright © 2017 Askar Bakirov. All rights reserved.
 //
 
-#import <ReactiveViewModel/ReactiveViewModel.h>
+#import "BaseViewModel.h"
 
 @class SearchAttemptViewModel;
 
-@interface SearchViewModel : RVMViewModel
+@interface SearchViewModel : BaseViewModel
 
 @property (nonatomic, readonly) RACSignal *updatedContentSignal;
 

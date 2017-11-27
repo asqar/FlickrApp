@@ -40,13 +40,13 @@
              ];
 }
 
-+ (instancetype) deserializeOne: (NSDictionary *) d
++ (instancetype) deserializeOne: (NSDictionary *) d inRealm: (RLMRealm *) realm
 {
-    Photo *item = [Photo createOrUpdateInRealm:[RLMRealm defaultRealm] withJSONDictionary: d];
+    Photo *item = [Photo createOrUpdateInRealm:realm withJSONDictionary: d];
     return item;
 }
 
-+ (NSArray *) deserializeMany: (NSArray *) a
++ (NSArray *) deserializeMany: (NSArray *) a inRealm: (RLMRealm *) realm
 {
     if ([a isKindOfClass:[NSDictionary class]]) {
         a = [((NSDictionary *) a) objectForKey:@"photos"];
@@ -54,7 +54,7 @@
     if ([a isKindOfClass:[NSDictionary class]]) {
         a = [((NSDictionary *) a) objectForKey:@"photo"];
     }
-    return [Photo createOrUpdateInRealm:[RLMRealm defaultRealm] withJSONArray: a];
+    return [Photo createOrUpdateInRealm:realm withJSONArray: a];
 }
 
 @end

@@ -51,6 +51,8 @@
     [[pullToRefreshTable childrenMatchingType:XCUIElementTypeSearchField].element tap];
     [[pullToRefreshTable childrenMatchingType:XCUIElementTypeSearchField].element typeText:@"Kittens\n"];
     
+    [app swipeUp];
+    
     [[app.collectionViews.cells.otherElements elementBoundByIndex:0] tap];
     
     XCUIElement *currentNavigationBar = [app.navigationBars elementBoundByIndex:0];

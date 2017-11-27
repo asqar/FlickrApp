@@ -69,4 +69,6 @@ target "FlickrAppTests" do
   pod 'ReactiveCocoa'
   pod 'ReactiveViewModel'
 
+  pod 'OCMock'
+
 end

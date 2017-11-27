@@ -22,6 +22,8 @@
 @property (nonatomic, strong) NSString *serviceName;
 @property (nonatomic, assign) float timeoutInterval;
 
+- (RLMRealm *) realm;
+
 - (id)initWithEntity:(Class)entityClass serviceName:(NSString *)serviceName singleName:(NSString *)singleName pluralName:(NSString *)pluralName;
 - (id) initMe;
 

@@ -65,7 +65,7 @@
     RLMSortDescriptor *sd1 = [RLMSortDescriptor sortDescriptorWithKeyPath:@"dateSearched" ascending:NO];
     NSArray *sortDescriptors = @[ sd1 ];
     
-    RBQFetchRequest *fetchRequest = [RBQFetchRequest fetchRequestWithEntityName:@"SearchAttempt" inRealm:[RLMRealm defaultRealm] predicate:nil];
+    RBQFetchRequest *fetchRequest = [RBQFetchRequest fetchRequestWithEntityName:@"SearchAttempt" inRealm:self.realm predicate:nil];
     [fetchRequest setSortDescriptors:sortDescriptors];
     return fetchRequest;
 }

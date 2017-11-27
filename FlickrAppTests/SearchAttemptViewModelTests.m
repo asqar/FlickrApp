@@ -6,11 +6,11 @@
 //  Copyright © 2017 Askar Bakirov. All rights reserved.
 //
 
-#import <XCTest/XCTest.h>
+#import "BaseViewModelTestCase.h"
 #import "SearchAttemptViewModel.h"
 #import "SearchAttempt.h"
 
-@interface SearchAttemptViewModelTests : XCTestCase
+@interface SearchAttemptViewModelTests : BaseViewModelTestCase
 
 @end
 

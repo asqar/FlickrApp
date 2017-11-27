@@ -6,11 +6,11 @@
 //  Copyright © 2017 Askar Bakirov. All rights reserved.
 //
 
-#import <ReactiveViewModel/ReactiveViewModel.h>
+#import "BaseViewModel.h"
 
 @class SearchAttempt, Photo, ImageViewModel, RemoteFetcher;
 
-@interface ImageListViewModel : RVMViewModel
+@interface ImageListViewModel : BaseViewModel
 
 @property (nonatomic, readonly) RACSignal *updatedContentSignal;
 @property (nonatomic, readonly) RACSignal *startLoadingSignal;

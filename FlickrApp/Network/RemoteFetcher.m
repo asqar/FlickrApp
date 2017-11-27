@@ -58,6 +58,11 @@ typedef enum {
     return @"https://api.flickr.com/";
 }
 
+- (RLMRealm *) realm
+{
+    return [RLMRealm defaultRealm];
+}
+
 - (void)fetchItemsWithMethod: (RestMethod) method fromPath: (NSString *) restServiceUrl parameters:(id)parameters one: (BOOL) one synchronoulsy: (BOOL) synchronously  success:(void (^)(NSURLSessionTask *operation, id mappingResult))success
                    failure:(void (^)(NSURLSessionTask *operation, NSError *error))failure;
 {
@@ -86,13 +91,13 @@ typedef enum {
 #endif
         
         dispatch_block_t block = ^{
-            RLMRealm *realm = [RLMRealm defaultRealm];
+            RLMRealm *realm = self.realm;
             [realm beginWriteTransaction];
             id result = nil;
             if (one) {
-                result = [_entityClass deserializeOne: responseObject];
+                result = [_entityClass deserializeOne: responseObject inRealm: realm];
             } else {
-                result = [_entityClass deserializeMany: responseObject];
+                result = [_entityClass deserializeMany: responseObject inRealm: realm];
             }
 #ifdef DEBUG_VERBOSE
             NSLog(@"%@", result);
