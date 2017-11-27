@@ -7,7 +7,7 @@
 //
 
 #import "PhotoFetcher.h"
-#import "Entities.h"
+#import "Photo.h"
 
 @implementation PhotoFetcher
 

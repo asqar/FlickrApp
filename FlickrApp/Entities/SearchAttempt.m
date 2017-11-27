@@ -6,7 +6,8 @@
 //  Copyright © 2017 Askar Bakirov. All rights reserved.
 //
 
-#import "Entities.h"
+#import "SearchAttempt.h"
+#import "Photo.h"
 
 @implementation SearchAttempt
 

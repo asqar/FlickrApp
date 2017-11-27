@@ -19,7 +19,7 @@
 #import <RBQFetchedResultsController/RBQFetchedResultsController.h>
 #import <SVPullToRefresh/SVPullToRefresh.h>
 #import <KVNProgress/KVNProgress.h>
-
+#import <ReactiveCocoa/ReactiveCocoa.h>
 #import "AppDelegate.h"
 #define XAppDelegate ((AppDelegate *)[[UIApplication sharedApplication] delegate])
 

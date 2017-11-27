@@ -7,7 +7,7 @@
 //
 
 #import "FeedFetcher.h"
-#import "Entities.h"
+#import "Feed.h"
 
 @implementation FeedFetcher
 

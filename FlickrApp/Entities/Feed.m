@@ -54,11 +54,7 @@
     if ([a isKindOfClass:[NSDictionary class]]) {
         a = [((NSDictionary *) a) objectForKey:@"photo"];
     }
-    NSArray *result = [Feed createOrUpdateInRealm:[RLMRealm defaultRealm] withJSONArray: a];
-    for (Feed *item in result){
-
-    }
-    return result;
+    return [Feed createOrUpdateInRealm:[RLMRealm defaultRealm] withJSONArray: a];
 }
 
 @end

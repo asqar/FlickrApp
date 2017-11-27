@@ -7,7 +7,6 @@
 //
 
 #import "RemoteFetcher.h"
-#import "Entities.h"
 #import <AFNetworking/AFNetworking.h>
 #import "UserDefaults.h"
 #import "RealmJsonDeserializer.h"

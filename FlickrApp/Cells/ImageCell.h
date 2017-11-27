@@ -1,5 +1,5 @@
 //
-//  SearchViewController.h
+//  ImageCell.h
 //  FlickrApp
 //
 //  Created by aSqar on 23.11.2017.
@@ -8,6 +8,10 @@
 
 #import <UIKit/UIKit.h>
 
-@interface SearchViewController : UITableViewController
+@class ImageViewModel;
+
+@interface ImageCell : UICollectionViewCell
+
+@property (nonatomic, strong) ImageViewModel *viewModel;
 
 @end

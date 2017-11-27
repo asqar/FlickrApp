@@ -7,7 +7,7 @@
 //
 
 #import "SearchAttemptCell.h"
-#import "Entities.h"
+#import "SearchAttemptViewModel.h"
 
 @interface SearchAttemptCell ()
 
@@ -29,16 +29,10 @@
     // Configure the view for the selected state
 }
 
-- (void) setSearchAttempt:(SearchAttempt *)searchAttempt
+- (void) setViewModel:(SearchAttemptViewModel *)viewModel
 {
-    _searchAttempt = searchAttempt;
-    
-    _lblSearchTerm.text = searchAttempt.searchTerm;
-    
-    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    dateFormatter.dateFormat = @"dd/MM/yyyy HH:mm";
-    
-    _lblSearchDate.text = [dateFormatter stringFromDate:searchAttempt.dateSearched];
+    _lblSearchTerm.text = viewModel.queryString;
+    _lblSearchDate.text = viewModel.dateString;
 }
 
 @end

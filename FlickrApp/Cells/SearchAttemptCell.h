@@ -8,10 +8,10 @@
 
 #import <UIKit/UIKit.h>
 
-@class SearchAttempt;
+@class SearchAttemptViewModel;
 
 @interface SearchAttemptCell : UITableViewCell
 
-@property (nonatomic, strong) SearchAttempt *searchAttempt;
+@property (nonatomic, strong) SearchAttemptViewModel *viewModel;
 
 @end
