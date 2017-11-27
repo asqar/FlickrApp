@@ -1,0 +1,10 @@
+/* 
+  Localizable.strings
+  FlickrApp
+
+  Created by aSqar on 25.11.2017.
+  Copyright © 2017 Askar Bakirov. All rights reserved.
+*/
+
+"CFBundleDisplayName" = "Фиды Flickr";
+"CFBundleName" = "FlickrApp";

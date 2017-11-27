@@ -1,0 +1,34 @@
+//
+//  FlickrApp-Prefix.pch
+//  FlickrApp
+//
+//  Created by aSqar on 23.11.2017.
+//  Copyright © 2017 Askar Bakirov. All rights reserved.
+//
+
+#ifndef FlickrApp_Prefix_pch
+#define FlickrApp_Prefix_pch
+
+// Include any system framework and library headers here that should be included in all compilation units.
+// You will also need to set the Prefix Header build setting of one or more of your targets to reference this file.
+
+#endif /* FlickrApp_Prefix_pch */
+
+#import <AFNetworking/AFNetworking.h>
+#import <Realm/Realm.h>
+#import <RBQFetchedResultsController/RBQFetchedResultsController.h>
+#import <SVPullToRefresh/SVPullToRefresh.h>
+#import <KVNProgress/KVNProgress.h>
+#import <ReactiveCocoa/ReactiveCocoa.h>
+#import "AppDelegate.h"
+#define XAppDelegate ((AppDelegate *)[[UIApplication sharedApplication] delegate])
+
+#import "Language.h"
+#define MyLocalizedString(key, alt) [Language get:key alter:alt]
+
+#define PER_PAGE 10
+#define THUMBNAIL_PHOTO_URL_FORMAT @"http://farm%d.static.flickr.com/%@/%@_%@_m.jpg"
+#define PHOTO_URL_FORMAT @"http://farm%d.static.flickr.com/%@/%@_%@.jpg"
+
+#define FLICKR_SEARCH_API_KEY @"fbc1edb4f93131e0ea4a399b928dabc9" // need to hide and encrypt it
+
