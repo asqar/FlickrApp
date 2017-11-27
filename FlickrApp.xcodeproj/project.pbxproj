@@ -24,6 +24,11 @@
 		1356ADA41FCB9D7E00BB4140 /* SearchResultViewModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 1356ADA31FCB9D7E00BB4140 /* SearchResultViewModel.m */; };
 		1356ADA71FCBA5C900BB4140 /* ImageListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1356ADA61FCBA5C900BB4140 /* ImageListViewController.m */; };
 		1356ADAA1FCBB25000BB4140 /* SearchAttemptViewModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 1356ADA91FCBB25000BB4140 /* SearchAttemptViewModel.m */; };
+		1356ADAF1FCBD9D000BB4140 /* SearchViewModelTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1356ADAE1FCBD9D000BB4140 /* SearchViewModelTests.m */; };
+		1356ADB11FCBD9E600BB4140 /* ImageViewModelTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1356ADB01FCBD9E600BB4140 /* ImageViewModelTests.m */; };
+		1356ADB31FCBD9FE00BB4140 /* SearchResultViewModelTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1356ADB21FCBD9FE00BB4140 /* SearchResultViewModelTests.m */; };
+		1356ADB51FCBDA3200BB4140 /* PopularFeedsViewModelTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1356ADB41FCBDA3200BB4140 /* PopularFeedsViewModelTests.m */; };
+		1356ADB71FCBDA4B00BB4140 /* SearchAttemptViewModelTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1356ADB61FCBDA4B00BB4140 /* SearchAttemptViewModelTests.m */; };
 		137288991FC86F1700793448 /* PopularFeedsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 137288981FC86F1700793448 /* PopularFeedsViewController.m */; };
 		13E0A4691FC6F0C500B70863 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13E0A4681FC6F0C500B70863 /* AppDelegate.m */; };
 		13E0A4711FC6F0C500B70863 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13E0A4701FC6F0C500B70863 /* Assets.xcassets */; };
@@ -95,6 +100,11 @@
 		1356ADA61FCBA5C900BB4140 /* ImageListViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ImageListViewController.m; sourceTree = "<group>"; };
 		1356ADA81FCBB25000BB4140 /* SearchAttemptViewModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SearchAttemptViewModel.h; sourceTree = "<group>"; };
 		1356ADA91FCBB25000BB4140 /* SearchAttemptViewModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SearchAttemptViewModel.m; sourceTree = "<group>"; };
+		1356ADAE1FCBD9D000BB4140 /* SearchViewModelTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SearchViewModelTests.m; sourceTree = "<group>"; };
+		1356ADB01FCBD9E600BB4140 /* ImageViewModelTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ImageViewModelTests.m; sourceTree = "<group>"; };
+		1356ADB21FCBD9FE00BB4140 /* SearchResultViewModelTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SearchResultViewModelTests.m; sourceTree = "<group>"; };
+		1356ADB41FCBDA3200BB4140 /* PopularFeedsViewModelTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PopularFeedsViewModelTests.m; sourceTree = "<group>"; };
+		1356ADB61FCBDA4B00BB4140 /* SearchAttemptViewModelTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SearchAttemptViewModelTests.m; sourceTree = "<group>"; };
 		137288971FC86F1700793448 /* PopularFeedsViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PopularFeedsViewController.h; sourceTree = "<group>"; };
 		137288981FC86F1700793448 /* PopularFeedsViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PopularFeedsViewController.m; sourceTree = "<group>"; };
 		13E0A4641FC6F0C500B70863 /* FlickrApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FlickrApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -277,6 +287,11 @@
 		13E0A4901FC6F2FA00B70863 /* FlickrAppTests */ = {
 			isa = PBXGroup;
 			children = (
+				1356ADAE1FCBD9D000BB4140 /* SearchViewModelTests.m */,
+				1356ADB01FCBD9E600BB4140 /* ImageViewModelTests.m */,
+				1356ADB21FCBD9FE00BB4140 /* SearchResultViewModelTests.m */,
+				1356ADB41FCBDA3200BB4140 /* PopularFeedsViewModelTests.m */,
+				1356ADB61FCBDA4B00BB4140 /* SearchAttemptViewModelTests.m */,
 				1356AD881FCB2D1C00BB4140 /* PerformanceTests.m */,
 				1356AD8A1FCB2D8D00BB4140 /* ExpectationTests.m */,
 				13E0A4931FC6F2FA00B70863 /* Info.plist */,
@@ -766,8 +781,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1356ADB31FCBD9FE00BB4140 /* SearchResultViewModelTests.m in Sources */,
+				1356ADAF1FCBD9D000BB4140 /* SearchViewModelTests.m in Sources */,
 				1356AD891FCB2D1C00BB4140 /* PerformanceTests.m in Sources */,
+				1356ADB11FCBD9E600BB4140 /* ImageViewModelTests.m in Sources */,
+				1356ADB51FCBDA3200BB4140 /* PopularFeedsViewModelTests.m in Sources */,
 				1356AD8B1FCB2D8D00BB4140 /* ExpectationTests.m in Sources */,
+				1356ADB71FCBDA4B00BB4140 /* SearchAttemptViewModelTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -22,7 +22,7 @@
         return nil;
 
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    dateFormatter.dateFormat = @"dd/MM/yyyy HH:mm";
+    dateFormatter.dateFormat = @"dd/MM/YYYY HH:mm";
     self.dateString = [dateFormatter stringFromDate:searchAttempt.dateSearched];
     self.queryString = searchAttempt.searchTerm;
     

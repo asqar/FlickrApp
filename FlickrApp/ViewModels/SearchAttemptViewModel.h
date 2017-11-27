@@ -15,8 +15,6 @@
 @property (nonatomic, strong) NSString *queryString;
 @property (nonatomic, strong) NSString *dateString;
 
-@property (nonatomic, readonly) SearchAttempt *searchAttempt;
-
 -(instancetype)initWithSearchAttempt: (SearchAttempt *) searchAttempt;
 
 @end
