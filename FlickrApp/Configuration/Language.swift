@@ -11,13 +11,13 @@ import UIKit
 
 class Language {
 
-    var bundle:Bundle! = nil
+    static var bundle:Bundle! = nil
 
     class func initialize() {
-        let defs:NSUserDefaults! = NSUserDefaults.standardUserDefaults()
-        let languages:[AnyObject]! = defs.objectForKey("AppleLanguages")
-        let current:String! = languages.objectAtIndex(0)
-        self.language = current
+        let defs:UserDefaults! = UserDefaults.standard
+        let languages:[String]! = defs.object(forKey: "AppleLanguages") as! [String]
+        let current:String! = languages[0]
+        self.setLanguage(l: current)
     }
 
     /*
@@ -26,12 +26,12 @@ class Language {
      [Language setLanguage:@"de"];
      */
     class func setLanguage(l:String!) {
-        let path:String! = Bundle.mainBundle().pathForResource(l, ofType:"lproj")
-        bundle = Bundle.bundleWithPath(path)
+        let path:String! = Bundle.main.path(forResource: l, ofType:"lproj")
+        bundle = Bundle(path: path)
     }
 
     class func get(key:String!, alter alternate:String!) -> String! {
-        let v:String! = bundle.localizedStringForKey(key, value:alternate, table:nil)
+        let v:String! = bundle.localizedString(forKey: key, value:alternate, table:nil)
         return v == nil ? key : v
     }
 }

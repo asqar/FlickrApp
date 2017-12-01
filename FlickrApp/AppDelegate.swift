@@ -73,7 +73,7 @@ class AppDelegate : UIResponder, UIApplicationDelegate {
 
         // Set the block which will be called automatically when opening a Realm with a
         // schema version lower than the one set above
-        config.migrationBlock = { (migration:RLMMigration!,oldSchemaVersion:uint64_t) in
+        config.migrationBlock = { (migration:RLMMigration!,oldSchemaVersion:UInt64) in
             // We haven’t migrated anything yet, so oldSchemaVersion == 0
             if oldSchemaVersion < 1 {
                 // Nothing to do!
@@ -83,7 +83,7 @@ class AppDelegate : UIResponder, UIApplicationDelegate {
         }
 
         // Tell Realm to use this new configuration object for the default Realm
-        RLMRealmConfiguration.defaultConfiguration = config
+        RLMRealmConfiguration.setDefault(config)
 
         // Now that we've told Realm how to handle the schema change, opening the file
         // will automatically perform the migration
@@ -92,17 +92,19 @@ class AppDelegate : UIResponder, UIApplicationDelegate {
         // trying to open an outdated realm file without first registering a new schema version and migration block
         // with throw
         do {
-            try RLMRealm.default()
+            RLMRealm.default()
         }
         catch is NSException {
 #if DEBUG
             NSLog("Trying to open an outdated realm a migration block threw an exception.")
 #endif
-            let error:NSError! = nil
-            FileManager.defaultManager().removeItemAtPath(defaultRealmPath, error:&error)
+            do {
+                try FileManager.default.removeItem(atPath: defaultRealmPath)
+            } catch {
 #if DEBUG
-            NSLog("%@", error)
+                NSLog("%@", error)
 #endif
+            }
         }
     }
 

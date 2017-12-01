@@ -3,11 +3,14 @@ project 'FlickrApp.xcodeproj/'
 
 platform :ios, '9.0'
 
+use_frameworks!
+
 pod 'SAMKeychain'
 pod 'AFNetworking'  #, '~> 2.6.0' # There is a memory leak with AFNetworking >= 3.0
 pod 'KVNProgress'
 pod 'MWPhotoBrowser'
 pod 'FMMosaicLayout'
+pod 'DejalActivityView'
 
 target "FlickrApp" do
   project 'FlickrApp.xcodeproj/'

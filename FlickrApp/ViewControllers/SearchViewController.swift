@@ -16,30 +16,27 @@ class SearchViewController : UITableViewController {
     
     var viewModel:SearchViewModel!
 
-    func viewDidLoad() {
+    override func viewDidLoad() {
         super.viewDidLoad()
         self.translateUI()
         // Do any additional setup after loading the view.
 
-        weakify(self)
-        self.tableView.addPullToRefreshWithActionHandler({ 
-            strongify(self)
+        self.tableView.addPullToRefresh(actionHandler: {
             self.tableView.reloadData()
             self.tableView.pullToRefreshView.stopAnimating()
         })
-        self.viewModel.updatedContentSignal.subscribeNext({ (x:AnyObject!) in 
-            strongify(self)
+        self.viewModel.updatedContentSignal.subscribeNext({ (x:AnyObject!) in
             self.tableView.reloadData()
             self.tableView.pullToRefreshView.stopAnimating()
             self.tableView.infiniteScrollingView.stopAnimating()
-        })
+            } as! (Any?) -> Void)
 
         self.viewModel.loadHistory()
     }
 
     func viewWillAppear(animated:Bool) {
         super.viewWillAppear(animated)
-        self.viewModel.active = true
+//        self.viewModel.active = true
     }
 
     func viewDidAppear(animated:Bool) {
@@ -47,7 +44,7 @@ class SearchViewController : UITableViewController {
         self.tableView.reloadData()
     }
 
-    func didReceiveMemoryWarning() {
+    override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
@@ -59,15 +56,15 @@ class SearchViewController : UITableViewController {
     // MARK: - Search
 
     func searchBarSearchButtonClicked(searchBar:UISearchBar!) {
-        if _searchBar.text.length == 0
+        if searchBar.text?.count == 0
             {return}
-        _searchBar.endEditing(true)
+        searchBar.endEditing(true)
 
-        let vc:SearchResultViewController! = self.storyboard.instantiateViewControllerWithIdentifier("SearchResultViewController")
-        vc.viewModel = SearchResultViewModel(searchQuery:self.searchBar.text)
+        let vc:SearchResultViewController! = self.storyboard!.instantiateViewController(withIdentifier: "SearchResultViewController") as! SearchResultViewController
+        vc.viewModel = SearchResultViewModel(searchQuery:self.searchBar?.text)
         self.navigationController!.pushViewController(vc, animated:true)
 
-        self.searchBar.text = ""
+        self.searchBar?.text = ""
     }
 
     // MARK: - UITableView data source
@@ -77,34 +74,34 @@ class SearchViewController : UITableViewController {
     }
 
     func tableView(tableView:UITableView!, numberOfRowsInSection section:Int) -> Int {
-        return self.viewModel.numberOfItemsInSection(0)
+        return self.viewModel.numberOfItemsInSection(section: 0)
     }
 
     func tableView(tableView:UITableView!, cellForRowAtIndexPath indexPath:IndexPath!) -> UITableViewCell! {
-        let cell:SearchAttemptCell! = tableView.dequeueReusableCellWithIdentifier("SearchAttemptCell")
-        let viewModel:SearchAttemptViewModel! = self.viewModel.objectAtIndexPath(indexPath)
+        let cell:SearchAttemptCell! = tableView.dequeueReusableCell(withIdentifier: "SearchAttemptCell") as! SearchAttemptCell
+        let viewModel:SearchAttemptViewModel! = self.viewModel.objectAtIndexPath(indexPath: indexPath)
         cell.viewModel = viewModel
         return cell
     }
 
     func tableView(tableView:UITableView!, heightForRowAtIndexPath indexPath:IndexPath!) -> CGFloat {
-        let searchAttempt:SearchAttemptViewModel! = self.viewModel.objectAtIndexPath(indexPath)
+        let searchAttempt:SearchAttemptViewModel! = self.viewModel.objectAtIndexPath(indexPath: indexPath)
 
-        let width:CGFloat = UIScreen.mainScreen.bounds.size.width - 20.0 * 2 - 156.0 - 35.0
-        let height:CGFloat = searchAttempt.queryString.boundingRectWithSize(CGSizeMake(width, MAXFLOAT), options:NSStringDrawingOptions.NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingOptions.NSStringDrawingUsesFontLeading, attributes:[NSFontAttributeName: UIFont.fontWithName("HelveticaNeue", size:17.0)], context:nil).size.height + 20.0
+        let width:CGFloat = UIScreen.main.bounds.size.width - 20.0 * 2 - 156.0 - 35.0
+        let height:CGFloat = searchAttempt.queryString.boundingRect(with: CGSize(width:width, height:CGFloat(MAXFLOAT)), options:NSStringDrawingOptions(rawValue: NSStringDrawingOptions.usesLineFragmentOrigin.rawValue | NSStringDrawingOptions.usesFontLeading.rawValue), attributes:[NSFontAttributeName: UIFont(name: "HelveticaNeue", size:17.0) ?? UIFont.systemFont(ofSize: UIFont.systemFontSize)], context:nil).size.height + 20.0
         return height
     }
 
     func tableView(tableView:UITableView!, didSelectRowAtIndexPath indexPath:IndexPath!) {
-        self.tableView.deselectRowAtIndexPath(indexPath, animated:true)
+        self.tableView.deselectRow(at: indexPath, animated:true)
     }
 
     // MARK: -
 
     func prepareForSegue(segue:UIStoryboardSegue!, sender:AnyObject!) {
-        if (segue.destinationViewController is SearchResultViewController) {
-            let searchAttemptViewModel:SearchAttemptViewModel! = self.viewModel.objectAtIndexPath(self.tableView.indexPathForSelectedRow)
-            let vc:SearchResultViewController! = segue.destinationViewController
+        if (segue.destination is SearchResultViewController) {
+            let searchAttemptViewModel:SearchAttemptViewModel! = self.viewModel.objectAtIndexPath(indexPath: self.tableView.indexPathForSelectedRow)
+            let vc:SearchResultViewController! = segue.destination as! SearchResultViewController
             vc.viewModel = SearchResultViewModel(searchAttemptViewModel:searchAttemptViewModel)
         }
     }

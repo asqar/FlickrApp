@@ -11,13 +11,9 @@ import RBQFetchedResultsController
 
 class SearchResultViewModel : ImageListViewModel {
 
-    private var _searchAttempt:SearchAttempt!
-    private var searchAttempt:SearchAttempt! {
-        get { return _searchAttempt }
-        set { _searchAttempt = newValue }
-    }
+    private var searchAttempt:SearchAttempt!
 
-    init(searchAttemptViewModel:SearchAttemptViewModel!) {
+    convenience init(searchAttemptViewModel:SearchAttemptViewModel!) {
         self.init(searchQuery:searchAttemptViewModel.queryString)
     }
 
@@ -27,23 +23,25 @@ class SearchResultViewModel : ImageListViewModel {
         self.realm().beginWriteTransaction()
         let searchAttempt:SearchAttempt! = SearchAttempt()
         searchAttempt.searchTerm = searchQuery
-        searchAttempt.dateSearched = NSDate.date()
-        self.realm().addOrUpdateObject(searchAttempt)
-        self.realm().commitWriteTransaction()
-
+        searchAttempt.dateSearched = NSDate() as Date!
+        self.realm().addOrUpdate(searchAttempt)
+        do {
+            try self.realm().commitWriteTransaction()
+        } catch {
+            
+        }
         self.searchAttempt = searchAttempt
-        return self
     }
 
-    func title() -> String! {
-        return _searchAttempt.searchTerm
+    override var title : String! {
+        return searchAttempt.searchTerm
     }
 
-    func fetcher() -> RemoteFetcher! {
+    override var fetcher : RemoteFetcher! {
         return PhotoFetcher.sharedFetcher
     }
 
-    func fetchRequest() -> RBQFetchRequest! {
+    override var fetchRequest : RBQFetchRequest! {
         let sd1:RLMSortDescriptor! = RLMSortDescriptor(keyPath:"orderIndex", ascending:true)
         let sortDescriptors:[RLMSortDescriptor]! = [ sd1 ]
 
@@ -53,25 +51,28 @@ class SearchResultViewModel : ImageListViewModel {
         return fetchRequest
     }
 
-    func serviceUrl() -> String! {
-        let encodedStr:String! = self.searchAttempt.searchTerm.stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet.URLHostAllowedCharacterSet())
+    override var serviceUrl : String! {
+        let encodedStr:String! = self.searchAttempt.searchTerm.addingPercentEncoding(withAllowedCharacters: NSCharacterSet.urlHostAllowed)
         return String(format:"text=%@", encodedStr)
     }
 
     override func processDownloadedResults(results:[AnyObject]!) {
-        self.realm().transactionWithBlock({ 
-
-            let orderIndex:Int = self.numberOfItemsInSection(0) + 1
-            for item:Photo! in results {  
-                item.orderIndex = orderIndex
-                item.searchAttempt = self.searchAttempt
-                orderIndex++
-             }
-        })
+        self.realm().beginWriteTransaction()
+        var orderIndex:Int = self.numberOfItemsInSection(section: 0) + 1
+        for item:Photo! in results as! [Photo]{
+            item.orderIndex = orderIndex
+            item.searchAttempt = self.searchAttempt
+            orderIndex += 1
+        }
+        do {
+            try self.realm().commitWriteTransaction()
+        } catch {
+            
+        }
     }
 
     override func objectAtIndexPath(indexPath:IndexPath!) -> ImageViewModel! {
-        let photo:Photo! = self.fetchedResultsController.objectAtIndexPath(indexPath)
-        return ImageViewModel(photo:photo)
+        let photo:Photo! = self.fetchedResultsController.object(at: indexPath) as! Photo
+        return ImageViewModel(photo:photo, isThumbnail:true)
     }
 }

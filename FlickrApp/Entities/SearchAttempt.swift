@@ -9,7 +9,7 @@
 import Realm
 import Realm_JSON
 
-class SearchAttempt : RLMObject, RealmJsonDeserializer {
+class SearchAttempt : Entity {
 
     var searchTerm:String!
     var dateSearched:Date!

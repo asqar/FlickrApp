@@ -19,9 +19,23 @@ class ImageListViewModel : BaseViewModel, RBQFetchedResultsControllerDelegate {
     private(set) var startLoadingSignal:RACSignal!
     private(set) var dismissLoadingSignal:RACSignal!
     private(set) var errorMessageSignal:RACSignal!
-    private(set) var title:String!
-    private(set) var fetcher:RemoteFetcher!
-    private(set) var fetchRequest:RBQFetchRequest!
+    
+    var serviceUrl:String! {
+        return ""
+    }
+    
+    var currentPage:Int
+    
+    var title : String! { // virtual
+        return ""
+    }
+    var fetcher : RemoteFetcher! { // virtual
+        return nil
+    }
+    var fetchRequest : RBQFetchRequest!{ // virtual
+        return nil
+    }
+    
     private var _fetchedResultsController:RBQFetchedResultsController!
     var fetchedResultsController:RBQFetchedResultsController! {
         get { 
@@ -36,21 +50,19 @@ class ImageListViewModel : BaseViewModel, RBQFetchedResultsControllerDelegate {
             return _fetchedResultsController
         }
     }
-    private(set) var serviceUrl:String!
-    private var currentPage:Int
 
     override init() {
+        self.currentPage = 1
         super.init()
         
-        self.updatedContentSignal = RACSubject.subject() // "ImageListViewModel updatedContentSignal"
-        self.startLoadingSignal = RACSubject.subject() // "ImageListViewModel startLoadingSignal"
-        self.dismissLoadingSignal = RACSubject.subject() // "ImageListViewModel dismissLoadingSignal"
-        self.errorMessageSignal = RACSubject.subject() // "ImageListViewModel errorMessageSignal"
-
-        self.currentPage = 1
-
-        self.didBecomeActiveSignal.subscribeNext({ (x:AnyObject!) in 
-        })
+//        self.updatedContentSignal = RACSubject.subject() // "ImageListViewModel updatedContentSignal"
+//        self.startLoadingSignal = RACSubject.subject() // "ImageListViewModel startLoadingSignal"
+//        self.dismissLoadingSignal = RACSubject.subject() // "ImageListViewModel dismissLoadingSignal"
+//        self.errorMessageSignal = RACSubject.subject() // "ImageListViewModel errorMessageSignal"
+//
+//
+//        self.didBecomeActiveSignal.subscribeNext({ (x:AnyObject!) in 
+//        })
 
 
     }
@@ -76,14 +88,14 @@ class ImageListViewModel : BaseViewModel, RBQFetchedResultsControllerDelegate {
         if updating {
             self.currentPage = 1
         } else {
-            self.currentPage++
+            self.currentPage += 1
         }
 
-        self.fetcher.fetchManyFromPath(String(format:"%@&per_page=%d&page=%d", self.serviceUrl, PER_PAGE, self.currentPage),  synchronoulsy:false, success:{ (operation:URLSessionTask!,mappingResult:AnyObject!) in 
+        self.fetcher.fetchManyFromPath(restServiceUrl: String(format:"%@&per_page=%d&page=%d", self.serviceUrl, PER_PAGE, self.currentPage),  synchronoulsy:false, success:{ (operation:URLSessionTask!,mappingResult:AnyObject!) in
 
-            self.processDownloadedResults(mappingResult)
+            self.processDownloadedResults(results: mappingResult as! [AnyObject]!)
 
-            _fetchedResultsController = nil
+            self._fetchedResultsController = nil
 
             (self.updatedContentSignal as! RACSubject).sendNext({ (x:AnyObject!) in })
         }, failure:{ (operation:URLSessionTask!,error:NSError!) in 

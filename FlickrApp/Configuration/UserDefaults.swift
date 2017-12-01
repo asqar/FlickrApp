@@ -10,33 +10,33 @@ import SAMKeychain
 import UIKit
 import Foundation
 
-class UserDefaults {
+class MyUserDefaults {
 
     // MARK: - Settings Bug Workaround
 
     class func uniqueDeviceIdentifier() -> String! {
-        let appName:String! = Bundle.mainBundle().infoDictionary().objectForKey((kCFBundleNameKey as! NSString))
+        let appName:String! = Bundle.main.infoDictionary![kCFBundleNameKey as String] as! String
 
-        let strApplicationUUID:String! = SAMKeychain.passwordForService(appName, account:"udid")
+        let strApplicationUUID:String! = SAMKeychain.password(forService: appName, account:"udid")
         if strApplicationUUID == nil
         {
-            var uuidStr:String! = UserDefaults.retrieveFromUserDefaults("udid")
+            var uuidStr:String! = MyUserDefaults.retrieveFromUserDefaults(key: "udid")
             if uuidStr == nil {
                 // Create universally unique identifier (object)
-                let uuidObject:CFUUIDRef = CFUUIDCreate(kCFAllocatorDefault)
+                let uuidObject:CFUUID = CFUUIDCreate(kCFAllocatorDefault)
 
                 // Get the string representation of CFUUID object.
-                uuidStr = (CFUUIDCreateString(kCFAllocatorDefault, uuidObject) as!String)
-                CFRelease(uuidObject)
+                uuidStr = (CFUUIDCreateString(kCFAllocatorDefault, uuidObject)! as String)
+                //CFRelease(uuidObject)
             }
-            let error:NSError! = nil
             let query:SAMKeychainQuery! = SAMKeychainQuery()
             query.service = appName
             query.account = "udid"
             query.password = uuidStr
-            query.synchronizationMode = SAMKeychainQuerySynchronizationModeNo
-            query.save(&error)
-            if (error != nil) {
+            query.synchronizationMode = SAMKeychainQuerySynchronizationMode.no
+            do {
+                try query.save()
+            } catch {
 #if DEBUG
                 NSLog("Error save to keychain: %@", error)
 #endif
@@ -46,10 +46,10 @@ class UserDefaults {
     }
 
     class func saveToUserDefaults(key:String!, value valueString:String!) {
-        let standardUserDefaults:NSUserDefaults! = NSUserDefaults.standardUserDefaults()
+        let standardUserDefaults:UserDefaults! = UserDefaults.standard
 
         if (standardUserDefaults != nil) {
-            standardUserDefaults.setObject(valueString, forKey:key)
+            standardUserDefaults.set(valueString, forKey:key)
             standardUserDefaults.synchronize()
         } else {
             ////if (DEBUG) NSLog(@"Unable to save %@ = %@ to user defaults", key, valueString);
@@ -57,10 +57,10 @@ class UserDefaults {
     }
 
     class func removeFromUserDefaults(key:String!) {
-        let standardUserDefaults:NSUserDefaults! = NSUserDefaults.standardUserDefaults()
+        let standardUserDefaults:UserDefaults! = UserDefaults.standard
 
         if (standardUserDefaults != nil) {
-            standardUserDefaults.removeObjectForKey(key)
+            standardUserDefaults.removeObject(forKey: key)
             standardUserDefaults.synchronize()
         } else {
             ////if (DEBUG) NSLog(@"Unable to remove %@ from user defaults", key);
@@ -70,16 +70,18 @@ class UserDefaults {
     class func retrieveBooleanFromUserDefaults(key:String!) -> Bool {
         //	NSUserDefaults *standardUserDefaults = [NSUserDefaults standardUserDefaults];
         //    return [standardUserDefaults boolForKey: key];
-        let s:String! = UserDefaults.retrieveFromUserDefaults(key)
-        return s.boolValue()
+        let s:String! = MyUserDefaults.retrieveFromUserDefaults(key: key)
+        return NSString(string: s).boolValue
     }
 
     class func retrieveFromUserDefaults(key:String!) -> String! {
-        let standardUserDefaults:NSUserDefaults! = NSUserDefaults.standardUserDefaults()
+        let standardUserDefaults:UserDefaults! = UserDefaults.standard
         var val:String! = nil
 
         if (standardUserDefaults != nil)
-            {val = standardUserDefaults.objectForKey(key)}
+        {
+            val = standardUserDefaults.object(forKey:key) as! String
+        }
 
         // TODO: / apparent Apple bug: if user hasn't opened Settings for this app yet (as if?!), then
         // the defaults haven't been copied in yet.  So do so here.  Adds another null check
@@ -88,26 +90,27 @@ class UserDefaults {
             ////if (DEBUG) NSLog(@"key = %@", key);
             ////if (DEBUG) NSLog(@"user defaults may not have been loaded from Settings.bundle ... doing that now ...");
             //Get the bundle path
-            let bPath:String! = Bundle.mainBundle().bundlePath()
-            let settingsPath:String! = bPath.stringByAppendingPathComponent("Settings.bundle")
-            let plistFile:String! = settingsPath.stringByAppendingPathComponent("Root.plist")
+            let bPath:String! = Bundle.main.bundlePath
+            let settingsPath:String! = bPath.appending("Settings.bundle")
+            let plistFile:String! = NSURL(fileURLWithPath: settingsPath).appendingPathComponent("Root.plist")?.absoluteString
 
             //Get the Preferences Array from the dictionary
-            let settingsDictionary:NSDictionary! = NSDictionary.dictionaryWithContentsOfFile(plistFile)
-            let preferencesArray:[AnyObject]! = settingsDictionary.objectForKey("PreferenceSpecifiers")
+            let settingsDictionary:NSDictionary! = NSDictionary(contentsOfFile: plistFile)! as NSDictionary
+            let preferencesArray:[AnyObject]! = settingsDictionary.object(forKey: "PreferenceSpecifiers") as! [AnyObject]
 
             //Loop through the array
-            for item:NSDictionary! in preferencesArray { 
+            for item:NSDictionary! in preferencesArray as! [NSDictionary] {
                 //Get the key of the item.
-                let keyValue:String! = item.objectForKey("Key")
+                let keyValue:String! = item.object(forKey: "Key") as! String
 
                 //Get the default value specified in the plist file.
-                let defaultValue:AnyObject! = item.objectForKey("DefaultValue")
+                let defaultValue:AnyObject! = item.object(forKey: "DefaultValue") as AnyObject
 
-                if (keyValue != nil) && defaultValue {
-                    standardUserDefaults.setObject(defaultValue, forKey:keyValue)
-                    if keyValue.compare(key) == NSOrderedSame
-                        {val = defaultValue}
+                if (keyValue != nil) && (defaultValue != nil) {
+                    standardUserDefaults.set(defaultValue, forKey:keyValue)
+                    if keyValue.compare(key) == ComparisonResult.orderedSame {
+                        val = defaultValue as! String!
+                    }
                 }
              }
             standardUserDefaults.synchronize()

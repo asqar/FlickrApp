@@ -18,7 +18,7 @@ class SearchViewModel : BaseViewModel, RBQFetchedResultsControllerDelegate {
     private(set) var updatedContentSignal:RACSignal!
     
     private var _fetchedResultsController:RBQFetchedResultsController!
-    private var fetchedResultsController:RBQFetchedResultsController! {
+    var fetchedResultsController:RBQFetchedResultsController! {
         get { 
             if _fetchedResultsController == nil {
                 _fetchedResultsController = RBQFetchedResultsController(fetchRequest:self.fetchRequest(), sectionNameKeyPath:nil, cacheName:nil)
@@ -36,9 +36,9 @@ class SearchViewModel : BaseViewModel, RBQFetchedResultsControllerDelegate {
         
         //self.updatedContentSignal = RACSubject.subject()// "SearchResultViewModel updatedContentSignal"
 
-        self.didBecomeActiveSignal.subscribeNext({ (x:AnyObject!) in
-            self.loadHistory()
-        })
+//        self.didBecomeActiveSignal.subscribeNext({ (x:AnyObject!) in
+//            self.loadHistory()
+//        })
 
     }
 

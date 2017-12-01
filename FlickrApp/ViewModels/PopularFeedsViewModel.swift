@@ -12,15 +12,15 @@ import ReactiveCocoa
 
 class PopularFeedsViewModel : ImageListViewModel {
 
-    func title() -> String! {
+    override var title : String! {
         return "Popular Feeds".localized
     }
 
-    func fetcher() -> RemoteFetcher! {
+    override var fetcher : RemoteFetcher! {
         return FeedFetcher.sharedFetcher
     }
 
-    func fetchRequest() -> RBQFetchRequest! {
+    override var fetchRequest : RBQFetchRequest! {
         let sd1:RLMSortDescriptor! = RLMSortDescriptor(keyPath:"datePublished", ascending:true)
         let sortDescriptors:[RLMSortDescriptor]! = [ sd1 ]
         let fetchRequest:RBQFetchRequest! = RBQFetchRequest(entityName:"Feed", in:self.realm(), predicate:nil)
@@ -28,7 +28,7 @@ class PopularFeedsViewModel : ImageListViewModel {
         return fetchRequest
     }
 
-    func serviceUrl() -> String! {
+    override var serviceUrl : String! {
         return ""
     }
 

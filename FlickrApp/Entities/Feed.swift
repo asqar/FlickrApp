@@ -8,8 +8,9 @@
 
 import Realm
 import Realm_JSON
+import Foundation
 
-class Feed : RLMObject, RealmJsonDeserializer {
+class Feed : Entity {
 
     var title:String!
     var link:String!
@@ -44,33 +45,36 @@ class Feed : RLMObject, RealmJsonDeserializer {
         return "link"
     }
 
-    class func deserializeOne(d:NSDictionary!, inRealm realm:RLMRealm!) -> Self {
+    override class func deserializeOne(d:NSDictionary!, in realm:RLMRealm!) -> AnyObject {
         let item:Feed! = Feed.createOrUpdate(in:realm, withJSONDictionary: d as! [AnyHashable : Any]!)
         return item
     }
 
-    class func deserializeMany(a:[AnyObject]!, inRealm realm:RLMRealm!) -> [Any]! {
+    override class func deserializeMany(a:[AnyObject]!, in realm:RLMRealm!) -> [AnyObject] {
 //        if (a is NSDictionary) {
 //            a = (a as! NSDictionary).objectForKey("items")
 //        }
 //        if (a is NSDictionary) {
 //            a = (a as! NSDictionary).objectForKey("photo")
 //        }
-        let result:[AnyObject]! = Feed.createOrUpdate(in:realm, withJSONArray: a)
+        let result:[Feed]! = Feed.createOrUpdate(in:realm, withJSONArray: a)! as! [Feed]
 
         let pattern:String! = "(?<=\").+(?=\")"
-        let  error:NSError! = nil
-        let regex:NSRegularExpression! = NSRegularExpression.regularExpressionWithPattern(pattern, options:0, error:&error)
+        do {
+            let regex:NSRegularExpression! = try NSRegularExpression(pattern: pattern, options:NSRegularExpression.Options(rawValue: 0))
 
-        for item:Feed! in result { 
-            let searchedString:String! = item.author
-            let matches:[AnyObject]! = regex.matchesInString(searchedString, options:0, range: NSMakeRange(0, searchedString.length()))
-            let match:NSTextCheckingResult! = matches.firstObject
-            if (match != nil) {
-                let matchText:String! = searchedString.substringWithRange(match.range())
-                item.author = matchText
-            }
-         }
+            for item:Feed! in result as [Feed] {
+                let searchedString:String! = item.author
+                let matches:[NSTextCheckingResult]! = regex.matches(in: searchedString, options:NSRegularExpression.MatchingOptions(rawValue: 0), range: NSMakeRange(0, searchedString.count))
+                let match:NSTextCheckingResult! = matches.first
+                if (match != nil) {
+                    let matchText:String! = searchedString[Range(match.range, in: searchedString)!]
+                    item.author = matchText
+                }
+             }
+        } catch {
+            
+        }
         return result
     }
 }

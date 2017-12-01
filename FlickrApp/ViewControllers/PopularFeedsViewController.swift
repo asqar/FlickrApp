@@ -10,21 +10,21 @@ import UIKit
 
 class PopularFeedsViewController : ImageListViewController {
 
-    var viewModel:PopularFeedsViewModel!
+//    override var viewModel:PopularFeedsViewModel!
 
-    func viewDidLoad() {
+    override func viewDidLoad() {
         self.viewModel = PopularFeedsViewModel()
         super.viewDidLoad()
     }
 
-    func showSpinner() {
-        self.showLoadingView("Loading feeds...".localized)
+    override func showSpinner() {
+        self.showLoadingView(msg: "Loading feeds...".localized)
     }
 
     func prepareForSegue(segue:UIStoryboardSegue!, sender:AnyObject!) {
-        if (segue.destinationViewController is SearchViewController) {
+        if (segue.destination is SearchViewController) {
             let searchViewModel:SearchViewModel! = SearchViewModel()
-            let vc:SearchViewController! = segue.destinationViewController
+            let vc:SearchViewController! = segue.destination as! SearchViewController
             vc.viewModel = searchViewModel
         }
     }

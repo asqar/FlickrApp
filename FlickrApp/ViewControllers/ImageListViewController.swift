@@ -16,7 +16,7 @@ let kFMHeaderFooterHeight:CGFloat = 44.0
 let kFMMosaicColumnCount:Int = 2
 
 
-class ImageListViewController : UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, MWPhotoBrowserDelegate {
+class ImageListViewController : UIViewController, UICollectionViewDelegate, UICollectionViewDataSource {
 
     @IBOutlet weak var collectionView: UICollectionView?
     @IBOutlet weak var pullToRefreshView: SVPullToRefreshView?
@@ -24,71 +24,71 @@ class ImageListViewController : UIViewController, UICollectionViewDelegate, UICo
     var viewModel:ImageListViewModel!
     
     private var _photoBrowser:MWPhotoBrowser!
-    private var photoBrowser:MWPhotoBrowser! {
+    
+    var photoBrowser:MWPhotoBrowser! {
         get { 
             if _photoBrowser == nil {
-                _photoBrowser = MWPhotoBrowser(delegate:self)
-                _photoBrowser.view.backgroundColor = UIColor.blackColor
+                _photoBrowser = MWPhotoBrowser(delegate:self as! MWPhotoBrowserDelegate)
+                _photoBrowser.view.backgroundColor = UIColor.black
                 _photoBrowser.displayActionButton = false
                 _photoBrowser.alwaysShowControls = true
                 _photoBrowser.zoomPhotosToFill = true
-                _photoBrowser.edgesForExtendedLayout = UIRectEdgeNone
+                _photoBrowser.edgesForExtendedLayout = UIRectEdge()
                 _photoBrowser.extendedLayoutIncludesOpaqueBars = false
             }
             return _photoBrowser
         }
-        set { _photoBrowser = newValue }
     }
 
-    func viewDidLoad() {
+    override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
 
         self.title = self.viewModel.title
 
-        self.collectionView.addPullToRefreshWithActionHandler({
-            self.viewModel.downloadImagesUpdating(true)
+        self.collectionView?.addPullToRefresh(actionHandler: {
+            self.viewModel.downloadImagesUpdating(updating: true)
         })
-        self.collectionView.addInfiniteScrollingWithActionHandler({
-            self.viewModel.downloadImagesUpdating(false)
+        self.collectionView?.addInfiniteScrolling(actionHandler: {
+            self.viewModel.downloadImagesUpdating(updating: false)
         })
         self.viewModel.updatedContentSignal.subscribeNext({ (x:AnyObject!) in
-            self.collectionView.reloadData()
-            self.collectionView.pullToRefreshView.stopAnimating()
-            self.collectionView.infiniteScrollingView.stopAnimating()
-        })
+            self.collectionView?.reloadData()
+            self.collectionView?.pullToRefreshView.stopAnimating()
+            self.collectionView?.infiniteScrollingView.stopAnimating()
+            } as! (Any?) -> Void)
         self.viewModel.dismissLoadingSignal.subscribeNext({ (x:AnyObject!) in
             self.hideLoadingView()
             KVNProgress.dismiss()
-        })
+            } as! (Any?) -> Void)
         self.viewModel.startLoadingSignal.subscribeNext({ (x:AnyObject!) in 
 
-        })
+            } as! (Any?) -> Void)
         self.viewModel.errorMessageSignal.subscribeNext({ (x:AnyObject!) in 
-            KVNProgress.showErrorWithStatus("Technical error. Try again later".localized)
-        })
+            KVNProgress.showError(withStatus: "Technical error. Try again later".localized)
+            } as! (Any?) -> Void)
 
         self.showSpinner()
-        self.viewModel.downloadImagesUpdating(true)
+        self.viewModel.downloadImagesUpdating(updating: true)
     }
 
     func showSpinner() {
-        self.showLoadingView("Loading results...".localized)
+        self.showLoadingView(msg: "Loading results...".localized)
     }
 
     func viewWillAppear(animated:Bool) {
         super.viewWillAppear(animated)
-        self.viewModel.active = true
+        //self.viewModel.active = true
 
         self.photoBrowser.delegate = nil
-        self.photoBrowser = nil
+        _photoBrowser = nil
     }
 
     func viewDidDisappear(animated:Bool) {
         super.viewDidDisappear(animated)
     }
 
-    func didReceiveMemoryWarning() {
+    override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
@@ -100,7 +100,7 @@ class ImageListViewController : UIViewController, UICollectionViewDelegate, UICo
     }
 
     func collectionView(collectionView:UICollectionView!, layout collectionViewLayout:FMMosaicLayout!, mosaicCellSizeForItemAtIndexPath indexPath:IndexPath!) -> FMMosaicCellSize {
-        return (indexPath.item % 12 == 0) ? FMMosaicCellSizeBig : FMMosaicCellSizeSmall
+        return (indexPath.item % 12 == 0) ? FMMosaicCellSize.big : FMMosaicCellSize.small
     }
 
     func collectionView(collectionView:UICollectionView!, layout collectionViewLayout:FMMosaicLayout!, insetForSectionAtIndex section:Int) -> UIEdgeInsets {
@@ -133,35 +133,33 @@ class ImageListViewController : UIViewController, UICollectionViewDelegate, UICo
         return self.viewModel.numberOfSections()
     }
 
-    func collectionView(collectionView:UICollectionView!, numberOfItemsInSection section:Int) -> Int {
-        return self.viewModel.numberOfItemsInSection(section)
+    func collectionView(_ collectionView:UICollectionView, numberOfItemsInSection section:Int) -> Int {
+        return self.viewModel.numberOfItemsInSection(section: section)
     }
 
-    func collectionView(collectionView:UICollectionView!, cellForItemAtIndexPath indexPath:IndexPath!) -> UICollectionViewCell! {
-        let cell:ImageCell! = collectionView.dequeueReusableCellWithReuseIdentifier("ImageCell", forIndexPath: indexPath)
-        cell.viewModel = self.viewModel.objectAtIndexPath(indexPath)
+    func collectionView(_ collectionView:UICollectionView, cellForItemAt indexPath:IndexPath) -> UICollectionViewCell {
+        let cell:ImageCell! = collectionView.dequeueReusableCell(withReuseIdentifier: "ImageCell", for: indexPath) as! ImageCell
+        cell.viewModel = self.viewModel.objectAtIndexPath(indexPath: indexPath)
         return cell
     }
 
-    func collectionView(collectionView:UICollectionView!, didSelectItemAtIndexPath indexPath:IndexPath!) {
-        self.photoBrowser.currentPhotoIndex = indexPath.row
+    func collectionView(_ collectionView:UICollectionView, didSelectItemAt indexPath:IndexPath) {
+        self.photoBrowser.setCurrentPhotoIndex(UInt(indexPath.row))
         self.navigationController!.pushViewController(self.photoBrowser, animated:true)
-        self.collectionView.deselectItemAtIndexPath(indexPath, animated:true)
+        self.collectionView?.deselectItem(at: indexPath, animated:true)
     }
 
     // MARK: - MWPhotoProwser delegate
 
-    // `photoBrowser` has moved as a getter.
-
-    func numberOfPhotosInPhotoBrowser(photoBrowser:MWPhotoBrowser!) -> UInt {
-        let i:UInt = self.viewModel.numberOfItemsInSection(0)
+    func numberOfPhotos(in photoBrowser: MWPhotoBrowser!) -> UInt {
+        let i:UInt = UInt(self.viewModel.numberOfItemsInSection(section: 0))
         return i
     }
 
     func photoBrowser(photoBrowser:MWPhotoBrowser!, photoAtIndex index:UInt) -> MWPhoto! {
-        if index < self.viewModel.numberOfItemsInSection(0) {
-            let image:ImageViewModel! = self.viewModel.objectAtIndexPath(IndexPath.indexPathForRow(index, inSection:0))
-            let photoObj:MWPhoto! = MWPhoto.photoWithURL(image.url)
+        if index < self.viewModel.numberOfItemsInSection(section: 0) {
+            let image:ImageViewModel! = self.viewModel.objectAtIndexPath(indexPath: NSIndexPath.init(row: Int(index), section:0) as IndexPath!)
+            let photoObj:MWPhoto! = MWPhoto(url: image.url)
             photoObj.caption = image.caption
             return photoObj
         }

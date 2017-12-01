@@ -10,15 +10,13 @@ import UIKit
 
 class SearchResultViewController : ImageListViewController {
 
-    var viewModel:SearchResultViewModel!
+//    var viewModel:SearchResultViewModel!
 
-    func viewDidLoad() {
+    override func viewDidLoad() {
         super.viewDidLoad()
     }
 
-    func showSpinner() {
-        self.showLoadingView("Loading search results...".localized)
+    override func showSpinner() {
+        self.showLoadingView(msg: "Loading search results...".localized)
     }
-
-    // `setViewModel:` has moved as a setter.
 }

@@ -9,7 +9,7 @@
 import Realm
 import Realm_JSON
 
-class Photo : RLMObject, RealmJsonDeserializer {
+class Photo : Entity {
 
     var photoId:String!
     var owner:String!
@@ -20,7 +20,7 @@ class Photo : RLMObject, RealmJsonDeserializer {
     var isPublic:Int!
     var isFriend:Int!
     var isFamily:Int!
-    var orderIndex:NSNumber!
+    var orderIndex:Int!
     var searchAttempt:SearchAttempt!
 
     class func JSONInboundMappingDictionary() -> NSDictionary! {
@@ -46,18 +46,18 @@ class Photo : RLMObject, RealmJsonDeserializer {
         return "photoId"
     }
 
-    class func deserializeOne(d:NSDictionary!, inRealm realm:RLMRealm!) -> Self {
+    override class func deserializeOne(d:NSDictionary!, in realm:RLMRealm!) -> AnyObject {
         let item:Photo! = Photo.createOrUpdate(in:realm, withJSONDictionary: d as! [AnyHashable : Any]!)
         return item
     }
 
-    class func deserializeMany(a:[AnyObject]!, inRealm realm:RLMRealm!) -> [Any]! {
+    override class func deserializeMany(a:[AnyObject]!, in realm:RLMRealm!) -> [AnyObject] {
 //        if (a is NSDictionary) {
 //            a = (a as! NSDictionary).objectForKey("photos")
 //        }
 //        if (a is NSDictionary) {
 //            a = (a as! NSDictionary).objectForKey("photo")
 //        }
-        return Photo.createOrUpdate(in:realm, withJSONArray: a)
+        return Photo.createOrUpdate(in:realm, withJSONArray: a)! as [AnyObject]
     }
 }
