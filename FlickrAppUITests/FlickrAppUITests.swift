@@ -1,5 +1,5 @@
 //
-//  FlickrAppUITests.m
+//  FlickrAppUITests.swift
 //  FlickrAppUITests
 //
 //  Created by aSqar on 23.11.2017.

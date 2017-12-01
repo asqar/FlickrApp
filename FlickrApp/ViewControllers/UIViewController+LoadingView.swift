@@ -1,5 +1,5 @@
 //
-//  UIViewController+LoadingView.m
+//  UIViewController+LoadingView.swift
 //  FlickrApp
 //
 //  Created by aSqar on 26.11.2017.

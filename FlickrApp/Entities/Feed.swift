@@ -1,5 +1,5 @@
 //
-//  Feed.m
+//  Feed.swift
 //  FlickrApp
 //
 //  Created by aSqar on 23.11.2017.

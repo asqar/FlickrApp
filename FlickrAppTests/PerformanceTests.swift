@@ -1,5 +1,5 @@
 //
-//  PerformanceTests.m
+//  PerformanceTests.swift
 //  FlickrAppTests
 //
 //  Created by aSqar on 26.11.2017.

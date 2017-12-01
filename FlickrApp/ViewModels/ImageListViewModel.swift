@@ -1,5 +1,5 @@
 //
-//  ImageListViewModel.m
+//  ImageListViewModel.swift
 //  FlickrApp
 //
 //  Created by aSqar on 26.11.2017.

@@ -1,5 +1,5 @@
 //
-//  PopularFeedsViewController.m
+//  PopularFeedsViewController.swift
 //  FlickrApp
 //
 //  Created by aSqar on 24.11.2017.

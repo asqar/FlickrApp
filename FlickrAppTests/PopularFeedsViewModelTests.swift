@@ -1,5 +1,5 @@
 //
-//  PopularFeedsViewModelTests.m
+//  PopularFeedsViewModelTests.swift
 //  FlickrAppTests
 //
 //  Created by aSqar on 27.11.2017.

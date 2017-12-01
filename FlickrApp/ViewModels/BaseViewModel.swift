@@ -1,5 +1,5 @@
 //
-//  BaseViewModel.m
+//  BaseViewModel.swift
 //  FlickrApp
 //
 //  Created by aSqar on 27.11.2017.

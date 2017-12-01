@@ -1,5 +1,5 @@
 //
-//  RemoteFetcher.m
+//  RemoteFetcher.swift
 //  FlickrApp
 //
 //  Created by aSqar on 23.11.2017.

@@ -1,5 +1,5 @@
 //
-//  SearchAttemptCell.m
+//  SearchAttemptCell.swift
 //  FlickrApp
 //
 //  Created by aSqar on 23.11.2017.

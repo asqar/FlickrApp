@@ -1,5 +1,5 @@
 //
-//  SearchAttemptViewModelTests.m
+//  SearchAttemptViewModelTests.swift
 //  FlickrAppTests
 //
 //  Created by aSqar on 27.11.2017.

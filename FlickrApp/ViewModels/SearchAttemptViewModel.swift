@@ -1,5 +1,5 @@
 //
-//  SearchAttemptViewModel.m
+//  SearchAttemptViewModel.swift
 //  FlickrApp
 //
 //  Created by aSqar on 27.11.2017.

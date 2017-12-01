@@ -1,5 +1,5 @@
 //
-//  Photo.m
+//  Photo.swift
 //  FlickrApp
 //
 //  Created by aSqar on 23.11.2017.
