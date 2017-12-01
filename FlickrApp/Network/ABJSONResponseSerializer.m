@@ -6,36 +6,32 @@
 //  Copyright © 2017 Askar Bakirov. All rights reserved.
 //
 
-#import "ABJSONResponseSerializer.h"
+import AFNetworking
 
-@implementation ABJSONResponseSerializer
+class ABJSONResponseSerializer : AFJSONResponseSerializer {
 
-- (BOOL)validateResponse:(NSHTTPURLResponse *)response
-                    data:(NSData *)data
-                   error:(NSError * __autoreleasing *)error
-{
-    BOOL responseIsValid = [super validateResponse:response data:data error:error];
-    
-#ifdef DEBUG_VERBOSE
-    NSLog(@"%@", [[NSString alloc] initWithData: data encoding:NSUTF8StringEncoding]);
+    func validateResponse(response:NSHTTPURLResponse!, data:NSData!, error:NSError!) -> Bool {
+        let responseIsValid:Bool = super.validateResponse(response, data:data, error:error)
+
+#if DEBUG_VERBOSE
+        NSLog("%@", String(data:data, encoding:NSUTF8StringEncoding))
 #endif
-    
-    if (!responseIsValid) {
-        NSError *errorPointer = *error;
-        NSData *responseErrorData = errorPointer.userInfo[AFNetworkingOperationFailingURLResponseDataErrorKey];
-        NSString *responseErrorString = nil;
-        if (responseErrorData) {
-            responseErrorString = [[NSJSONSerialization JSONObjectWithData:responseErrorData options:0 error:nil] description];
-        }
-        
-        NSMutableDictionary *mutableUserInfo = [errorPointer.userInfo mutableCopy];
-        if (responseErrorString) {
-            mutableUserInfo[@"kz.bakirov.FlickrApp.response.error"] = responseErrorString;
-        }
-        *error = [NSError errorWithDomain:errorPointer.domain code:errorPointer.code userInfo:[mutableUserInfo copy]];
-    }
-    
-    return responseIsValid;
-}
 
-@end
+        if !responseIsValid {
+            let errorPointer:NSError! = *error
+            let responseErrorData:NSData! = errorPointer.userInfo[AFNetworkingOperationFailingURLResponseDataErrorKey]
+            var responseErrorString:String! = nil
+            if (responseErrorData != nil) {
+                responseErrorString = NSJSONSerialization.JSONObjectWithData(responseErrorData, options:0, error:nil).description()
+            }
+
+            let mutableUserInfo:NSMutableDictionary! = errorPointer.userInfo.mutableCopy()
+            if (responseErrorString != nil) {
+                mutableUserInfo["kz.bakirov.FlickrApp.response.error"] = responseErrorString
+            }
+            *error = NSError.errorWithDomain(errorPointer.domain, code:errorPointer.code, userInfo:mutableUserInfo.copy())
+        }
+
+        return responseIsValid
+    }
+}

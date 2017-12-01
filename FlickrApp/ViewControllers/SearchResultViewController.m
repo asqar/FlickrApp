@@ -6,24 +6,19 @@
 //  Copyright © 2017 Askar Bakirov. All rights reserved.
 //
 
-#import "SearchResultViewController.h"
-#import "SearchResultViewModel.h"
-#import "UIViewController+LoadingView.h"
+import UIKit
 
-@implementation SearchResultViewController
+class SearchResultViewController : ImageListViewController {
 
-- (void)viewDidLoad {
-    [super viewDidLoad];
+    var viewModel:SearchResultViewModel!
+
+    func viewDidLoad() {
+        super.viewDidLoad()
+    }
+
+    func showSpinner() {
+        self.showLoadingView("Loading search results...".localized)
+    }
+
+    // `setViewModel:` has moved as a setter.
 }
-
-- (void) showSpinner
-{
-    [self showLoadingView:MyLocalizedString(@"Loading search results...", nil)];
-}
-
-- (void) setViewModel:(SearchResultViewModel *)viewModel
-{
-    _viewModel = viewModel;
-}
-
-@end

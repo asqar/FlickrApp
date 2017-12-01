@@ -6,32 +6,27 @@
 //  Copyright © 2017 Askar Bakirov. All rights reserved.
 //
 
-#import "ImageCell.h"
-#import "ImageViewModel.h"
-#import <SDWebImage/UIImageView+WebCache.h>
+import UIKit
+import SDWebImage
 
-@interface ImageCell ()
-
-@property (nonatomic, weak) IBOutlet UIImageView *imgPhoto;
-@property (nonatomic, weak) IBOutlet UILabel *lblName;
-@property (nonatomic, weak) IBOutlet UIProgressView *progressView;
-
-@end
-
-@implementation ImageCell
-
-- (void) setViewModel:(ImageViewModel *)viewModel
-{
-    _viewModel = viewModel;
+class ImageCell : UICollectionViewCell {
     
-    [_imgPhoto sd_setImageWithURL: viewModel.url placeholderImage:[UIImage imageNamed:@"placeholder.png"]
-     options:0 progress:^(NSInteger receivedSize, NSInteger expectedSize){
-         [self.progressView setProgress: receivedSize / expectedSize];
-     } completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL){
-         self.progressView.hidden = YES;
-    }];
+    @IBOutlet weak var imgPhoto: UIImageView?
+    @IBOutlet weak var lblName: UILabel?
+    @IBOutlet weak var progressView: UIProgressView?
     
-    _lblName.text = viewModel.caption;
+    var viewModel:ImageViewModel!
+
+    func setViewModel(viewModel:ImageViewModel!) {
+        self.viewModel = viewModel
+
+        imgPhoto?.sd_setImage(with: viewModel.url, placeholderImage:UIImage(named: "placeholder.png"),
+                                    options:SDWebImageOptions(rawValue: 0), progress:{ (receivedSize:Int,expectedSize:Int) in
+                                        self.progressView!.progress = Float(receivedSize / expectedSize)
+         }, completed:{ (image:UIImage?,error:NSError?,cacheType:SDImageCacheType,imageURL:URL?) in
+            self.progressView!.isHidden = true
+            } as! SDWebImageCompletionBlock)
+
+        lblName?.text = viewModel.caption
+    }
 }
-
-@end

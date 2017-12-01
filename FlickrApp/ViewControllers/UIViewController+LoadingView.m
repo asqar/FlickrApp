@@ -6,24 +6,21 @@
 //  Copyright © 2017 Askar Bakirov. All rights reserved.
 //
 
-#import "UIViewController+LoadingView.h"
-#import "DejalActivityView.h"
+import UIKit
+import DejalActivityView
 
-@implementation UIViewController(LoadingView)
+extension UIViewController {
 
-- (void) showLoadingView: (NSString *) msg
-{
-    if ([DejalBezelActivityView currentActivityView] != nil)
-    {
-        [DejalBezelActivityView currentActivityView].activityLabel.text = msg;
-    } else {
-        [DejalBezelActivityView activityViewForView: self.view withLabel: msg width:250.0f];
+    func showLoadingView(msg:String!) {
+        if DejalBezelActivityView.current() != nil
+        {
+            DejalBezelActivityView.current().activityLabel.text = msg
+        } else {
+            DejalBezelActivityView(for: self.view, withLabel: msg, width:UInt(250.0)).animateShow()
+        }
+    }
+
+    func hideLoadingView() {
+        DejalBezelActivityView.remove(animated: true)
     }
 }
-
-- (void) hideLoadingView
-{
-    [DejalBezelActivityView removeViewAnimated: YES];
-}
-
-@end

@@ -6,106 +6,85 @@
 //  Copyright © 2017 Askar Bakirov. All rights reserved.
 //
 
-#import "SearchViewModel.h"
-#import "SearchAttemptViewModel.h"
+import Realm
+import RBQFetchedResultsController
+import ReactiveSwift
+import ReactiveCocoa
 
-@interface SearchViewModel()<RBQFetchedResultsControllerDelegate>
+class SearchViewModel : BaseViewModel, RBQFetchedResultsControllerDelegate {
 
-@property (nonatomic, strong) RACSubject *updatedContentSignal;
-@property (nonatomic, strong) RBQFetchedResultsController *fetchedResultsController;
+    // MARK: - Public methods
 
-@end
-
-@implementation SearchViewModel
-
-#pragma mark - Public methods
-
--(instancetype)init
-{
-    self = [super init];
-    if (self == nil)
-        return nil;
+    private(set) var updatedContentSignal:RACSignal!
     
-    self.updatedContentSignal = [[RACSubject subject] setNameWithFormat:@"SearchResultViewModel updatedContentSignal"];
-    
-    @weakify(self)
-    [self.didBecomeActiveSignal subscribeNext:^(id x) {
-        @strongify(self);
-        [self loadHistory];
-    }];
-    
-    return self;
-}
+    private var _fetchedResultsController:RBQFetchedResultsController!
+    private var fetchedResultsController:RBQFetchedResultsController! {
+        get { 
+            if _fetchedResultsController == nil {
+                _fetchedResultsController = RBQFetchedResultsController(fetchRequest:self.fetchRequest(), sectionNameKeyPath:nil, cacheName:nil)
+                _fetchedResultsController.delegate = self
+                _fetchedResultsController.performFetch()
+            }
 
-- (void) loadHistory
-{
-    [self.fetchedResultsController performFetch];
-}
-
--(NSInteger)numberOfSections
-{
-    return [self.fetchedResultsController numberOfSections];
-}
-
--(NSInteger)numberOfItemsInSection:(NSInteger)section
-{
-    return [self.fetchedResultsController numberOfRowsForSectionIndex:section];
-}
-
--(SearchAttemptViewModel *) objectAtIndexPath:(NSIndexPath *)indexPath
-{
-    SearchAttempt *search = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    return [[SearchAttemptViewModel alloc] initWithSearchAttempt:search];
-}
-
-#pragma mark - Fetched results controller
-
-- (RBQFetchRequest *) fetchRequest
-{
-    RLMSortDescriptor *sd1 = [RLMSortDescriptor sortDescriptorWithKeyPath:@"dateSearched" ascending:NO];
-    NSArray *sortDescriptors = @[ sd1 ];
-    
-    RBQFetchRequest *fetchRequest = [RBQFetchRequest fetchRequestWithEntityName:@"SearchAttempt" inRealm:self.realm predicate:nil];
-    [fetchRequest setSortDescriptors:sortDescriptors];
-    return fetchRequest;
-}
-
-- (RBQFetchedResultsController *) fetchedResultsController
-{
-    if (_fetchedResultsController == nil) {
-        _fetchedResultsController = [[RBQFetchedResultsController alloc] initWithFetchRequest:self.fetchRequest sectionNameKeyPath:nil cacheName:nil];
-        [_fetchedResultsController setDelegate:self];
-        [_fetchedResultsController performFetch];
+            return _fetchedResultsController
+        }
+        set { _fetchedResultsController = newValue }
     }
-    
-    return _fetchedResultsController;
-}
 
-- (void)controllerDidChangeContent:(RBQFetchedResultsController *)controller
-{
-    [(RACSubject *)self.updatedContentSignal sendNext:nil];
-}
+    override init() {
+        super.init()
+        
+        //self.updatedContentSignal = RACSubject.subject()// "SearchResultViewModel updatedContentSignal"
 
-- (void)controllerWillChangeContent:(nonnull RBQFetchedResultsController *)controller
-{
-    
-}
+        self.didBecomeActiveSignal.subscribeNext({ (x:AnyObject!) in
+            self.loadHistory()
+        })
 
-- (void)controller:(nonnull RBQFetchedResultsController *)controller
-   didChangeObject:(nonnull RBQSafeRealmObject *)anObject
-       atIndexPath:(nullable NSIndexPath *)indexPath
-     forChangeType:(NSFetchedResultsChangeType)type
-      newIndexPath:(nullable NSIndexPath *)newIndexPath
-{
-    
-}
+    }
 
-- (void)controller:(nonnull RBQFetchedResultsController *)controller
-  didChangeSection:(nonnull RBQFetchedResultsSectionInfo *)section
-           atIndex:(NSUInteger)sectionIndex
-     forChangeType:(NSFetchedResultsChangeType)type
-{
-    
-}
+    func loadHistory() {
+        self.fetchedResultsController.performFetch()
+    }
 
-@end
+    func numberOfSections() -> Int {
+        return self.fetchedResultsController.numberOfSections()
+    }
+
+    func numberOfItemsInSection(section:Int) -> Int {
+        return self.fetchedResultsController.numberOfRows(forSectionIndex: section)
+    }
+
+    func objectAtIndexPath(indexPath:IndexPath!) -> SearchAttemptViewModel! {
+        let search:SearchAttempt! = self.fetchedResultsController.object(at: indexPath) as! SearchAttempt
+        return SearchAttemptViewModel(searchAttempt:search)
+    }
+
+    // MARK: - Fetched results controller
+
+    func fetchRequest() -> RBQFetchRequest! {
+        let sd1:RLMSortDescriptor! = RLMSortDescriptor(keyPath:"dateSearched", ascending:false)
+        let sortDescriptors:[RLMSortDescriptor]! = [ sd1 ]
+
+        let fetchRequest:RBQFetchRequest! = RBQFetchRequest(entityName:"SearchAttempt", in:self.realm(), predicate:nil)
+        fetchRequest.sortDescriptors = sortDescriptors
+        return fetchRequest
+    }
+
+    // `fetchedResultsController` has moved as a getter.
+
+    func controllerDidChangeContent(_ controller:RBQFetchedResultsController) {
+        (self.updatedContentSignal as! RACSubject).sendNext(nil)
+    }
+
+    func controllerWillChangeContent(_ controller:RBQFetchedResultsController) {
+
+    }
+
+    func controller(_ controller:RBQFetchedResultsController, didChange anObject:RBQSafeRealmObject, at indexPath:IndexPath?, for type:NSFetchedResultsChangeType, newIndexPath:IndexPath?) {
+
+    }
+
+    func controller(_ controller:RBQFetchedResultsController, didChangeSection section:RBQFetchedResultsSectionInfo, at sectionIndex:UInt, for type:NSFetchedResultsChangeType) {
+
+    }
+}

@@ -6,132 +6,113 @@
 //  Copyright © 2017 Askar Bakirov. All rights reserved.
 //
 
-#import "ImageListViewModel.h"
-#import "ImageViewModel.h"
-#import "RemoteFetcher.h"
+import RBQFetchedResultsController
+import ReactiveCocoa
 
-@interface ImageListViewModel()<RBQFetchedResultsControllerDelegate>
+let PER_PAGE = 10
 
-@property (nonatomic, strong) RACSubject *updatedContentSignal;
-@property (nonatomic, strong) RACSubject *startLoadingSignal;
-@property (nonatomic, strong) RACSubject *dismissLoadingSignal;
-@property (nonatomic, strong) RACSubject *errorMessageSignal;
+class ImageListViewModel : BaseViewModel, RBQFetchedResultsControllerDelegate {
 
-@property (nonatomic, strong) RBQFetchedResultsController *fetchedResultsController;
-@property (nonatomic, assign) int currentPage;
+    // MARK: - Public methods
 
-@end
+    private(set) var updatedContentSignal:RACSignal!
+    private(set) var startLoadingSignal:RACSignal!
+    private(set) var dismissLoadingSignal:RACSignal!
+    private(set) var errorMessageSignal:RACSignal!
+    private(set) var title:String!
+    private(set) var fetcher:RemoteFetcher!
+    private(set) var fetchRequest:RBQFetchRequest!
+    private var _fetchedResultsController:RBQFetchedResultsController!
+    var fetchedResultsController:RBQFetchedResultsController! {
+        get { 
+            if _fetchedResultsController == nil {
+                _fetchedResultsController = RBQFetchedResultsController(fetchRequest:self.fetchRequest, sectionNameKeyPath:nil, cacheName:nil)
+                _fetchedResultsController.delegate = self
+                _fetchedResultsController.performFetch()
 
-@implementation ImageListViewModel
+                (self.dismissLoadingSignal as! RACSubject).sendNext({ (x:AnyObject!) in })
+            }
 
-#pragma mark - Public methods
-
--(instancetype)init
-{
-    self = [super init];
-    if (self == nil)
-        return nil;
-    
-    self.updatedContentSignal = [[RACSubject subject] setNameWithFormat:@"ImageListViewModel updatedContentSignal"];
-    self.startLoadingSignal = [[RACSubject subject] setNameWithFormat:@"ImageListViewModel startLoadingSignal"];
-    self.dismissLoadingSignal = [[RACSubject subject] setNameWithFormat:@"ImageListViewModel dismissLoadingSignal"];
-    self.errorMessageSignal = [[RACSubject subject] setNameWithFormat:@"ImageListViewModel errorMessageSignal"];
-    
-    self.currentPage = 1;
-    
-    @weakify(self)
-    [self.didBecomeActiveSignal subscribeNext:^(id x) {
-        @strongify(self);
-    }];
-    
-    return self;
-}
-
--(NSInteger)numberOfSections
-{
-    return [self.fetchedResultsController numberOfSections];
-}
-
--(NSInteger)numberOfItemsInSection:(NSInteger)section
-{
-    return [self.fetchedResultsController numberOfRowsForSectionIndex:section];
-}
-
-// to be overriden
-- (ImageViewModel *) objectAtIndexPath: (NSIndexPath *) indexPath
-{
-    return nil;
-}
-
-#pragma mark - Search
-
-- (void) processDownloadedResults: (NSArray *) results {}
-
-- (void) downloadImagesUpdating: (BOOL)updating
-{
-    if (updating) {
-        self.currentPage = 1;
-    } else {
-        self.currentPage++;
+            return _fetchedResultsController
+        }
     }
-    
-    [self.fetcher fetchManyFromPath:[NSString stringWithFormat:@"%@&per_page=%d&page=%d", self.serviceUrl, PER_PAGE, self.currentPage]  synchronoulsy:NO success:^(NSURLSessionTask *operation, id mappingResult) {
-        
-        [self processDownloadedResults: mappingResult];
+    private(set) var serviceUrl:String!
+    private var currentPage:Int
 
-        _fetchedResultsController = nil;
+    override init() {
+        super.init()
         
-        [(RACSubject *)self.updatedContentSignal sendNext:^(id x) {}];
-    } failure:^(NSURLSessionTask *operation, NSError *error) {
-        [(RACSubject *)self.dismissLoadingSignal sendNext:^(id x) {}];
-        
-#ifdef DEBUG
-        NSLog(@"%@", error);
-        //[self.errorMessageSignal sendNext:^(id x) {}];
+        self.updatedContentSignal = RACSubject.subject() // "ImageListViewModel updatedContentSignal"
+        self.startLoadingSignal = RACSubject.subject() // "ImageListViewModel startLoadingSignal"
+        self.dismissLoadingSignal = RACSubject.subject() // "ImageListViewModel dismissLoadingSignal"
+        self.errorMessageSignal = RACSubject.subject() // "ImageListViewModel errorMessageSignal"
+
+        self.currentPage = 1
+
+        self.didBecomeActiveSignal.subscribeNext({ (x:AnyObject!) in 
+        })
+
+
+    }
+
+    func numberOfSections() -> Int {
+        return self.fetchedResultsController.numberOfSections()
+    }
+
+    func numberOfItemsInSection(section:Int) -> Int {
+        return self.fetchedResultsController.numberOfRows(forSectionIndex: section)
+    }
+
+    // to be overriden
+    func objectAtIndexPath(indexPath:IndexPath!) -> ImageViewModel! {
+        return nil
+    }
+
+    // MARK: - Search
+
+    func processDownloadedResults(results:[AnyObject]!) {}
+
+    func downloadImagesUpdating(updating:Bool) {
+        if updating {
+            self.currentPage = 1
+        } else {
+            self.currentPage++
+        }
+
+        self.fetcher.fetchManyFromPath(String(format:"%@&per_page=%d&page=%d", self.serviceUrl, PER_PAGE, self.currentPage),  synchronoulsy:false, success:{ (operation:URLSessionTask!,mappingResult:AnyObject!) in 
+
+            self.processDownloadedResults(mappingResult)
+
+            _fetchedResultsController = nil
+
+            (self.updatedContentSignal as! RACSubject).sendNext({ (x:AnyObject!) in })
+        }, failure:{ (operation:URLSessionTask!,error:NSError!) in 
+            (self.dismissLoadingSignal as! RACSubject).sendNext({ (x:AnyObject!) in })
+
+#if DEBUG
+            NSLog("%@", error)
+            //[self.errorMessageSignal sendNext:^(id x) {}];
 #endif
-    }];
-}
-
-#pragma mark - Fetched results controller
-
-- (RBQFetchedResultsController *) fetchedResultsController
-{
-    if (_fetchedResultsController == nil) {
-        _fetchedResultsController = [[RBQFetchedResultsController alloc] initWithFetchRequest:self.fetchRequest sectionNameKeyPath:nil cacheName:nil];
-        [_fetchedResultsController setDelegate:self];
-        [_fetchedResultsController performFetch];
-        
-        [(RACSubject *)self.dismissLoadingSignal sendNext:^(id x) {}];
+        })
     }
-    
-    return _fetchedResultsController;
-}
 
-- (void)controllerDidChangeContent:(RBQFetchedResultsController *)controller
-{
-    [(RACSubject *)self.updatedContentSignal sendNext:^(id x) {}];
-}
+    // MARK: - Fetched results controller
 
-- (void)controllerWillChangeContent:(nonnull RBQFetchedResultsController *)controller
-{
-    
-}
+    // `fetchedResultsController` has moved as a getter.
 
-- (void)controller:(nonnull RBQFetchedResultsController *)controller
-   didChangeObject:(nonnull RBQSafeRealmObject *)anObject
-       atIndexPath:(nullable NSIndexPath *)indexPath
-     forChangeType:(NSFetchedResultsChangeType)type
-      newIndexPath:(nullable NSIndexPath *)newIndexPath
-{
-    
-}
+    func controllerDidChangeContent(_ controller:RBQFetchedResultsController) {
+        (self.updatedContentSignal as! RACSubject).sendNext({ (x:AnyObject!) in })
+    }
 
-- (void)controller:(nonnull RBQFetchedResultsController *)controller
-  didChangeSection:(nonnull RBQFetchedResultsSectionInfo *)section
-           atIndex:(NSUInteger)sectionIndex
-     forChangeType:(NSFetchedResultsChangeType)type
-{
-    
-}
+    func controllerWillChangeContent(_ controller:RBQFetchedResultsController) {
 
-@end
+    }
+
+    func controller(_ controller:RBQFetchedResultsController, didChange anObject:RBQSafeRealmObject, at indexPath:IndexPath?, for type:NSFetchedResultsChangeType, newIndexPath:IndexPath?) {
+
+    }
+
+    func controller(_ controller:RBQFetchedResultsController, didChangeSection section:RBQFetchedResultsSectionInfo, at sectionIndex:UInt, for type:NSFetchedResultsChangeType) {
+
+    }
+}

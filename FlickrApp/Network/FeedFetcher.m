@@ -6,25 +6,11 @@
 //  Copyright © 2017 Askar Bakirov. All rights reserved.
 //
 
-#import "FeedFetcher.h"
-#import "Feed.h"
-
-@implementation FeedFetcher
-
-+ (FeedFetcher *)sharedFetcher{
-    static FeedFetcher *_sharedFetcher = nil;
-    static dispatch_once_t oncePredicate;
-    dispatch_once(&oncePredicate, ^{
-        _sharedFetcher = [[self alloc] initMe];
-    });
+class FeedFetcher : RemoteFetcher {
     
-    return _sharedFetcher;
-}
+    static let sharedFetcher = FeedFetcher()
 
-- (id) initMe
-{
-    self = [super initWithEntity:[Feed class] serviceName:[NSString stringWithFormat:@"services/feeds/photos_public.gne?format=json&nojsoncallback=1"] singleName:@"feed" pluralName:@"feeds"];
-    return self;
+    required init() {
+        super.init(entityClass:Feed.self, serviceName:String(format:"services/feeds/photos_public.gne?format=json&nojsoncallback=1"), singleName:"feed", pluralName:"feeds")
+    }
 }
-
-@end

@@ -6,31 +6,27 @@
 //  Copyright © 2017 Askar Bakirov. All rights reserved.
 //
 
-#import "ImageViewModel.h"
-#import "Photo.h"
-#import "Feed.h"
+import Foundation
 
-@implementation ImageViewModel
+class ImageViewModel : BaseViewModel {
 
--(instancetype)initWithPhoto:(Photo *)photo
-{
-    self = [super init];
-    if (self == nil)
-        return nil;
-    NSString *urlString = [NSString stringWithFormat:PHOTO_URL_FORMAT, photo.farm, photo.server, photo.photoId, photo.secret];
-    self.url = [NSURL URLWithString: urlString];
-    self.caption = photo.title;
-    return self;
+    var url:URL!
+    var caption:String!
+
+    init(photo:Photo!, isThumbnail:Bool) {
+        super.init()
+        
+        let urlFormat = isThumbnail ? "http://farm%d.static.flickr.com/%@/%@_%@_m.jpg" : "http://farm%d.static.flickr.com/%@/%@_%@.jpg"
+        
+        let urlString:String! = String(format:urlFormat, photo.farm, photo.server, photo.photoId, photo.secret)
+        self.url = URL(string: urlString)
+        self.caption = photo.title
+    }
+
+    init(feed:Feed!) {
+        super.init()
+        
+        self.url = URL(string: feed.media)
+        self.caption = String(format:"@%@", feed.author)
+    }
 }
-
--(instancetype)initWithFeed:(Feed *)feed
-{
-    self = [super init];
-    if (self == nil)
-        return nil;
-    self.url = [NSURL URLWithString: feed.media];
-    self.caption = [NSString stringWithFormat:@"@%@", feed.author];
-    return self;
-}
-
-@end

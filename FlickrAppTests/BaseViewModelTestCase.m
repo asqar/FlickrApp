@@ -6,34 +6,28 @@
 //  Copyright © 2017 Askar Bakirov. All rights reserved.
 //
 
-#import "BaseViewModelTestCase.h"
-#import <Realm/Realm.h>
+import Realm
 
-@interface BaseViewModelTestCase()
+class BaseViewModelTestCase : XCTestCase {
 
-@property (nonatomic, strong) RLMRealm *realm;
+    private(set) var realm:RLMRealm!
 
-@end
+    func setUp() {
+        super.setUp()
+        // Put setup code here. This method is called before the invocation of each test method in the class.
 
-@implementation BaseViewModelTestCase
+        let config:RLMRealmConfiguration! = RLMRealmConfiguration.defaultConfiguration()
+        config.schemaVersion = 1
+        config.deleteRealmIfMigrationNeeded = true
+        config.inMemoryIdentifier = self.self.description()
+        RLMRealmConfiguration.defaultConfiguration = config
 
-- (void)setUp {
-    [super setUp];
-    // Put setup code here. This method is called before the invocation of each test method in the class.
-    
-    RLMRealmConfiguration *config = [RLMRealmConfiguration defaultConfiguration];
-    config.schemaVersion = 1;
-    config.deleteRealmIfMigrationNeeded = YES;
-    config.inMemoryIdentifier = [self.class description];
-    [RLMRealmConfiguration setDefaultConfiguration:config];
-    
-    NSError *error = nil;
-    self.realm = [RLMRealm realmWithConfiguration:config error: &error];
+        let error:NSError! = nil
+        self.realm = RLMRealm.realmWithConfiguration(config, error: &error)
+    }
+
+    func tearDown() {
+        // Put teardown code here. This method is called after the invocation of each test method in the class.
+        super.tearDown()
+    }
 }
-
-- (void)tearDown {
-    // Put teardown code here. This method is called after the invocation of each test method in the class.
-    [super tearDown];
-}
-
-@end

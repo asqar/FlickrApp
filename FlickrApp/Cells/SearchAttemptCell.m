@@ -6,33 +6,23 @@
 //  Copyright © 2017 Askar Bakirov. All rights reserved.
 //
 
-#import "SearchAttemptCell.h"
-#import "SearchAttemptViewModel.h"
+import UIKit
 
-@interface SearchAttemptCell ()
+class SearchAttemptCell : UITableViewCell {
 
-@property (nonatomic, weak) IBOutlet UILabel *lblSearchTerm;
-@property (nonatomic, weak) IBOutlet UILabel *lblSearchDate;
+    var viewModel:SearchAttemptViewModel!
+    
+    @IBOutlet weak var lblSearchTerm: UILabel?
+    @IBOutlet weak var lblSearchDate: UILabel?
+    
+    func setSelected(selected:Bool, animated:Bool) {
+        super.setSelected(selected, animated:animated)
 
-@end
+        // Configure the view for the selected state
+    }
 
-@implementation SearchAttemptCell
-
-- (void)awakeFromNib {
-    [super awakeFromNib];
-    // Initialization code
+    func setViewModel(viewModel:SearchAttemptViewModel!) {
+        lblSearchTerm?.text = viewModel.queryString
+        lblSearchDate?.text = viewModel.dateString
+    }
 }
-
-- (void)setSelected:(BOOL)selected animated:(BOOL)animated {
-    [super setSelected:selected animated:animated];
-
-    // Configure the view for the selected state
-}
-
-- (void) setViewModel:(SearchAttemptViewModel *)viewModel
-{
-    _lblSearchTerm.text = viewModel.queryString;
-    _lblSearchDate.text = viewModel.dateString;
-}
-
-@end

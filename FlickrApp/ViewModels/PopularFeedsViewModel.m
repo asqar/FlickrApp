@@ -6,45 +6,37 @@
 //  Copyright © 2017 Askar Bakirov. All rights reserved.
 //
 
-#import "PopularFeedsViewModel.h"
-#import "Feed.h"
-#import "FeedFetcher.h"
-#import "ImageViewModel.h"
+import Realm
+import RBQFetchedResultsController
+import ReactiveCocoa
 
-@implementation PopularFeedsViewModel
+class PopularFeedsViewModel : ImageListViewModel {
 
-- (NSString *) title
-{
-    return MyLocalizedString(@"Popular Feeds", nil);
+    func title() -> String! {
+        return "Popular Feeds".localized
+    }
+
+    func fetcher() -> RemoteFetcher! {
+        return FeedFetcher.sharedFetcher
+    }
+
+    func fetchRequest() -> RBQFetchRequest! {
+        let sd1:RLMSortDescriptor! = RLMSortDescriptor(keyPath:"datePublished", ascending:true)
+        let sortDescriptors:[RLMSortDescriptor]! = [ sd1 ]
+        let fetchRequest:RBQFetchRequest! = RBQFetchRequest(entityName:"Feed", in:self.realm(), predicate:nil)
+        fetchRequest.sortDescriptors = sortDescriptors
+        return fetchRequest
+    }
+
+    func serviceUrl() -> String! {
+        return ""
+    }
+
+    override func processDownloadedResults(results:[AnyObject]!) {
+    }
+
+    override func objectAtIndexPath(indexPath:IndexPath!) -> ImageViewModel! {
+        let feed:Feed! = self.fetchedResultsController.object(at: indexPath) as! Feed
+        return ImageViewModel(feed:feed)
+    }
 }
-
-- (RemoteFetcher *) fetcher
-{
-    return [FeedFetcher sharedFetcher];
-}
-
-- (RBQFetchRequest *) fetchRequest
-{
-    RLMSortDescriptor *sd1 = [RLMSortDescriptor sortDescriptorWithKeyPath:@"datePublished" ascending:YES];
-    NSArray *sortDescriptors = @[ sd1 ];
-    RBQFetchRequest *fetchRequest = [RBQFetchRequest fetchRequestWithEntityName:@"Feed" inRealm:self.realm predicate:nil];
-    [fetchRequest setSortDescriptors:sortDescriptors];
-    return fetchRequest;
-}
-
-- (NSString *) serviceUrl
-{
-    return @"";
-}
-
-- (void) processDownloadedResults: (NSArray *) results
-{
-}
-
-- (ImageViewModel *) objectAtIndexPath:(NSIndexPath *)indexPath
-{
-    Feed *feed = [self.fetchedResultsController objectAtIndexPath: indexPath];
-    return [[ImageViewModel alloc] initWithFeed:feed];
-}
-
-@end

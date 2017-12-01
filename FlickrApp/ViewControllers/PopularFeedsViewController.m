@@ -6,32 +6,26 @@
 //  Copyright © 2017 Askar Bakirov. All rights reserved.
 //
 
-#import "PopularFeedsViewController.h"
-#import "PopularFeedsViewModel.h"
-#import "UIViewController+LoadingView.h"
-#import "SearchViewController.h"
-#import "SearchViewModel.h"
+import UIKit
 
-@implementation PopularFeedsViewController
+class PopularFeedsViewController : ImageListViewController {
 
-- (void)viewDidLoad
-{
-    self.viewModel = [[PopularFeedsViewModel alloc] init];
-    [super viewDidLoad];
-}
+    var viewModel:PopularFeedsViewModel!
 
-- (void) showSpinner
-{
-    [self showLoadingView:MyLocalizedString(@"Loading feeds...", nil)];
-}
+    func viewDidLoad() {
+        self.viewModel = PopularFeedsViewModel()
+        super.viewDidLoad()
+    }
 
-- (void) prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    if ([segue.destinationViewController isKindOfClass:[SearchViewController class]]) {
-        SearchViewModel *searchViewModel = [[SearchViewModel alloc] init];
-        SearchViewController *vc = (SearchViewController *) segue.destinationViewController;
-        vc.viewModel = searchViewModel;
+    func showSpinner() {
+        self.showLoadingView("Loading feeds...".localized)
+    }
+
+    func prepareForSegue(segue:UIStoryboardSegue!, sender:AnyObject!) {
+        if (segue.destinationViewController is SearchViewController) {
+            let searchViewModel:SearchViewModel! = SearchViewModel()
+            let vc:SearchViewController! = segue.destinationViewController
+            vc.viewModel = searchViewModel
+        }
     }
 }
-
-@end

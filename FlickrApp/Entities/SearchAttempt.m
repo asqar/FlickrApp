@@ -6,19 +6,23 @@
 //  Copyright © 2017 Askar Bakirov. All rights reserved.
 //
 
-#import "SearchAttempt.h"
-#import "Photo.h"
+import Realm
+import Realm_JSON
 
-@implementation SearchAttempt
+class SearchAttempt : RLMObject, RealmJsonDeserializer {
 
-+ (NSString *)primaryKey {
-    return @"searchTerm";
+    var searchTerm:String!
+    var dateSearched:Date!
+    var isSuccessful:Bool!
+    private(set) var photos:RLMLinkingObjects<RLMObject>!
+
+    override class func primaryKey() -> String? {
+        return "searchTerm"
+    }
+
+    func linkingObjectsProperties() -> NSDictionary! {
+        return [
+            "photos": RLMPropertyDescriptor(with: Photo.self, propertyName:"searchAttempt"),
+                 ]
+    }
 }
-
-+ (NSDictionary *)linkingObjectsProperties {
-    return @{
-             @"photos": [RLMPropertyDescriptor descriptorWithClass:Photo.class propertyName:@"searchAttempt"],
-             };
-}
-
-@end

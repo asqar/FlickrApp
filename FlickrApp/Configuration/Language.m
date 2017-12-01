@@ -6,32 +6,32 @@
 //  Copyright © 2017 Askar Bakirov. All rights reserved.
 //
 
-#import "Language.h"
+import Foundation
+import UIKit
 
-@implementation Language
+class Language {
 
-static NSBundle *bundle = nil;
+    var bundle:Bundle! = nil
 
-+(void)initialize {
-    NSUserDefaults* defs = [NSUserDefaults standardUserDefaults];
-    NSArray* languages = [defs objectForKey:@"AppleLanguages"];
-    NSString *current = [languages objectAtIndex:0];
-    [self setLanguage:current];
+    class func initialize() {
+        let defs:NSUserDefaults! = NSUserDefaults.standardUserDefaults()
+        let languages:[AnyObject]! = defs.objectForKey("AppleLanguages")
+        let current:String! = languages.objectAtIndex(0)
+        self.language = current
+    }
+
+    /*
+     example calls:
+     [Language setLanguage:@"it"];
+     [Language setLanguage:@"de"];
+     */
+    class func setLanguage(l:String!) {
+        let path:String! = Bundle.mainBundle().pathForResource(l, ofType:"lproj")
+        bundle = Bundle.bundleWithPath(path)
+    }
+
+    class func get(key:String!, alter alternate:String!) -> String! {
+        let v:String! = bundle.localizedStringForKey(key, value:alternate, table:nil)
+        return v == nil ? key : v
+    }
 }
-
-/*
- example calls:
- [Language setLanguage:@"it"];
- [Language setLanguage:@"de"];
- */
-+(void)setLanguage:(NSString *)l {
-    NSString *path = [[ NSBundle mainBundle ] pathForResource:l ofType:@"lproj" ];
-    bundle = [NSBundle bundleWithPath:path];
-}
-
-+(NSString *)get:(NSString *)key alter:(NSString *)alternate {
-    NSString *v = [bundle localizedStringForKey:key value:alternate table:nil];
-    return v == nil ? key : v;
-}
-
-@end

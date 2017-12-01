@@ -6,44 +6,38 @@
 //  Copyright © 2017 Askar Bakirov. All rights reserved.
 //
 
-#import "BaseViewModelTestCase.h"
-#import "FeedFetcher.h"
-#import "PhotoFetcher.h"
+//#import "BaseViewModelTestCase.h"
+//#import "FeedFetcher.h"
+//#import "PhotoFetcher.h"
 
-@interface PerformanceTests : BaseViewModelTestCase
 
-@end
+class PerformanceTests : BaseViewModelTestCase {
 
-@implementation PerformanceTests
+    func setUp() {
+        super.setUp()
+        // Put setup code here. This method is called before the invocation of each test method in the class.
+    }
 
-- (void)setUp {
-    [super setUp];
-    // Put setup code here. This method is called before the invocation of each test method in the class.
+    func tearDown() {
+        // Put teardown code here. This method is called after the invocation of each test method in the class.
+        super.tearDown()
+    }
+
+    func testPerformance_FeedFetcher() {
+        self.measureBlock({ 
+            FeedFetcher.sharedFetcher.fetchManyFromPath("", synchronoulsy:true, success:{ (operation:URLSessionTask!,mappingResult:AnyObject!) in 
+            }, failure:{ (operation:URLSessionTask!,error:NSError!) in 
+                XCTFail("Failed with error: %@", error)
+            })
+        })
+    }
+
+    func testPerformance_PhotoFetcher() {
+        self.measureBlock({ 
+            PhotoFetcher.sharedFetcher.fetchManyFromPath("text=kittens", synchronoulsy:true, success:{ (operation:URLSessionTask!,mappingResult:AnyObject!) in
+            }, failure:{ (operation:URLSessionTask!,error:NSError!) in 
+                XCTFail("Failed with error: %@", error)
+            })
+        })
+    }
 }
-
-- (void)tearDown {
-    // Put teardown code here. This method is called after the invocation of each test method in the class.
-    [super tearDown];
-}
-
-- (void)testPerformance_FeedFetcher
-{
-    [self measureBlock:^{
-        [[FeedFetcher sharedFetcher] fetchManyFromPath:@"" synchronoulsy:YES success:^(NSURLSessionTask *operation, id mappingResult) {
-        } failure:^(NSURLSessionTask *operation, NSError *error) {
-            XCTFail(@"Failed with error: %@", error);
-        }];
-    }];
-}
-
-- (void)testPerformance_PhotoFetcher
-{
-    [self measureBlock:^{
-        [[PhotoFetcher sharedFetcher] fetchManyFromPath:@"text=kittens" synchronoulsy:YES success:^(NSURLSessionTask *operation, id mappingResult) {
-        } failure:^(NSURLSessionTask *operation, NSError *error) {
-            XCTFail(@"Failed with error: %@", error);
-        }];
-    }];
-}
-
-@end

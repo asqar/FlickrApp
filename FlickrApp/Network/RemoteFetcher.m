@@ -6,175 +6,140 @@
 //  Copyright © 2017 Askar Bakirov. All rights reserved.
 //
 
-#import "RemoteFetcher.h"
-#import <AFNetworking/AFNetworking.h>
-#import "UserDefaults.h"
-#import "RealmJsonDeserializer.h"
-#import <Realm+JSON/RLMObject+JSON.h>
-#import "ABJSONResponseSerializer.h"
+import Foundation
+import AFNetworking
+import Realm
+import Realm_JSON
 
-typedef enum {
-    GET,
-    POST,
-    PUT,
-    DELETE,
-} RestMethod;
-
-@interface RemoteFetcher() {
+enum RestMethod {
+    case GET
+    case POST
+    case PUT
+    case DELETE
 }
 
-- (NSString *) serverUrl;
 
-@end
+class RemoteFetcher {
 
-@implementation RemoteFetcher
+    private var _entityClass:RealmJsonDeserializer
+    private var _serviceName:String!
+    private var _singleName:String!
+    private var _pluralName:String!
+    var serviceName:String!
+    var timeoutInterval:Float
 
--(void)dealloc
-{
-    _entityClass = nil;
-}
-
-- (id) initMe
-{
-    return nil;
-}
-
-- (id)initWithEntity:(Class)entityClass serviceName:(NSString *)serviceName singleName:(NSString *)singleName pluralName:(NSString *)pluralName
-{
-    self = [super init];
-    if (!self) {
-        return nil;
+    init(entityClass:AnyClass, serviceName:String!, singleName:String!, pluralName:String!) {
+        _entityClass = entityClass as! RealmJsonDeserializer
+        _serviceName = serviceName
+        _singleName = singleName
+        _pluralName = pluralName
     }
-    _entityClass = entityClass;
-    _serviceName = serviceName;
-    _singleName = singleName;
-    _pluralName = pluralName;
 
-    return self;
-}
+    func serverUrl() -> String! {
+        return "https://api.flickr.com/"
+    }
 
-- (NSString *) serverUrl
-{
-    return @"https://api.flickr.com/";
-}
+    func realm() -> RLMRealm! {
+        return RLMRealm.default()
+    }
 
-- (RLMRealm *) realm
-{
-    return [RLMRealm defaultRealm];
-}
-
-- (void)fetchItemsWithMethod: (RestMethod) method fromPath: (NSString *) restServiceUrl parameters:(id)parameters one: (BOOL) one synchronoulsy: (BOOL) synchronously  success:(void (^)(NSURLSessionTask *operation, id mappingResult))success
-                   failure:(void (^)(NSURLSessionTask *operation, NSError *error))failure;
-{
-#ifdef DEBUG_VERBOSE
-    NSDate *methodStart = [NSDate date];
+    func fetchItemsWithMethod(method:RestMethod, fromPath restServiceUrl:String!, parameters:AnyObject!, one:Bool, synchronoulsy synchronously:Bool, success:@escaping (URLSessionTask?,AnyObject?)->Void, failure:@escaping (_ sessionTask:URLSessionTask?,_ error:NSError?)->Void) {
+#if DEBUG_VERBOSE
+        let methodStart:NSDate! = NSDate.date()
 #endif
-    
-    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
-    manager.requestSerializer = [AFJSONRequestSerializer serializer];
-    manager.responseSerializer = [ABJSONResponseSerializer serializer];
 
-    id progressBlock = ^(NSProgress * _Nonnull downloadProgress) {
-        
-    };
-    
-    id failureBlock = ^(NSURLSessionTask *operation, NSError *error) {
-#ifdef DEBUG
-        NSLog(@"Error: %@", error);
-#endif
-        failure(operation, error);
-    };
-    
-    id successBlock =^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-#ifdef DEBUG_VERBOSE
-        NSLog(@"%@ : %@", task.originalRequest.URL.absoluteString, responseObject);
-#endif
-        
-        dispatch_block_t block = ^{
-            RLMRealm *realm = self.realm;
-            [realm beginWriteTransaction];
-            id result = nil;
-            if (one) {
-                result = [_entityClass deserializeOne: responseObject inRealm: realm];
-            } else {
-                result = [_entityClass deserializeMany: responseObject inRealm: realm];
+        let manager:AFHTTPSessionManager! = AFHTTPSessionManager()
+        manager.requestSerializer = AFJSONRequestSerializer()
+        manager.responseSerializer = ABJSONResponseSerializer()
+
+        let progressBlock:(Progress) -> Void! = { (downloadProgress:Progress) in
+
             }
-#ifdef DEBUG_VERBOSE
-            NSLog(@"%@", result);
+
+        let failureBlock:AnyObject! = { (operation:URLSessionTask!,error:NSError!) in
+#if DEBUG
+            NSLog("Error: %@", error)
 #endif
-            [realm commitWriteTransaction];
-            
-#ifdef DEBUG_VERBOSE
-            NSDate *methodFinish = [NSDate date];
-            NSTimeInterval executionTime = [methodFinish timeIntervalSinceDate:methodStart];
-            NSLog(@"executionTime = %f", executionTime);
+            failure(operation, error)
+            } as AnyObject
+
+        let successBlock:(URLSessionDataTask, AnyObject?) -> ()! = { (task:URLSessionDataTask,responseObject:AnyObject!) in
+#if DEBUG_VERBOSE
+            NSLog("%@ : %@", task.originalRequest.URL.absoluteString, responseObject)
 #endif
-            success(task, result);
-        };
-        
-        if (synchronously) {
-            block();
-        } else {
-            dispatch_async(dispatch_get_main_queue(), block);
+
+            let block:() -> ()! = {
+                let realm:RLMRealm! = self.realm()
+                realm.beginWriteTransaction()
+                var result:AnyObject! = nil
+                if one {
+                    result = _entityClass.deserializeOne(responseObject, in: realm)
+                } else {
+                    result = _entityClass.deserializeMany(responseObject, in: realm)
+                }
+#if DEBUG_VERBOSE
+                NSLog("%@", result)
+#endif
+                realm.commitWriteTransaction()
+
+#if DEBUG_VERBOSE
+                let methodFinish:NSDate! = NSDate.date()
+                let executionTime:NSTimeInterval = methodFinish.timeIntervalSinceDate(methodStart)
+                NSLog("executionTime = %f", executionTime)
+#endif
+                success(task, result)
+            }
+
+            if synchronously {
+                block()
+            } else {
+                DispatchQueue.main.async(execute: block as! @convention(block) () -> Void)
+            }
         }
-    };
-    
-    NSString *urlPath = [NSString stringWithFormat: @"%@%@%@", [self serverUrl], self.serviceName, restServiceUrl];
-    switch (method) {
-        case GET:
-            [manager GET:urlPath parameters:parameters progress:progressBlock success:successBlock failure:failureBlock];
-            break;
-        case POST:
-            [manager POST:urlPath parameters:parameters progress:progressBlock success:successBlock failure: failureBlock];
-            break;
-        case PUT:
-            [manager PUT:urlPath parameters:parameters success:successBlock failure: failureBlock];
-            break;
-        case DELETE:
-            [manager DELETE:urlPath parameters:parameters success:successBlock failure: failureBlock];
-            break;
-        default:
-            break;
+
+        let urlPath:String! = String(format:"%@%@%@", self.serverUrl(), self.serviceName, restServiceUrl)
+        switch (method) { 
+            case RestMethod.GET:
+                manager.get(URLString:urlPath, parameters:parameters, progress:progressBlock, success:successBlock, failure:failureBlock)
+                break
+            case RestMethod.POST:
+                manager.post(URLString:urlPath, parameters:parameters, progress:progressBlock, success:successBlock, failure: failureBlock)
+                break
+            case RestMethod.PUT:
+                manager.put(urlPath, parameters:parameters, success:successBlock as! (URLSessionDataTask, Any?) -> Void, failure: failureBlock)
+                break
+            case RestMethod.DELETE:
+                manager.delete(urlPath, parameters:parameters, success:successBlock as! (URLSessionDataTask, Any?) -> Void, failure: failureBlock)
+                break
+            default:
+                break
+        }
+    }
+
+    func fetchOneFromPath(restServiceUrl:String!, synchronoulsy:Bool, success:@escaping (URLSessionTask?,AnyObject?)->Void, failure:(URLSessionTask?,NSError?)->Void) {
+        self.fetchItemsWithMethod(method: RestMethod.GET, fromPath: restServiceUrl, parameters:nil, one:true, synchronoulsy:synchronoulsy, success:success, failure:failure)
+    }
+
+    func fetchManyFromPath(restServiceUrl:String!, synchronoulsy:Bool, success:@escaping (URLSessionTask?,AnyObject?)->Void, failure:(URLSessionTask?,NSError?)->Void) {
+        self.fetchItemsWithMethod(method: RestMethod.GET, fromPath: restServiceUrl, parameters:nil, one:false, synchronoulsy:synchronoulsy, success:success, failure:failure)
+    }
+
+    func postObject(o:AnyObject!, synchronoulsy:Bool, success:(URLSessionTask?,AnyObject?)->Void, failure:(URLSessionTask??,NSError?)->Void) {
+        self.postObject(o: o, toPath:_pluralName, synchronoulsy:synchronoulsy, success:success, failure:failure)
+    }
+
+    func postObject(o:AnyObject!, toPath path:String!, synchronoulsy:Bool, success:@escaping (URLSessionTask?,AnyObject?)->Void, failure:(URLSessionTask?,NSError?)->Void) {
+        let restServiceUrl:String! = String(format:"/%@/%@", _serviceName, path)
+        self.fetchItemsWithMethod(method: RestMethod.POST, fromPath: restServiceUrl, parameters:nil, one:true, synchronoulsy:synchronoulsy, success:success, failure:failure)
+    }
+
+    func putObject(o:AnyObject!, objectId:Int, synchronoulsy:Bool, success:@escaping (URLSessionTask?,AnyObject?)->Void, failure:@escaping (URLSessionTask?,NSError?)->Void) {
+        let restServiceUrl:String! = String(format:"%@/%@/%d", _serviceName, _pluralName, objectId)
+        self.fetchItemsWithMethod(method: RestMethod.PUT, fromPath: restServiceUrl, parameters:nil, one:true, synchronoulsy:synchronoulsy, success:success, failure:failure)
+    }
+
+    func deleteObject(o:AnyObject!, objectId:Int, synchronoulsy:Bool, success:@escaping (URLSessionTask?,AnyObject?)->Void, failure:@escaping (URLSessionTask?,NSError?)->Void) {
+        let restServiceUrl:String! = String(format:"%@/%@/%d", _serviceName, _pluralName, objectId)
+        self.fetchItemsWithMethod(method: RestMethod.DELETE, fromPath: restServiceUrl, parameters:nil, one:true, synchronoulsy:synchronoulsy, success:success, failure:failure)
     }
 }
-
-- (void)fetchOneFromPath: (NSString *) restServiceUrl synchronoulsy: (BOOL) synchronously  success:(void (^)(NSURLSessionTask *operation, id mappingResult))success
-                 failure:(void (^)(NSURLSessionTask *operation, NSError *error))failure
-{
-    [self fetchItemsWithMethod: GET fromPath: restServiceUrl parameters:nil one:YES synchronoulsy:synchronously success:success failure:failure];
-}
-
-- (void)fetchManyFromPath: (NSString *) restServiceUrl synchronoulsy: (BOOL) synchronously  success:(void (^)(NSURLSessionTask *operation, id mappingResult))success
-                  failure:(void (^)(NSURLSessionTask *operation, NSError *error))failure
-{
-    [self fetchItemsWithMethod: GET fromPath: restServiceUrl parameters:nil one:NO synchronoulsy:synchronously success:success failure:failure];
-}
-
-- (void) postObject: (id) o synchronoulsy: (BOOL) synchronously  success:(void (^)(NSURLSessionTask *operation, id mappingResult))success
-            failure:(void (^)(NSURLSessionTask *operation, NSError *error))failure
-{
-    [self postObject:o toPath:_pluralName synchronoulsy:synchronously success:success failure:failure];
-}
-
-- (void) postObject: (id) o toPath: (NSString *) path synchronoulsy: (BOOL) synchronously  success:(void (^)(NSURLSessionTask *operation, id mappingResult))success
-            failure:(void (^)(NSURLSessionTask *operation, NSError *error))failure
-{
-    NSString *restServiceUrl = [NSString stringWithFormat:@"/%@/%@", _serviceName, path];
-    [self fetchItemsWithMethod: POST fromPath: restServiceUrl parameters:nil one:YES synchronoulsy:synchronously success:success failure:failure];
-}
-
-- (void) putObject: (id) o : (int) objectId synchronoulsy: (BOOL) synchronously  success:(void (^)(NSURLSessionTask *operation, id mappingResult))success
-           failure:(void (^)(NSURLSessionTask *operation, NSError *error))failure;
-{
-    NSString *restServiceUrl = [NSString stringWithFormat:@"%@/%@/%d", _serviceName, _pluralName, objectId];
-    [self fetchItemsWithMethod: PUT fromPath: restServiceUrl parameters:nil one:YES synchronoulsy:synchronously success:success failure:failure];
-}
-
-- (void) deleteObject: (id) o : (int) objectId synchronoulsy: (BOOL) synchronously  success:(void (^)(NSURLSessionTask *operation, id mappingResult))success
-              failure:(void (^)(NSURLSessionTask *operation, NSError *error))failure;
-{
-    NSString *restServiceUrl = [NSString stringWithFormat:@"%@/%@/%d", _serviceName, _pluralName, objectId];
-    [self fetchItemsWithMethod: DELETE fromPath: restServiceUrl parameters:nil one:YES synchronoulsy:synchronously success:success failure:failure];
-}
-
-@end

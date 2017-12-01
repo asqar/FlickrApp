@@ -6,194 +6,165 @@
 //  Copyright © 2017 Askar Bakirov. All rights reserved.
 //
 
-#import "ImageListViewController.h"
-#import "ImageCell.h"
-#import "ImageViewModel.h"
-#import "ImageListViewModel.h"
-#import "UIViewController+LoadingView.h"
-#import <MWPhotoBrowser/MWPhotoBrowser.h>
-#import <FMMosaicLayout/FMMosaicLayout.h>
+import UIKit
+import MWPhotoBrowser
+import FMMosaicLayout
+import KVNProgress
+import SVPullToRefresh
 
-static const CGFloat kFMHeaderFooterHeight  = 44.0;
-static const NSInteger kFMMosaicColumnCount = 2;
-
-@interface ImageListViewController ()<UICollectionViewDelegate, UICollectionViewDataSource, MWPhotoBrowserDelegate>
-
-@property (nonatomic, readonly) ImageListViewModel *viewModel;
-
-@property (nonatomic, weak) IBOutlet UICollectionView *collectionView;
-
-@property (nonatomic, strong) SVPullToRefreshView *pullToRefreshView;
-@property (nonatomic, strong) MWPhotoBrowser *photoBrowser;
-
-@end
-
-@implementation ImageListViewController
-
-- (void)dealloc
-{
-    _photoBrowser.delegate = nil;
-    _photoBrowser = nil;
-}
+let kFMHeaderFooterHeight:CGFloat = 44.0
+let kFMMosaicColumnCount:Int = 2
 
 
-- (void)viewDidLoad {
-    [super viewDidLoad];
-    // Do any additional setup after loading the view.
+class ImageListViewController : UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, MWPhotoBrowserDelegate {
+
+    @IBOutlet weak var collectionView: UICollectionView?
+    @IBOutlet weak var pullToRefreshView: SVPullToRefreshView?
     
-    self.title = self.viewModel.title;
+    var viewModel:ImageListViewModel!
     
-    @weakify(self);
-    [self.collectionView addPullToRefreshWithActionHandler:^{
-        @strongify(self);
-        [self.viewModel downloadImagesUpdating:YES];
-    }];
-    [self.collectionView addInfiniteScrollingWithActionHandler:^{
-        @strongify(self);
-        [self.viewModel downloadImagesUpdating:NO];
-    }];
-    [self.viewModel.updatedContentSignal subscribeNext:^(id x) {
-        @strongify(self);
-        [self.collectionView reloadData];
-        [self.collectionView.pullToRefreshView stopAnimating];
-        [self.collectionView.infiniteScrollingView stopAnimating];
-    }];
-    [self.viewModel.dismissLoadingSignal subscribeNext:^(id x) {
-        @strongify(self);
-        [self hideLoadingView];
-        [KVNProgress dismiss];
-    }];
-    [self.viewModel.startLoadingSignal subscribeNext:^(id x) {
-        
-    }];
-    [self.viewModel.errorMessageSignal subscribeNext:^(id x) {
-        [KVNProgress showErrorWithStatus:MyLocalizedString(@"Technical error. Try again later", nil)];
-    }];
-    
-    [self showSpinner];
-    [self.viewModel downloadImagesUpdating:YES];
-}
-
-- (void) showSpinner
-{
-    [self showLoadingView:MyLocalizedString(@"Loading results...", nil)];
-}
-
-- (void) viewWillAppear:(BOOL)animated
-{
-    [super viewWillAppear:animated];
-    self.viewModel.active = YES;
-    
-    self.photoBrowser.delegate = nil;
-    self.photoBrowser = nil;
-}
-
-- (void) viewDidDisappear:(BOOL)animated
-{
-    [super viewDidDisappear: animated];
-}
-
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
-
-#pragma mark - FMMosaicLayoutDelegate
-
-- (NSInteger)collectionView:(UICollectionView *)collectionView layout:(FMMosaicLayout *)collectionViewLayout
-   numberOfColumnsInSection:(NSInteger)section {
-    return kFMMosaicColumnCount;
-}
-
-- (FMMosaicCellSize)collectionView:(UICollectionView *)collectionView layout:(FMMosaicLayout *)collectionViewLayout
-  mosaicCellSizeForItemAtIndexPath:(NSIndexPath *)indexPath {
-    return (indexPath.item % 12 == 0) ? FMMosaicCellSizeBig : FMMosaicCellSizeSmall;
-}
-
-- (UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(FMMosaicLayout *)collectionViewLayout
-        insetForSectionAtIndex:(NSInteger)section {
-    return UIEdgeInsetsMake(5.0, 5.0, 5.0, 5.0);
-}
-
-- (CGFloat)collectionView:(UICollectionView *)collectionView layout:(FMMosaicLayout *)collectionViewLayout
-interitemSpacingForSectionAtIndex:(NSInteger)section {
-    return 2.0;
-}
-
-- (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout
- heightForHeaderInSection:(NSInteger)section {
-    return kFMHeaderFooterHeight;
-}
-
-- (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout
- heightForFooterInSection:(NSInteger)section {
-    return kFMHeaderFooterHeight;
-}
-
-- (BOOL)headerShouldOverlayContentInCollectionView:(UICollectionView *)collectionView layout:(FMMosaicLayout *)collectionViewLayout {
-    return YES;
-}
-
-- (BOOL)footerShouldOverlayContentInCollectionView:(UICollectionView *)collectionView layout:(FMMosaicLayout *)collectionViewLayout {
-    return YES;
-}
-
-#pragma mark - UICollectionView data source
-
-- (NSInteger) numberOfSectionsInCollectionView:(UICollectionView *)collectionView
-{
-    return [self.viewModel numberOfSections];
-}
-
-- (NSInteger) collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
-{
-    return [self.viewModel numberOfItemsInSection: section];
-}
-
-- (UICollectionViewCell *) collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
-{
-    ImageCell *cell = (ImageCell *)[collectionView dequeueReusableCellWithReuseIdentifier:@"ImageCell" forIndexPath: indexPath];
-    cell.viewModel = [self.viewModel objectAtIndexPath: indexPath];
-    return cell;
-}
-
-- (void) collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
-{
-    [self.photoBrowser setCurrentPhotoIndex: indexPath.row];
-    [self.navigationController pushViewController:self.photoBrowser animated:YES];
-    [self.collectionView deselectItemAtIndexPath:indexPath animated:YES];
-}
-
-#pragma mark - MWPhotoProwser delegate
-
-- (MWPhotoBrowser *) photoBrowser
-{
-    if (_photoBrowser == nil) {
-        _photoBrowser = [[MWPhotoBrowser alloc] initWithDelegate:self];
-        _photoBrowser.view.backgroundColor = [UIColor blackColor];
-        _photoBrowser.displayActionButton = NO;
-        _photoBrowser.alwaysShowControls = YES;
-        _photoBrowser.zoomPhotosToFill = YES;
-        _photoBrowser.edgesForExtendedLayout = UIRectEdgeNone;
-        _photoBrowser.extendedLayoutIncludesOpaqueBars = NO;
+    private var _photoBrowser:MWPhotoBrowser!
+    private var photoBrowser:MWPhotoBrowser! {
+        get { 
+            if _photoBrowser == nil {
+                _photoBrowser = MWPhotoBrowser(delegate:self)
+                _photoBrowser.view.backgroundColor = UIColor.blackColor
+                _photoBrowser.displayActionButton = false
+                _photoBrowser.alwaysShowControls = true
+                _photoBrowser.zoomPhotosToFill = true
+                _photoBrowser.edgesForExtendedLayout = UIRectEdgeNone
+                _photoBrowser.extendedLayoutIncludesOpaqueBars = false
+            }
+            return _photoBrowser
+        }
+        set { _photoBrowser = newValue }
     }
-    return _photoBrowser;
-}
 
-- (NSUInteger)numberOfPhotosInPhotoBrowser:(MWPhotoBrowser *)photoBrowser
-{
-    NSUInteger i = [self.viewModel numberOfItemsInSection:0];
-    return i;
-}
+    func viewDidLoad() {
+        super.viewDidLoad()
+        // Do any additional setup after loading the view.
 
-- (MWPhoto *)photoBrowser:(MWPhotoBrowser *)photoBrowser photoAtIndex:(NSUInteger)index {
-    if (index < [self.viewModel numberOfItemsInSection:0]) {
-        ImageViewModel *image = [self.viewModel objectAtIndexPath: [NSIndexPath indexPathForRow:index inSection:0]];
-        MWPhoto *photoObj = [MWPhoto photoWithURL: image.url];
-        photoObj.caption = image.caption;
-        return photoObj;
+        self.title = self.viewModel.title
+
+        self.collectionView.addPullToRefreshWithActionHandler({
+            self.viewModel.downloadImagesUpdating(true)
+        })
+        self.collectionView.addInfiniteScrollingWithActionHandler({
+            self.viewModel.downloadImagesUpdating(false)
+        })
+        self.viewModel.updatedContentSignal.subscribeNext({ (x:AnyObject!) in
+            self.collectionView.reloadData()
+            self.collectionView.pullToRefreshView.stopAnimating()
+            self.collectionView.infiniteScrollingView.stopAnimating()
+        })
+        self.viewModel.dismissLoadingSignal.subscribeNext({ (x:AnyObject!) in
+            self.hideLoadingView()
+            KVNProgress.dismiss()
+        })
+        self.viewModel.startLoadingSignal.subscribeNext({ (x:AnyObject!) in 
+
+        })
+        self.viewModel.errorMessageSignal.subscribeNext({ (x:AnyObject!) in 
+            KVNProgress.showErrorWithStatus("Technical error. Try again later".localized)
+        })
+
+        self.showSpinner()
+        self.viewModel.downloadImagesUpdating(true)
     }
-    return nil;
-}
 
-@end
+    func showSpinner() {
+        self.showLoadingView("Loading results...".localized)
+    }
+
+    func viewWillAppear(animated:Bool) {
+        super.viewWillAppear(animated)
+        self.viewModel.active = true
+
+        self.photoBrowser.delegate = nil
+        self.photoBrowser = nil
+    }
+
+    func viewDidDisappear(animated:Bool) {
+        super.viewDidDisappear(animated)
+    }
+
+    func didReceiveMemoryWarning() {
+        super.didReceiveMemoryWarning()
+        // Dispose of any resources that can be recreated.
+    }
+
+    // MARK: - FMMosaicLayoutDelegate
+
+    func collectionView(collectionView:UICollectionView!, layout collectionViewLayout:FMMosaicLayout!, numberOfColumnsInSection section:Int) -> Int {
+        return kFMMosaicColumnCount
+    }
+
+    func collectionView(collectionView:UICollectionView!, layout collectionViewLayout:FMMosaicLayout!, mosaicCellSizeForItemAtIndexPath indexPath:IndexPath!) -> FMMosaicCellSize {
+        return (indexPath.item % 12 == 0) ? FMMosaicCellSizeBig : FMMosaicCellSizeSmall
+    }
+
+    func collectionView(collectionView:UICollectionView!, layout collectionViewLayout:FMMosaicLayout!, insetForSectionAtIndex section:Int) -> UIEdgeInsets {
+        return UIEdgeInsetsMake(5.0, 5.0, 5.0, 5.0)
+    }
+
+    func collectionView(collectionView:UICollectionView!, layout collectionViewLayout:FMMosaicLayout!, interitemSpacingForSectionAtIndex section:Int) -> CGFloat {
+        return 2.0
+    }
+
+    func collectionView(collectionView:UICollectionView!, layout collectionViewLayout:UICollectionViewLayout!, heightForHeaderInSection section:Int) -> CGFloat {
+        return kFMHeaderFooterHeight
+    }
+
+    func collectionView(collectionView:UICollectionView!, layout collectionViewLayout:UICollectionViewLayout!, heightForFooterInSection section:Int) -> CGFloat {
+        return kFMHeaderFooterHeight
+    }
+
+    func headerShouldOverlayContentInCollectionView(collectionView:UICollectionView!, layout collectionViewLayout:FMMosaicLayout!) -> Bool {
+        return true
+    }
+
+    func footerShouldOverlayContentInCollectionView(collectionView:UICollectionView!, layout collectionViewLayout:FMMosaicLayout!) -> Bool {
+        return true
+    }
+
+    // MARK: - UICollectionView data source
+
+    func numberOfSectionsInCollectionView(collectionView:UICollectionView!) -> Int {
+        return self.viewModel.numberOfSections()
+    }
+
+    func collectionView(collectionView:UICollectionView!, numberOfItemsInSection section:Int) -> Int {
+        return self.viewModel.numberOfItemsInSection(section)
+    }
+
+    func collectionView(collectionView:UICollectionView!, cellForItemAtIndexPath indexPath:IndexPath!) -> UICollectionViewCell! {
+        let cell:ImageCell! = collectionView.dequeueReusableCellWithReuseIdentifier("ImageCell", forIndexPath: indexPath)
+        cell.viewModel = self.viewModel.objectAtIndexPath(indexPath)
+        return cell
+    }
+
+    func collectionView(collectionView:UICollectionView!, didSelectItemAtIndexPath indexPath:IndexPath!) {
+        self.photoBrowser.currentPhotoIndex = indexPath.row
+        self.navigationController!.pushViewController(self.photoBrowser, animated:true)
+        self.collectionView.deselectItemAtIndexPath(indexPath, animated:true)
+    }
+
+    // MARK: - MWPhotoProwser delegate
+
+    // `photoBrowser` has moved as a getter.
+
+    func numberOfPhotosInPhotoBrowser(photoBrowser:MWPhotoBrowser!) -> UInt {
+        let i:UInt = self.viewModel.numberOfItemsInSection(0)
+        return i
+    }
+
+    func photoBrowser(photoBrowser:MWPhotoBrowser!, photoAtIndex index:UInt) -> MWPhoto! {
+        if index < self.viewModel.numberOfItemsInSection(0) {
+            let image:ImageViewModel! = self.viewModel.objectAtIndexPath(IndexPath.indexPathForRow(index, inSection:0))
+            let photoObj:MWPhoto! = MWPhoto.photoWithURL(image.url)
+            photoObj.caption = image.caption
+            return photoObj
+        }
+        return nil
+    }
+}

@@ -6,123 +6,106 @@
 //  Copyright © 2017 Askar Bakirov. All rights reserved.
 //
 
-#import "SearchViewController.h"
-#import "SearchAttemptCell.h"
-#import "SearchAttemptViewModel.h"
-#import "SearchResultViewController.h"
-#import "SearchResultViewModel.h"
-#import "SearchViewModel.h"
+import UIKit
+import SVPullToRefresh
 
-@interface SearchViewController ()
+class SearchViewController : UITableViewController {
 
-@property (nonatomic, weak) IBOutlet UISearchBar *searchBar;
-@property (nonatomic, strong) SVPullToRefreshView *pullToRefreshView;
-
-@end
-
-@implementation SearchViewController
-
-- (void)viewDidLoad {
-    [super viewDidLoad];
-    [self translateUI];
-    // Do any additional setup after loading the view.
-        
-    @weakify(self);
-    [self.tableView addPullToRefreshWithActionHandler:^{
-        @strongify(self);
-        [self.tableView reloadData];
-        [self.tableView.pullToRefreshView stopAnimating];
-    }];
-    [self.viewModel.updatedContentSignal subscribeNext:^(id x) {
-        @strongify(self);
-        [self.tableView reloadData];
-        [self.tableView.pullToRefreshView stopAnimating];
-        [self.tableView.infiniteScrollingView stopAnimating];
-    }];
+    @IBOutlet weak var searchBar: UISearchBar?
+    @IBOutlet weak var pullToRefreshView: SVPullToRefreshView?
     
-    [self.viewModel loadHistory];
-}
+    var viewModel:SearchViewModel!
 
-- (void) viewWillAppear:(BOOL)animated
-{
-    [super viewWillAppear:animated];
-    self.viewModel.active = YES;
-}
+    func viewDidLoad() {
+        super.viewDidLoad()
+        self.translateUI()
+        // Do any additional setup after loading the view.
 
-- (void) viewDidAppear:(BOOL)animated
-{
-    [super viewDidAppear: animated];
-    [self.tableView reloadData];
-}
+        weakify(self)
+        self.tableView.addPullToRefreshWithActionHandler({ 
+            strongify(self)
+            self.tableView.reloadData()
+            self.tableView.pullToRefreshView.stopAnimating()
+        })
+        self.viewModel.updatedContentSignal.subscribeNext({ (x:AnyObject!) in 
+            strongify(self)
+            self.tableView.reloadData()
+            self.tableView.pullToRefreshView.stopAnimating()
+            self.tableView.infiniteScrollingView.stopAnimating()
+        })
 
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
+        self.viewModel.loadHistory()
+    }
 
-- (void) translateUI
-{
-    self.title = MyLocalizedString(@"Search", nil);
-}
+    func viewWillAppear(animated:Bool) {
+        super.viewWillAppear(animated)
+        self.viewModel.active = true
+    }
 
-#pragma mark - Search
+    func viewDidAppear(animated:Bool) {
+        super.viewDidAppear(animated)
+        self.tableView.reloadData()
+    }
 
-- (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar
-{
-    if (_searchBar.text.length == 0)
-        return;
-    [_searchBar endEditing:YES];
-    
-    SearchResultViewController *vc = [self.storyboard instantiateViewControllerWithIdentifier:@"SearchResultViewController"];
-    vc.viewModel = [[SearchResultViewModel alloc] initWithSearchQuery: self.searchBar.text];
-    [self.navigationController pushViewController:vc animated:YES];
-    
-    self.searchBar.text = @"";
-}
+    func didReceiveMemoryWarning() {
+        super.didReceiveMemoryWarning()
+        // Dispose of any resources that can be recreated.
+    }
 
-#pragma mark - UITableView data source
+    func translateUI() {
+        self.title = "Search".localized
+    }
 
-- (NSInteger) numberOfSectionsInTableView:(UITableView *)tableView
-{
-    return [self.viewModel numberOfSections];
-}
+    // MARK: - Search
 
-- (NSInteger) tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
-{
-    return [self.viewModel numberOfItemsInSection: 0];
-}
+    func searchBarSearchButtonClicked(searchBar:UISearchBar!) {
+        if _searchBar.text.length == 0
+            {return}
+        _searchBar.endEditing(true)
 
-- (UITableViewCell *) tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    SearchAttemptCell *cell = (SearchAttemptCell *)[tableView dequeueReusableCellWithIdentifier:@"SearchAttemptCell"];
-    SearchAttemptViewModel *viewModel = [self.viewModel objectAtIndexPath: indexPath];
-    cell.viewModel = viewModel;
-    return cell;
-}
+        let vc:SearchResultViewController! = self.storyboard.instantiateViewControllerWithIdentifier("SearchResultViewController")
+        vc.viewModel = SearchResultViewModel(searchQuery:self.searchBar.text)
+        self.navigationController!.pushViewController(vc, animated:true)
 
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    SearchAttemptViewModel *searchAttempt = [self.viewModel objectAtIndexPath: indexPath];
-    
-    CGFloat width = [UIScreen mainScreen].bounds.size.width - 20.0f * 2 - 156.0f - 35.0f;
-    CGFloat height = [searchAttempt.queryString boundingRectWithSize:CGSizeMake(width, MAXFLOAT) options:NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading attributes:@{NSFontAttributeName: [UIFont fontWithName:@"HelveticaNeue" size:17.0f]} context:nil].size.height + 20.f;
-    return height;
-}
+        self.searchBar.text = ""
+    }
 
-- (void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
-}
+    // MARK: - UITableView data source
 
-#pragma mark -
+    func numberOfSectionsInTableView(tableView:UITableView!) -> Int {
+        return self.viewModel.numberOfSections()
+    }
 
-- (void) prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    if ([segue.destinationViewController isKindOfClass:[SearchResultViewController class]]) {
-        SearchAttemptViewModel *searchAttemptViewModel = [self.viewModel objectAtIndexPath: self.tableView.indexPathForSelectedRow];
-        SearchResultViewController *vc = (SearchResultViewController *) segue.destinationViewController;
-        vc.viewModel = [[SearchResultViewModel alloc] initWithSearchAttemptViewModel:searchAttemptViewModel];
+    func tableView(tableView:UITableView!, numberOfRowsInSection section:Int) -> Int {
+        return self.viewModel.numberOfItemsInSection(0)
+    }
+
+    func tableView(tableView:UITableView!, cellForRowAtIndexPath indexPath:IndexPath!) -> UITableViewCell! {
+        let cell:SearchAttemptCell! = tableView.dequeueReusableCellWithIdentifier("SearchAttemptCell")
+        let viewModel:SearchAttemptViewModel! = self.viewModel.objectAtIndexPath(indexPath)
+        cell.viewModel = viewModel
+        return cell
+    }
+
+    func tableView(tableView:UITableView!, heightForRowAtIndexPath indexPath:IndexPath!) -> CGFloat {
+        let searchAttempt:SearchAttemptViewModel! = self.viewModel.objectAtIndexPath(indexPath)
+
+        let width:CGFloat = UIScreen.mainScreen.bounds.size.width - 20.0 * 2 - 156.0 - 35.0
+        let height:CGFloat = searchAttempt.queryString.boundingRectWithSize(CGSizeMake(width, MAXFLOAT), options:NSStringDrawingOptions.NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingOptions.NSStringDrawingUsesFontLeading, attributes:[NSFontAttributeName: UIFont.fontWithName("HelveticaNeue", size:17.0)], context:nil).size.height + 20.0
+        return height
+    }
+
+    func tableView(tableView:UITableView!, didSelectRowAtIndexPath indexPath:IndexPath!) {
+        self.tableView.deselectRowAtIndexPath(indexPath, animated:true)
+    }
+
+    // MARK: -
+
+    func prepareForSegue(segue:UIStoryboardSegue!, sender:AnyObject!) {
+        if (segue.destinationViewController is SearchResultViewController) {
+            let searchAttemptViewModel:SearchAttemptViewModel! = self.viewModel.objectAtIndexPath(self.tableView.indexPathForSelectedRow)
+            let vc:SearchResultViewController! = segue.destinationViewController
+            vc.viewModel = SearchResultViewModel(searchAttemptViewModel:searchAttemptViewModel)
+        }
     }
 }
-
-@end

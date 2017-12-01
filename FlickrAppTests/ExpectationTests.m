@@ -6,97 +6,85 @@
 //  Copyright © 2017 Askar Bakirov. All rights reserved.
 //
 
-#import "BaseViewModelTestCase.h"
-#import "FeedFetcher.h"
-#import "PhotoFetcher.h"
-#import "Feed.h"
-#import "Photo.h"
-#import <OCMock/OCMock.h>
+import OCMock
 
-@interface ExpectationTests : BaseViewModelTestCase
+class ExpectationTests : BaseViewModelTestCase {
 
-@end
+    func setUp() {
+        super.setUp()
+        // Put setup code here. This method is called before the invocation of each test method in the class.
+    }
 
-@implementation ExpectationTests
+    func tearDown() {
+        // Put teardown code here. This method is called after the invocation of each test method in the class.
+        super.tearDown()
+    }
 
-- (void)setUp {
-    [super setUp];
-    // Put setup code here. This method is called before the invocation of each test method in the class.
+    func testExpectation_FeedFetcher() {
+        let expectation:XCTestExpectation! = self.expectationWithDescription("FeedFetcher")
+
+        let feedFetcher:FeedFetcher! = FeedFetcher.initMe()
+        let mockFetcher:AnyObject! = OCMockObject.partialMockForObject(feedFetcher)
+        mockFetcher.stub().andReturn(self.realm).realm()
+
+        mockFetcher.fetchManyFromPath("", synchronoulsy:true, success:{ (operation:URLSessionTask!,mappingResult:AnyObject!) in 
+            XCTAssertNotNil(operation, "mappingResult should not be nil")
+            XCTAssertNotNil(mappingResult, "mappingResult should not be nil")
+
+            let httpResponse:NSHTTPURLResponse! = operation.response
+
+            XCTAssertEqual(operation.response.URL.absoluteString, operation.originalRequest.URL.absoluteString, "HTTP response URL should be equal to original URL")
+            XCTAssertEqual(httpResponse.statusCode, 200, "HTTP response status code should be 200")
+            XCTAssertTrue((httpResponse.MIMEType == "application/json"), "HTTP response content type should be application/json")
+
+            XCTAssertTrue((mappingResult is NSArray), "mappingResult should be array")
+            let results:[AnyObject]! = mappingResult
+            XCTAssertTrue(results.count > 0, "mappingResult should not be empty")
+
+            for item:Feed! in results {  
+                XCTAssertTrue((item is Feed), "element should be of Feed class")
+             }
+
+            expectation.fulfill()
+        }, failure:{ (operation:URLSessionTask!,error:NSError!) in 
+            NSLog("%@", operation.originalRequest.URL.absoluteString)
+    //        XCTFail(@"Failed with error: %@", error);
+        })
+
+        self.waitForExpectations([expectation], timeout: 5)
+    }
+
+    func testExpectation_PhotoFetcher() {
+        let expectation:XCTestExpectation! = self.expectationWithDescription("PhotoFetcher")
+
+        let photoFetcher:PhotoFetcher! = PhotoFetcher.initMe()
+        let mockFetcher:AnyObject! = OCMockObject.partialMockForObject(photoFetcher)
+        mockFetcher.stub().andReturn(self.realm).realm()
+
+        mockFetcher.fetchManyFromPath("text=kittens", synchronoulsy:true, success:{ (operation:URLSessionTask!,mappingResult:AnyObject!) in 
+            XCTAssertNotNil(operation, "mappingResult should not be nil")
+            XCTAssertNotNil(mappingResult, "mappingResult should not be nil")
+
+            let httpResponse:NSHTTPURLResponse! = operation.response
+
+            XCTAssertEqual(operation.response.URL.absoluteString, operation.originalRequest.URL.absoluteString, "HTTP response URL should be equal to original URL")
+            XCTAssertEqual(httpResponse.statusCode, 200, "HTTP response status code should be 200")
+            XCTAssertTrue((httpResponse.MIMEType == "application/json"), "HTTP response content type should be application/json")
+
+            XCTAssertTrue((mappingResult is NSArray), "mappingResult should be array")
+            let results:[AnyObject]! = mappingResult
+            XCTAssertTrue(results.count > 0, "mappingResult should not be empty")
+
+            for item:Photo! in results {  
+                XCTAssertTrue((item is Photo), "element should be of Feed class")
+             }
+
+            expectation.fulfill()
+        }, failure:{ (operation:URLSessionTask!,error:NSError!) in 
+            NSLog("%@", operation.originalRequest.URL.absoluteString)
+            XCTFail("Failed with error: %@", error)
+        })
+
+        self.waitForExpectations([expectation], timeout: 5)
+    }
 }
-
-- (void)tearDown {
-    // Put teardown code here. This method is called after the invocation of each test method in the class.
-    [super tearDown];
-}
-
-- (void)testExpectation_FeedFetcher
-{
-    XCTestExpectation *expectation = [self expectationWithDescription:@"FeedFetcher"];
-    
-    FeedFetcher *feedFetcher = [[FeedFetcher alloc] initMe];
-    id mockFetcher = [OCMockObject partialMockForObject:feedFetcher];
-    [[[mockFetcher stub] andReturn: self.realm] realm];
-    
-    [mockFetcher fetchManyFromPath:@"" synchronoulsy:YES success:^(NSURLSessionTask *operation, id mappingResult) {
-        XCTAssertNotNil(operation, @"mappingResult should not be nil");
-        XCTAssertNotNil(mappingResult, @"mappingResult should not be nil");
-        
-        NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)operation.response;
-        
-        XCTAssertEqual(operation.response.URL.absoluteString, operation.originalRequest.URL.absoluteString, @"HTTP response URL should be equal to original URL");
-        XCTAssertEqual(httpResponse.statusCode, 200, @"HTTP response status code should be 200");
-        XCTAssertTrue([httpResponse.MIMEType isEqualToString: @"application/json"], @"HTTP response content type should be application/json");
-        
-        XCTAssertTrue([mappingResult isKindOfClass:[NSArray class]], @"mappingResult should be array");
-        NSArray *results = mappingResult;
-        XCTAssertTrue(results.count > 0, @"mappingResult should not be empty");
-        
-        for (Feed *item in results) {
-            XCTAssertTrue([item isKindOfClass:[Feed class]], @"element should be of Feed class");
-        }
-        
-        [expectation fulfill];
-    } failure:^(NSURLSessionTask *operation, NSError *error) {
-        NSLog(@"%@", operation.originalRequest.URL.absoluteString);
-//        XCTFail(@"Failed with error: %@", error);
-    }];
-    
-    [self waitForExpectations:@[expectation] timeout: 5];
-}
-
-- (void)testExpectation_PhotoFetcher
-{
-    XCTestExpectation *expectation = [self expectationWithDescription:@"PhotoFetcher"];
-    
-    PhotoFetcher *photoFetcher = [[PhotoFetcher alloc] initMe];
-    id mockFetcher = [OCMockObject partialMockForObject:photoFetcher];
-    [[[mockFetcher stub] andReturn: self.realm] realm];
-    
-    [mockFetcher fetchManyFromPath:@"text=kittens" synchronoulsy:YES success:^(NSURLSessionTask *operation, id mappingResult) {
-        XCTAssertNotNil(operation, @"mappingResult should not be nil");
-        XCTAssertNotNil(mappingResult, @"mappingResult should not be nil");
-        
-        NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)operation.response;
-        
-        XCTAssertEqual(operation.response.URL.absoluteString, operation.originalRequest.URL.absoluteString, @"HTTP response URL should be equal to original URL");
-        XCTAssertEqual(httpResponse.statusCode, 200, @"HTTP response status code should be 200");
-        XCTAssertTrue([httpResponse.MIMEType isEqualToString: @"application/json"], @"HTTP response content type should be application/json");
-        
-        XCTAssertTrue([mappingResult isKindOfClass:[NSArray class]], @"mappingResult should be array");
-        NSArray *results = mappingResult;
-        XCTAssertTrue(results.count > 0, @"mappingResult should not be empty");
-        
-        for (Photo *item in results) {
-            XCTAssertTrue([item isKindOfClass:[Photo class]], @"element should be of Feed class");
-        }
-        
-        [expectation fulfill];
-    } failure:^(NSURLSessionTask *operation, NSError *error) {
-        NSLog(@"%@", operation.originalRequest.URL.absoluteString);
-        XCTFail(@"Failed with error: %@", error);
-    }];
-    
-    [self waitForExpectations:@[expectation] timeout: 5];
-}
-
-@end

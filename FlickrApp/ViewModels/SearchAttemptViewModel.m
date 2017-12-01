@@ -6,27 +6,21 @@
 //  Copyright © 2017 Askar Bakirov. All rights reserved.
 //
 
-#import "SearchAttemptViewModel.h"
-#import "SearchAttempt.h"
+import Foundation
 
-@interface SearchAttemptViewModel()
+class SearchAttemptViewModel : BaseViewModel {
 
-@end
+    var queryString:String!
+    var dateString:String!
 
-@implementation SearchAttemptViewModel
+    init(searchAttempt:SearchAttempt!) {
+        super.init()
 
--(instancetype)initWithSearchAttempt:(SearchAttempt *)searchAttempt
-{
-    self = [super init];
-    if (self == nil)
-        return nil;
+        let dateFormatter:DateFormatter! = DateFormatter()
+        dateFormatter.dateFormat = "dd/MM/YYYY HH:mm"
+        self.dateString = dateFormatter.string(from: searchAttempt.dateSearched)
+        self.queryString = searchAttempt.searchTerm
 
-    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    dateFormatter.dateFormat = @"dd/MM/YYYY HH:mm";
-    self.dateString = [dateFormatter stringFromDate:searchAttempt.dateSearched];
-    self.queryString = searchAttempt.searchTerm;
-    
-    return self;
+
+    }
 }
-
-@end

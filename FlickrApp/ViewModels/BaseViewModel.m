@@ -6,13 +6,11 @@
 //  Copyright © 2017 Askar Bakirov. All rights reserved.
 //
 
-#import "BaseViewModel.h"
+import Realm
 
-@implementation BaseViewModel
+class BaseViewModel : NSObject {
 
-- (RLMRealm *) realm
-{
-    return [RLMRealm defaultRealm];
+    func realm() -> RLMRealm! {
+        return RLMRealm.default()
+    }
 }
-
-@end
