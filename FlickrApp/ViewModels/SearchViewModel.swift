@@ -8,7 +8,6 @@
 
 import Realm
 import RBQFetchedResultsController
-import ReactiveSwift
 import ReactiveCocoa
 
 class SearchViewModel : BaseViewModel, RBQFetchedResultsControllerDelegate {
@@ -34,11 +33,12 @@ class SearchViewModel : BaseViewModel, RBQFetchedResultsControllerDelegate {
     override init() {
         super.init()
         
-        //self.updatedContentSignal = RACSubject.subject()// "SearchResultViewModel updatedContentSignal"
+        self.updatedContentSignal = RACSubject()
+        self.updatedContentSignal.name = "SearchResultViewModel updatedContentSignal"
 
-//        self.didBecomeActiveSignal.subscribeNext({ (x:AnyObject!) in
-//            self.loadHistory()
-//        })
+        self.didBecomeActiveSignal.subscribeNext({ (x) in
+            self.loadHistory()
+            })
 
     }
 
@@ -73,7 +73,7 @@ class SearchViewModel : BaseViewModel, RBQFetchedResultsControllerDelegate {
     // `fetchedResultsController` has moved as a getter.
 
     func controllerDidChangeContent(_ controller:RBQFetchedResultsController) {
-        (self.updatedContentSignal as! RACSubject).sendNext(nil)
+        (self.updatedContentSignal as! RACSubject).sendNext({ (x:Any!) in })
     }
 
     func controllerWillChangeContent(_ controller:RBQFetchedResultsController) {

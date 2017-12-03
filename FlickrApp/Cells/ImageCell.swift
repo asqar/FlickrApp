@@ -20,12 +20,14 @@ class ImageCell : UICollectionViewCell {
     func setViewModel(viewModel:ImageViewModel!) {
         self.viewModel = viewModel
 
-        imgPhoto?.sd_setImage(with: viewModel.url, placeholderImage:UIImage(named: "placeholder.png"),
-                                    options:SDWebImageOptions(rawValue: 0), progress:{ (receivedSize:Int,expectedSize:Int) in
-                                        self.progressView!.progress = Float(receivedSize / expectedSize)
-         }, completed:{ (image:UIImage?,error:NSError?,cacheType:SDImageCacheType,imageURL:URL?) in
+        imgPhoto?.sd_setImage(with: viewModel.url(isThumbnail:true), placeholderImage:UIImage(named: "placeholder.png"),
+                                    options:SDWebImageOptions(rawValue: 0), progress:{ (receivedSize,expectedSize,url) in
+                                        DispatchQueue.main.async {
+                                            self.progressView!.progress = Float(receivedSize / expectedSize)
+                                        }
+         }, completed:{ (image,error,cacheType,imageURL) in
             self.progressView!.isHidden = true
-            } as! SDWebImageCompletionBlock)
+            })
 
         lblName?.text = viewModel.caption
     }

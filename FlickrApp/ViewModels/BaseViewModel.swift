@@ -7,8 +7,9 @@
 //
 
 import Realm
+import ReactiveViewModel
 
-class BaseViewModel : NSObject {
+class BaseViewModel : RVMViewModel {
 
     func realm() -> RLMRealm! {
         return RLMRealm.default()

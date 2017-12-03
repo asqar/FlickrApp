@@ -11,24 +11,30 @@ import MWPhotoBrowser
 import FMMosaicLayout
 import KVNProgress
 import SVPullToRefresh
+import ReactiveCocoa
 
 let kFMHeaderFooterHeight:CGFloat = 44.0
 let kFMMosaicColumnCount:Int = 2
 
 
-class ImageListViewController : UIViewController, UICollectionViewDelegate, UICollectionViewDataSource {
+class ImageListViewController : UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, MWPhotoBrowserDelegate, FMMosaicLayoutDelegate {
 
     @IBOutlet weak var collectionView: UICollectionView?
     @IBOutlet weak var pullToRefreshView: SVPullToRefreshView?
     
     var viewModel:ImageListViewModel!
     
+    deinit {
+        _photoBrowser?.delegate = nil
+        _photoBrowser = nil
+    }
+    
     private var _photoBrowser:MWPhotoBrowser!
     
     var photoBrowser:MWPhotoBrowser! {
         get { 
             if _photoBrowser == nil {
-                _photoBrowser = MWPhotoBrowser(delegate:self as! MWPhotoBrowserDelegate)
+                _photoBrowser = MWPhotoBrowser(delegate:self)
                 _photoBrowser.view.backgroundColor = UIColor.black
                 _photoBrowser.displayActionButton = false
                 _photoBrowser.alwaysShowControls = true
@@ -52,21 +58,20 @@ class ImageListViewController : UIViewController, UICollectionViewDelegate, UICo
         self.collectionView?.addInfiniteScrolling(actionHandler: {
             self.viewModel.downloadImagesUpdating(updating: false)
         })
-        self.viewModel.updatedContentSignal.subscribeNext({ (x:AnyObject!) in
+        self.viewModel.updatedContentSignal.subscribeNext({ (x) in
             self.collectionView?.reloadData()
             self.collectionView?.pullToRefreshView.stopAnimating()
             self.collectionView?.infiniteScrollingView.stopAnimating()
-            } as! (Any?) -> Void)
-        self.viewModel.dismissLoadingSignal.subscribeNext({ (x:AnyObject!) in
+            })
+        self.viewModel.dismissLoadingSignal.subscribeNext({ (x) in
             self.hideLoadingView()
-            KVNProgress.dismiss()
-            } as! (Any?) -> Void)
-        self.viewModel.startLoadingSignal.subscribeNext({ (x:AnyObject!) in 
+            })
+        self.viewModel.startLoadingSignal.subscribeNext({ (x) in
 
-            } as! (Any?) -> Void)
-        self.viewModel.errorMessageSignal.subscribeNext({ (x:AnyObject!) in 
+            })
+        self.viewModel.errorMessageSignal.subscribeNext({ (x) in
             KVNProgress.showError(withStatus: "Technical error. Try again later".localized)
-            } as! (Any?) -> Void)
+            })
 
         self.showSpinner()
         self.viewModel.downloadImagesUpdating(updating: true)
@@ -76,15 +81,15 @@ class ImageListViewController : UIViewController, UICollectionViewDelegate, UICo
         self.showLoadingView(msg: "Loading results...".localized)
     }
 
-    func viewWillAppear(animated:Bool) {
+    override func viewWillAppear(_ animated:Bool) {
         super.viewWillAppear(animated)
-        //self.viewModel.active = true
+        self.viewModel.isActive = true
 
-        self.photoBrowser.delegate = nil
+        _photoBrowser?.delegate = nil
         _photoBrowser = nil
     }
 
-    func viewDidDisappear(animated:Bool) {
+    override func viewDidDisappear(_ animated:Bool) {
         super.viewDidDisappear(animated)
     }
 
@@ -95,27 +100,27 @@ class ImageListViewController : UIViewController, UICollectionViewDelegate, UICo
 
     // MARK: - FMMosaicLayoutDelegate
 
-    func collectionView(collectionView:UICollectionView!, layout collectionViewLayout:FMMosaicLayout!, numberOfColumnsInSection section:Int) -> Int {
+    func collectionView(_ collectionView:UICollectionView!, layout collectionViewLayout:FMMosaicLayout!, numberOfColumnsInSection section:Int) -> Int {
         return kFMMosaicColumnCount
     }
 
-    func collectionView(collectionView:UICollectionView!, layout collectionViewLayout:FMMosaicLayout!, mosaicCellSizeForItemAtIndexPath indexPath:IndexPath!) -> FMMosaicCellSize {
+    func collectionView(_ collectionView:UICollectionView!, layout collectionViewLayout:FMMosaicLayout!, mosaicCellSizeForItemAt indexPath:IndexPath!) -> FMMosaicCellSize {
         return (indexPath.item % 12 == 0) ? FMMosaicCellSize.big : FMMosaicCellSize.small
     }
 
-    func collectionView(collectionView:UICollectionView!, layout collectionViewLayout:FMMosaicLayout!, insetForSectionAtIndex section:Int) -> UIEdgeInsets {
+    func collectionView(_ collectionView:UICollectionView!, layout collectionViewLayout:FMMosaicLayout!, insetForSectionAt section:Int) -> UIEdgeInsets {
         return UIEdgeInsetsMake(5.0, 5.0, 5.0, 5.0)
     }
 
-    func collectionView(collectionView:UICollectionView!, layout collectionViewLayout:FMMosaicLayout!, interitemSpacingForSectionAtIndex section:Int) -> CGFloat {
+    func collectionView(_ collectionView:UICollectionView!, layout collectionViewLayout:FMMosaicLayout!, interitemSpacingForSectionAt section:Int) -> CGFloat {
         return 2.0
     }
 
-    func collectionView(collectionView:UICollectionView!, layout collectionViewLayout:UICollectionViewLayout!, heightForHeaderInSection section:Int) -> CGFloat {
+    private func collectionView(collectionView:UICollectionView!, layout collectionViewLayout:UICollectionViewLayout!, heightForHeaderInSection section:Int) -> CGFloat {
         return kFMHeaderFooterHeight
     }
 
-    func collectionView(collectionView:UICollectionView!, layout collectionViewLayout:UICollectionViewLayout!, heightForFooterInSection section:Int) -> CGFloat {
+    private func collectionView(collectionView:UICollectionView!, layout collectionViewLayout:UICollectionViewLayout!, heightForFooterInSection section:Int) -> CGFloat {
         return kFMHeaderFooterHeight
     }
 
@@ -139,7 +144,7 @@ class ImageListViewController : UIViewController, UICollectionViewDelegate, UICo
 
     func collectionView(_ collectionView:UICollectionView, cellForItemAt indexPath:IndexPath) -> UICollectionViewCell {
         let cell:ImageCell! = collectionView.dequeueReusableCell(withReuseIdentifier: "ImageCell", for: indexPath) as! ImageCell
-        cell.viewModel = self.viewModel.objectAtIndexPath(indexPath: indexPath)
+        cell.setViewModel(viewModel: self.viewModel.objectAtIndexPath(indexPath: indexPath))
         return cell
     }
 
@@ -150,16 +155,16 @@ class ImageListViewController : UIViewController, UICollectionViewDelegate, UICo
     }
 
     // MARK: - MWPhotoProwser delegate
-
+    
     func numberOfPhotos(in photoBrowser: MWPhotoBrowser!) -> UInt {
         let i:UInt = UInt(self.viewModel.numberOfItemsInSection(section: 0))
         return i
     }
-
-    func photoBrowser(photoBrowser:MWPhotoBrowser!, photoAtIndex index:UInt) -> MWPhoto! {
+    
+    func photoBrowser(_ photoBrowser:MWPhotoBrowser!, photoAt index:UInt) -> MWPhotoProtocol! {
         if index < self.viewModel.numberOfItemsInSection(section: 0) {
             let image:ImageViewModel! = self.viewModel.objectAtIndexPath(indexPath: NSIndexPath.init(row: Int(index), section:0) as IndexPath!)
-            let photoObj:MWPhoto! = MWPhoto(url: image.url)
+            let photoObj:MWPhoto! = MWPhoto(url: image.url(isThumbnail:false))
             photoObj.caption = image.caption
             return photoObj
         }

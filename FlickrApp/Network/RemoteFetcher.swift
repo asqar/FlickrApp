@@ -41,7 +41,7 @@ class RemoteFetcher {
         return RLMRealm.default()
     }
 
-    func fetchItemsWithMethod(method:RestMethod, fromPath restServiceUrl:String!, parameters:AnyObject!, one:Bool, synchronoulsy synchronously:Bool, success:@escaping (URLSessionTask?,AnyObject?)->Void, failure:@escaping (_ sessionTask:URLSessionTask?,_ error:NSError?)->Void) {
+    func fetchItemsWithMethod(method:RestMethod, fromPath restServiceUrl:String!, parameters:AnyObject!, one:Bool, synchronoulsy synchronously:Bool, success:@escaping (URLSessionTask?,Any?)->Void, failure:@escaping (URLSessionDataTask?, Error) -> Void) {
 #if DEBUG_VERBOSE
         let methodStart:NSDate! = NSDate.date()
 #endif
@@ -50,15 +50,19 @@ class RemoteFetcher {
         manager.requestSerializer = AFJSONRequestSerializer()
         manager.responseSerializer = AFJSONResponseSerializer()
 
-        let failureBlock:AnyObject! = { (operation:URLSessionTask!,error:NSError!) in
+        let progressBlock:(Progress) -> Void = { (downloadProgress) in
+            
+        }
+
+        let failureBlock:(URLSessionDataTask?, Error) -> Void = { (operation,error) in
 #if DEBUG
             NSLog("Error: %@", error)
 #endif
             failure(operation, error)
-            } as AnyObject
+            }
 
-        let successBlock:(URLSessionDataTask, AnyObject?) -> Void = { (task:URLSessionDataTask,responseObject:AnyObject!) in
-#if DEBUG_VERBOSE
+        let successBlock:(URLSessionDataTask, Any?) -> Void = { (task,responseObject) in
+#if DEBUG
             NSLog("%@ : %@", task.originalRequest.URL.absoluteString, responseObject)
 #endif
 
@@ -69,9 +73,9 @@ class RemoteFetcher {
                 if one {
                     result = self.entityClass.deserializeOne(d: responseObject as! NSDictionary!, in: realm)
                 } else {
-                    result = self.entityClass.deserializeMany(a: responseObject as! [AnyObject]!, in: realm) as AnyObject
+                    result = self.entityClass.deserializeMany(a: responseObject, in: realm) as AnyObject
                 }
-#if DEBUG_VERBOSE
+#if DEBUG
                 NSLog("%@", result)
 #endif
                 do {
@@ -98,43 +102,43 @@ class RemoteFetcher {
         let urlPath:String! = String(format:"%@%@%@", self.serverUrl(), self.serviceName, restServiceUrl)
         switch (method) { 
             case RestMethod.GET:
-                manager.get(urlPath, parameters:parameters, success:successBlock as? (URLSessionDataTask, Any?) -> Void, failure:failureBlock as? (URLSessionDataTask?, Error) -> Void)
+                manager.get(urlPath, parameters:parameters, progress:progressBlock, success:successBlock, failure:failureBlock)
                 break
             case RestMethod.POST:
-                manager.post(urlPath, parameters:parameters, success:successBlock as? (URLSessionDataTask, Any?) -> Void, failure:failureBlock as? (URLSessionDataTask?, Error) -> Void)
+                manager.post(urlPath, parameters:parameters, progress:progressBlock, success:successBlock, failure:failureBlock)
                 break
             case RestMethod.PUT:
-                manager.put(urlPath, parameters:parameters, success:successBlock as? (URLSessionDataTask, Any?) -> Void, failure:failureBlock as? (URLSessionDataTask?, Error) -> Void)
+                manager.put(urlPath, parameters:parameters, success:successBlock, failure:failureBlock)
                 break
             case RestMethod.DELETE:
-                manager.delete(urlPath, parameters:parameters, success:successBlock as? (URLSessionDataTask, Any?) -> Void, failure:failureBlock as? (URLSessionDataTask?, Error) -> Void)
+                manager.delete(urlPath, parameters:parameters, success:successBlock, failure:failureBlock)
                 break
         }
     }
 
-    func fetchOneFromPath(restServiceUrl:String!, synchronoulsy:Bool, success:@escaping (URLSessionTask?,AnyObject?)->Void, failure:@escaping (_ sessionTask:URLSessionTask?,_ error:NSError?)->Void) {
+    func fetchOneFromPath(restServiceUrl:String!, synchronoulsy:Bool, success:@escaping (URLSessionTask?,Any?)->Void, failure:@escaping (URLSessionDataTask?, Error) -> Void) {
         self.fetchItemsWithMethod(method: RestMethod.GET, fromPath: restServiceUrl, parameters:nil, one:true, synchronoulsy:synchronoulsy, success:success, failure:failure)
     }
 
-    func fetchManyFromPath(restServiceUrl:String!, synchronoulsy:Bool, success:@escaping (URLSessionTask?,AnyObject?)->Void, failure:@escaping (_ sessionTask:URLSessionTask?,_ error:NSError?)->Void) {
+    func fetchManyFromPath(restServiceUrl:String!, synchronoulsy:Bool, success:@escaping (URLSessionTask?,Any?)->Void, failure:@escaping (URLSessionDataTask?, Error) -> Void) {
         self.fetchItemsWithMethod(method: RestMethod.GET, fromPath: restServiceUrl, parameters:nil, one:false, synchronoulsy:synchronoulsy, success:success, failure:failure)
     }
 
-    func postObject(o:AnyObject!, synchronoulsy:Bool, success:@escaping (URLSessionTask?,AnyObject?)->Void, failure:@escaping (_ sessionTask:URLSessionTask?,_ error:NSError?)->Void) {
+    func postObject(o:AnyObject!, synchronoulsy:Bool, success:@escaping (URLSessionTask?,Any?)->Void, failure:@escaping (URLSessionDataTask?, Error) -> Void) {
         self.postObject(o: o, toPath:pluralName, synchronoulsy:synchronoulsy, success:success, failure:failure)
     }
 
-    func postObject(o:AnyObject!, toPath path:String!, synchronoulsy:Bool, success:@escaping (URLSessionTask?,AnyObject?)->Void, failure:@escaping (_ sessionTask:URLSessionTask?,_ error:NSError?)->Void) {
+    func postObject(o:AnyObject!, toPath path:String!, synchronoulsy:Bool, success:@escaping (URLSessionTask?,Any?)->Void, failure:@escaping (URLSessionDataTask?, Error) -> Void) {
         let restServiceUrl:String! = String(format:"/%@/%@", serviceName, path)
         self.fetchItemsWithMethod(method: RestMethod.POST, fromPath: restServiceUrl, parameters:nil, one:true, synchronoulsy:synchronoulsy, success:success, failure:failure)
     }
 
-    func putObject(o:AnyObject!, objectId:Int, synchronoulsy:Bool, success:@escaping (URLSessionTask?,AnyObject?)->Void, failure:@escaping (URLSessionTask?,NSError?)->Void) {
+    func putObject(o:AnyObject!, objectId:Int, synchronoulsy:Bool, success:@escaping (URLSessionTask?,Any?)->Void, failure:@escaping (URLSessionDataTask?, Error) -> Void) {
         let restServiceUrl:String! = String(format:"%@/%@/%d", serviceName, pluralName, objectId)
         self.fetchItemsWithMethod(method: RestMethod.PUT, fromPath: restServiceUrl, parameters:nil, one:true, synchronoulsy:synchronoulsy, success:success, failure:failure)
     }
 
-    func deleteObject(o:AnyObject!, objectId:Int, synchronoulsy:Bool, success:@escaping (URLSessionTask?,AnyObject?)->Void, failure:@escaping (URLSessionTask?,NSError?)->Void) {
+    func deleteObject(o:AnyObject!, objectId:Int, synchronoulsy:Bool, success:@escaping (URLSessionTask?,Any?)->Void, failure:@escaping (URLSessionDataTask?, Error) -> Void) {
         let restServiceUrl:String! = String(format:"%@/%@/%d", serviceName, pluralName, objectId)
         self.fetchItemsWithMethod(method: RestMethod.DELETE, fromPath: restServiceUrl, parameters:nil, one:true, synchronoulsy:synchronoulsy, success:success, failure:failure)
     }

@@ -21,7 +21,7 @@ class PopularFeedsViewController : ImageListViewController {
         self.showLoadingView(msg: "Loading feeds...".localized)
     }
 
-    func prepareForSegue(segue:UIStoryboardSegue!, sender:AnyObject!) {
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if (segue.destination is SearchViewController) {
             let searchViewModel:SearchViewModel! = SearchViewModel()
             let vc:SearchViewController! = segue.destination as! SearchViewController

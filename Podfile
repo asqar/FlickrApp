@@ -8,9 +8,8 @@ use_frameworks!
 pod 'SAMKeychain'
 pod 'AFNetworking'  #, '~> 2.6.0' # There is a memory leak with AFNetworking >= 3.0
 pod 'KVNProgress'
-pod 'MWPhotoBrowser'
+pod "MWPhotoBrowser", :podspec =>'https://raw.githubusercontent.com/moinku07/MWPhotoBrowser/master/MWPhotoBrowser.podspec'
 pod 'FMMosaicLayout'
-pod 'DejalActivityView'
 
 target "FlickrApp" do
   project 'FlickrApp.xcodeproj/'

@@ -12,15 +12,15 @@ import Foundation
 
 class Feed : Entity {
 
-    var title:String!
-    var link:String!
-    var media:String!
-    var dateTaken:NSDate!
-    var descr:String!
-    var datePublished:NSDate!
-    var author:String!
-    var authorId:String!
-    var tags:String!
+    @objc dynamic var title:String!
+    @objc dynamic var link:String!
+    @objc dynamic var media:String!
+    @objc dynamic var dateTaken:NSDate!
+    @objc dynamic var descr:String!
+    @objc dynamic var datePublished:NSDate!
+    @objc dynamic var author:String!
+    @objc dynamic var authorId:String!
+    @objc dynamic var tags:String!
 
     class func JSONInboundMappingDictionary() -> NSDictionary! {
         return [
@@ -50,14 +50,15 @@ class Feed : Entity {
         return item
     }
 
-    override class func deserializeMany(a:[AnyObject]!, in realm:RLMRealm!) -> [AnyObject] {
-//        if (a is NSDictionary) {
-//            a = (a as! NSDictionary).objectForKey("items")
-//        }
-//        if (a is NSDictionary) {
-//            a = (a as! NSDictionary).objectForKey("photo")
-//        }
-        let result:[Feed]! = Feed.createOrUpdate(in:realm, withJSONArray: a)! as! [Feed]
+    override class func deserializeMany(a:Any?, in realm:RLMRealm!) -> [AnyObject] {
+        var items:[AnyObject]
+        if (a is NSDictionary) {
+            items = (a as! NSDictionary).object(forKey: "items") as! [AnyObject]
+        } else {
+            items = a as! [AnyObject]
+        }
+        
+        let result:[Feed]! = Feed.createOrUpdate(in:realm, withJSONArray: items)! as! [Feed]
 
         let pattern:String! = "(?<=\").+(?=\")"
         do {

@@ -11,17 +11,17 @@ import Realm_JSON
 
 class Photo : Entity {
 
-    var photoId:String!
-    var owner:String!
-    var secret:String!
-    var server:String!
-    var farm:Int!
-    var title:String!
-    var isPublic:Int!
-    var isFriend:Int!
-    var isFamily:Int!
-    var orderIndex:Int!
-    var searchAttempt:SearchAttempt!
+    @objc dynamic var photoId:String!
+    @objc dynamic var owner:String!
+    @objc dynamic var secret:String!
+    @objc dynamic var server:String!
+    @objc dynamic var farm:Int = 0
+    @objc dynamic var title:String!
+    @objc dynamic var isPublic:Int = 0
+    @objc dynamic var isFriend:Int = 0
+    @objc dynamic var isFamily:Int = 0
+    @objc dynamic var orderIndex:Int = 0
+    @objc dynamic var searchAttempt:SearchAttempt!
 
     class func JSONInboundMappingDictionary() -> NSDictionary! {
         return [
@@ -51,13 +51,14 @@ class Photo : Entity {
         return item
     }
 
-    override class func deserializeMany(a:[AnyObject]!, in realm:RLMRealm!) -> [AnyObject] {
-//        if (a is NSDictionary) {
-//            a = (a as! NSDictionary).objectForKey("photos")
-//        }
-//        if (a is NSDictionary) {
-//            a = (a as! NSDictionary).objectForKey("photo")
-//        }
-        return Photo.createOrUpdate(in:realm, withJSONArray: a)! as [AnyObject]
+    override class func deserializeMany(a:Any?, in realm:RLMRealm!) -> [AnyObject] {
+        var items:[AnyObject]
+        if (a is NSDictionary) {
+            let d:NSDictionary = (a as! NSDictionary).object(forKey: "photos") as! NSDictionary
+            items = d.object(forKey: "photo") as! [AnyObject]
+        } else {
+            items = a as! [AnyObject]
+        }
+        return Photo.createOrUpdate(in:realm, withJSONArray: items)! as [AnyObject]
     }
 }

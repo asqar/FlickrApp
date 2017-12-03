@@ -37,6 +37,6 @@ class PopularFeedsViewModel : ImageListViewModel {
 
     override func objectAtIndexPath(indexPath:IndexPath!) -> ImageViewModel! {
         let feed:Feed! = self.fetchedResultsController.object(at: indexPath) as! Feed
-        return ImageViewModel(feed:feed)
+        return FeedImageViewModel(feed:feed)
     }
 }

@@ -9,7 +9,7 @@
 import UIKit
 import SVPullToRefresh
 
-class SearchViewController : UITableViewController {
+class SearchViewController : UITableViewController, UISearchBarDelegate {
 
     @IBOutlet weak var searchBar: UISearchBar?
     @IBOutlet weak var pullToRefreshView: SVPullToRefreshView?
@@ -25,21 +25,24 @@ class SearchViewController : UITableViewController {
             self.tableView.reloadData()
             self.tableView.pullToRefreshView.stopAnimating()
         })
-        self.viewModel.updatedContentSignal.subscribeNext({ (x:AnyObject!) in
+        self.tableView.addInfiniteScrolling(actionHandler: {
+            
+        })
+        self.viewModel.updatedContentSignal.subscribeNext({ (x) in
             self.tableView.reloadData()
             self.tableView.pullToRefreshView.stopAnimating()
             self.tableView.infiniteScrollingView.stopAnimating()
-            } as! (Any?) -> Void)
+            })
 
         self.viewModel.loadHistory()
     }
 
-    func viewWillAppear(animated:Bool) {
+    override func viewWillAppear(_ animated:Bool) {
         super.viewWillAppear(animated)
-//        self.viewModel.active = true
+        self.viewModel.isActive = true
     }
 
-    func viewDidAppear(animated:Bool) {
+    override func viewDidAppear(_ animated:Bool) {
         super.viewDidAppear(animated)
         self.tableView.reloadData()
     }
@@ -55,7 +58,7 @@ class SearchViewController : UITableViewController {
 
     // MARK: - Search
 
-    func searchBarSearchButtonClicked(searchBar:UISearchBar!) {
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         if searchBar.text?.count == 0
             {return}
         searchBar.endEditing(true)
@@ -68,23 +71,23 @@ class SearchViewController : UITableViewController {
     }
 
     // MARK: - UITableView data source
-
-    func numberOfSectionsInTableView(tableView:UITableView!) -> Int {
+    
+    override func numberOfSections(in tableView: UITableView) -> Int {
         return self.viewModel.numberOfSections()
     }
 
-    func tableView(tableView:UITableView!, numberOfRowsInSection section:Int) -> Int {
+    override func tableView(_ tableView:UITableView, numberOfRowsInSection section:Int) -> Int {
         return self.viewModel.numberOfItemsInSection(section: 0)
     }
 
-    func tableView(tableView:UITableView!, cellForRowAtIndexPath indexPath:IndexPath!) -> UITableViewCell! {
+    override func tableView(_ tableView:UITableView, cellForRowAt indexPath:IndexPath) -> UITableViewCell {
         let cell:SearchAttemptCell! = tableView.dequeueReusableCell(withIdentifier: "SearchAttemptCell") as! SearchAttemptCell
         let viewModel:SearchAttemptViewModel! = self.viewModel.objectAtIndexPath(indexPath: indexPath)
-        cell.viewModel = viewModel
+        cell.setViewModel(viewModel: viewModel)
         return cell
     }
 
-    func tableView(tableView:UITableView!, heightForRowAtIndexPath indexPath:IndexPath!) -> CGFloat {
+    override func tableView(_ tableView:UITableView, heightForRowAt indexPath:IndexPath) -> CGFloat {
         let searchAttempt:SearchAttemptViewModel! = self.viewModel.objectAtIndexPath(indexPath: indexPath)
 
         let width:CGFloat = UIScreen.main.bounds.size.width - 20.0 * 2 - 156.0 - 35.0
@@ -92,13 +95,13 @@ class SearchViewController : UITableViewController {
         return height
     }
 
-    func tableView(tableView:UITableView!, didSelectRowAtIndexPath indexPath:IndexPath!) {
+    override func tableView(_ tableView:UITableView, didSelectRowAt indexPath:IndexPath) {
         self.tableView.deselectRow(at: indexPath, animated:true)
     }
 
     // MARK: -
 
-    func prepareForSegue(segue:UIStoryboardSegue!, sender:AnyObject!) {
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if (segue.destination is SearchResultViewController) {
             let searchAttemptViewModel:SearchAttemptViewModel! = self.viewModel.objectAtIndexPath(indexPath: self.tableView.indexPathForSelectedRow)
             let vc:SearchResultViewController! = segue.destination as! SearchResultViewController

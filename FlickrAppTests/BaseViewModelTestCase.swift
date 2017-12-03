@@ -7,12 +7,13 @@
 //
 
 import Realm
+import XCTest
 
 class BaseViewModelTestCase : XCTestCase {
 
     private(set) var realm:RLMRealm!
 
-    func setUp() {
+    override func setUp() {
         super.setUp()
         // Put setup code here. This method is called before the invocation of each test method in the class.
 
@@ -26,7 +27,7 @@ class BaseViewModelTestCase : XCTestCase {
         self.realm = RLMRealm.realmWithConfiguration(config, error: &error)
     }
 
-    func tearDown() {
+    override func tearDown() {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
         super.tearDown()
     }

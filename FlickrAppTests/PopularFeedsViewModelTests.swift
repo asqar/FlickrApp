@@ -6,21 +6,17 @@
 //  Copyright © 2017 Askar Bakirov. All rights reserved.
 //
 
-//#import "BaseViewModelTestCase.h"
-//#import "PopularFeedsViewModel.h"
-//#import "Feed.h"
-//#import "ImageViewModel.h"
-
 import OCMock
+import XCTest
 
 class PopularFeedsViewModelTests : BaseViewModelTestCase {
 
-    func setUp() {
+    override func setUp() {
         super.setUp()
         // Put setup code here. This method is called before the invocation of each test method in the class.
     }
 
-    func tearDown() {
+    override func tearDown() {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
         super.tearDown()
     }
@@ -32,17 +28,20 @@ class PopularFeedsViewModelTests : BaseViewModelTestCase {
         feed1.media = "http://mofo.com/1.jpg"
         feed1.author = "asqar"
         feed1.title = "hello world"
-        self.realm.addObject(feed1)
+        self.realm.add(feed1)
 
         let feed2:Feed! = Feed()
         feed2.link = "http://fubar.com"
         feed2.media = "http://fubar.com/2.jpg"
         feed2.author = "britney"
         feed2.title = "wassup"
-        self.realm.addObject(feed2)
+        self.realm.add(feed2)
 
-        let error:NSError! = nil
-        self.realm.commitWriteTransaction(&error)
+        do {
+            try self.realm.commitWriteTransaction(&error)
+        } catch {
+            
+        }
         XCTAssertNil(error, "error should be nill")
 
         let mockViewModel:AnyObject! = OCMockObject.partialMockForObject(PopularFeedsViewModel())
@@ -52,7 +51,7 @@ class PopularFeedsViewModelTests : BaseViewModelTestCase {
         XCTAssertEqual(mockViewModel.numberOfSections(), 1)
         XCTAssertEqual(mockViewModel.numberOfItemsInSection(0), 2)
 
-        let imageViewModel:ImageViewModel! = mockViewModel.objectAtIndexPath(IndexPath.indexPathForRow(0, inSection:0))
+        let imageViewModel:ImageViewModel! = mockViewModel.objectAtIndex(IndexPath.indexPathForRow(0, inSection:0))
         XCTAssertTrue((imageViewModel.url.absoluteString == "http://mofo.com/1.jpg"), "The item should be equal to the value that was passed in.")
         XCTAssertTrue((imageViewModel.caption == "@asqar"), "The item should be equal to the value that was passed in.")
     }

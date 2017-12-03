@@ -20,11 +20,11 @@ PODS:
   - Fabric (1.7.2)
   - FMMosaicLayout (0.1.4)
   - KVNProgress (2.3.1)
-  - MBProgressHUD (0.9.2)
-  - MWPhotoBrowser (2.1.2):
-    - DACircularProgress (~> 2.3)
-    - MBProgressHUD (~> 0.9)
-    - SDWebImage (!= 3.7.2, ~> 3.7)
+  - MBProgressHUD (1.1.0)
+  - MWPhotoBrowser (2.1.4):
+    - DACircularProgress (~> 2.3.1)
+    - MBProgressHUD (~> 1.1.0)
+    - SDWebImage (~> 4.2.2)
   - OCMock (3.4.1)
   - RBQFetchedResultsController (5.0.2):
     - RBQSafeRealmObject
@@ -50,11 +50,11 @@ PODS:
   - RealmUtilities (0.4):
     - Realm (>= 0.95)
   - SAMKeychain (1.5.3)
-  - SDWebImage (3.8.2):
-    - SDWebImage/Core (= 3.8.2)
-  - SDWebImage/Core (3.8.2)
+  - SDWebImage (4.2.2):
+    - SDWebImage/Core (= 4.2.2)
+  - SDWebImage/Core (4.2.2)
   - SVPullToRefresh (0.4.1)
-  - TwitterCore (3.0.2)
+  - TwitterCore (3.0.3)
 
 DEPENDENCIES:
   - AFNetworking
@@ -62,7 +62,7 @@ DEPENDENCIES:
   - Fabric
   - FMMosaicLayout
   - KVNProgress
-  - MWPhotoBrowser
+  - MWPhotoBrowser (from `https://raw.githubusercontent.com/moinku07/MWPhotoBrowser/master/MWPhotoBrowser.podspec`)
   - OCMock
   - RBQFetchedResultsController (from `https://github.com/asqar/RBQFetchedResultsController.git`)
   - ReactiveCocoa
@@ -75,6 +75,8 @@ DEPENDENCIES:
   - TwitterCore
 
 EXTERNAL SOURCES:
+  MWPhotoBrowser:
+    :podspec: https://raw.githubusercontent.com/moinku07/MWPhotoBrowser/master/MWPhotoBrowser.podspec
   RBQFetchedResultsController:
     :git: https://github.com/asqar/RBQFetchedResultsController.git
   Realm+JSON:
@@ -95,8 +97,8 @@ SPEC CHECKSUMS:
   Fabric: 9cd6a848efcf1b8b07497e0b6a2e7d336353ba15
   FMMosaicLayout: c0febf6876c987c425d7e2176d034fa7a2c98cb5
   KVNProgress: 8167b1f19e2758290c0b6143020ed9dcbb0477a1
-  MBProgressHUD: 1569cf7ace17a8bac47aabfbb8580a49690386d1
-  MWPhotoBrowser: 5836d7aa041dc05a13de380c246826578adc5ea5
+  MBProgressHUD: e7baa36a220447d8aeb12769bf0585582f3866d9
+  MWPhotoBrowser: c145b4dc9dffad86f04ab807ff7d7ce078519183
   OCMock: 2cd0716969bab32a2283ff3a46fd26a8c8b4c5e3
   RBQFetchedResultsController: 24877a429680be6d22709a2e527bcb766877bf4e
   RBQSafeRealmObject: 128e6ece2acceeb7dea9d00b8fa40ba4c489c3fa
@@ -106,10 +108,10 @@ SPEC CHECKSUMS:
   Realm+JSON: 14c8280b5c79c18a4a9317edfcd5cf6fab0acfa0
   RealmUtilities: bd4d18141e62a6cdcfa1859f1f090a27ab282628
   SAMKeychain: 483e1c9f32984d50ca961e26818a534283b4cd5c
-  SDWebImage: 098e97e6176540799c27e804c96653ee0833d13c
+  SDWebImage: 89a9d32cd520bbb46eb14e541d5109b3564af198
   SVPullToRefresh: ba2e718695a43253d8bea6852d2960097dc15d8c
-  TwitterCore: e0420b01e02e7d20e94690e37f43e75de219ab8d
+  TwitterCore: 549c74ed5f3d6134392dc944c6d215e233e50ad8
 
-PODFILE CHECKSUM: f24c90ab9b57b89fd0ced6fd5bd57496658431e2
+PODFILE CHECKSUM: a1bcca5e05bb58db34fe2106c5354ef2f6068a77
 
 COCOAPODS: 1.4.0.beta.2

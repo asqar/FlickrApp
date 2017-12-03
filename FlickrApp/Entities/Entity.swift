@@ -14,7 +14,7 @@ class Entity: RLMObject {
         return Entity()
     }
     
-    class func deserializeMany(a: [AnyObject]!, in: RLMRealm!) -> [AnyObject] {
+    class func deserializeMany(a: Any?, in: RLMRealm!) -> [AnyObject] {
         return []
     }
 }

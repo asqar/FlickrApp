@@ -44,7 +44,7 @@ class ImageListViewModel : BaseViewModel, RBQFetchedResultsControllerDelegate {
                 _fetchedResultsController.delegate = self
                 _fetchedResultsController.performFetch()
 
-                (self.dismissLoadingSignal as! RACSubject).sendNext({ (x:AnyObject!) in })
+                (self.dismissLoadingSignal as! RACSubject).sendNext({ (x:Any!) in })
             }
 
             return _fetchedResultsController
@@ -55,16 +55,17 @@ class ImageListViewModel : BaseViewModel, RBQFetchedResultsControllerDelegate {
         self.currentPage = 1
         super.init()
         
-//        self.updatedContentSignal = RACSubject.subject() // "ImageListViewModel updatedContentSignal"
-//        self.startLoadingSignal = RACSubject.subject() // "ImageListViewModel startLoadingSignal"
-//        self.dismissLoadingSignal = RACSubject.subject() // "ImageListViewModel dismissLoadingSignal"
-//        self.errorMessageSignal = RACSubject.subject() // "ImageListViewModel errorMessageSignal"
-//
-//
-//        self.didBecomeActiveSignal.subscribeNext({ (x:AnyObject!) in 
-//        })
+        self.updatedContentSignal = RACSubject()
+        self.updatedContentSignal.name = "ImageListViewModel updatedContentSignal"
+        self.startLoadingSignal = RACSubject()
+        self.startLoadingSignal.name = "ImageListViewModel startLoadingSignal"
+        self.dismissLoadingSignal = RACSubject()
+        self.dismissLoadingSignal.name = "ImageListViewModel dismissLoadingSignal"
+        self.errorMessageSignal = RACSubject()
+        self.errorMessageSignal.name = "ImageListViewModel errorMessageSignal"
 
 
+        self.didBecomeActiveSignal.subscribeNext({(x) in })
     }
 
     func numberOfSections() -> Int {
@@ -91,19 +92,19 @@ class ImageListViewModel : BaseViewModel, RBQFetchedResultsControllerDelegate {
             self.currentPage += 1
         }
 
-        self.fetcher.fetchManyFromPath(restServiceUrl: String(format:"%@&per_page=%d&page=%d", self.serviceUrl, PER_PAGE, self.currentPage),  synchronoulsy:false, success:{ (operation:URLSessionTask!,mappingResult:AnyObject!) in
+        self.fetcher.fetchManyFromPath(restServiceUrl: String(format:"%@&per_page=%d&page=%d", self.serviceUrl, PER_PAGE, self.currentPage),  synchronoulsy:false, success:{ (operation:URLSessionTask?,mappingResult:Any?) in
 
             self.processDownloadedResults(results: mappingResult as! [AnyObject]!)
 
             self._fetchedResultsController = nil
 
-            (self.updatedContentSignal as! RACSubject).sendNext({ (x:AnyObject!) in })
-        }, failure:{ (operation:URLSessionTask!,error:NSError!) in 
-            (self.dismissLoadingSignal as! RACSubject).sendNext({ (x:AnyObject!) in })
+            (self.updatedContentSignal as! RACSubject).sendNext({ (x:Any!) in })
+        }, failure:{ (operation:URLSessionTask?,error:Error) in
+            (self.dismissLoadingSignal as! RACSubject).sendNext({ (x:Any!) in })
 
 #if DEBUG
             NSLog("%@", error)
-            //[self.errorMessageSignal sendNext:^(id x) {}];
+            (self.errorMessageSignal as! RACSubject).sendNext({(x:Any!) in })
 #endif
         })
     }
@@ -113,7 +114,9 @@ class ImageListViewModel : BaseViewModel, RBQFetchedResultsControllerDelegate {
     // `fetchedResultsController` has moved as a getter.
 
     func controllerDidChangeContent(_ controller:RBQFetchedResultsController) {
-        (self.updatedContentSignal as! RACSubject).sendNext({ (x:AnyObject!) in })
+        (self.updatedContentSignal as! RACSubject).sendNext({ (x:Any!) in
+            
+        })
     }
 
     func controllerWillChangeContent(_ controller:RBQFetchedResultsController) {

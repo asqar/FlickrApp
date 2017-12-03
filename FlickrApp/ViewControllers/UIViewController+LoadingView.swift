@@ -7,20 +7,15 @@
 //
 
 import UIKit
-import DejalActivityView
+import KVNProgress
 
 extension UIViewController {
 
     func showLoadingView(msg:String!) {
-        if DejalBezelActivityView.current() != nil
-        {
-            DejalBezelActivityView.current().activityLabel.text = msg
-        } else {
-            DejalBezelActivityView(for: self.view, withLabel: msg, width:UInt(250.0)).animateShow()
-        }
+        KVNProgress.show(withStatus: msg)
     }
 
     func hideLoadingView() {
-        DejalBezelActivityView.remove(animated: true)
+        KVNProgress.dismiss()
     }
 }

@@ -73,6 +73,6 @@ class SearchResultViewModel : ImageListViewModel {
 
     override func objectAtIndexPath(indexPath:IndexPath!) -> ImageViewModel! {
         let photo:Photo! = self.fetchedResultsController.object(at: indexPath) as! Photo
-        return ImageViewModel(photo:photo, isThumbnail:true)
+        return PhotoImageViewModel(photo:photo)
     }
 }

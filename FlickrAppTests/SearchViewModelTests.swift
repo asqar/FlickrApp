@@ -6,20 +6,16 @@
 //  Copyright © 2017 Askar Bakirov. All rights reserved.
 //
 
-//#import "BaseViewModelTestCase.h"
-//#import "SearchViewModel.h"
-//#import "SearchAttempt.h"
-
 import OCMock
 
 class SearchViewModelTests : BaseViewModelTestCase {
 
-    func setUp() {
+    override func setUp() {
         super.setUp()
         // Put setup code here. This method is called before the invocation of each test method in the class.
     }
 
-    func tearDown() {
+    override func tearDown() {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
         super.tearDown()
     }

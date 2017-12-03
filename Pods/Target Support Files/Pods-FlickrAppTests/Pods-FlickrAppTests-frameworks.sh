@@ -109,6 +109,43 @@ strip_invalid_archs() {
   fi
 }
 
+
+if [[ "$CONFIGURATION" == "Debug" ]]; then
+  install_framework "${BUILT_PRODUCTS_DIR}/AFNetworking/AFNetworking.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/DACircularProgress/DACircularProgress.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/FMMosaicLayout/FMMosaicLayout.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/KVNProgress/KVNProgress.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/MBProgressHUD/MBProgressHUD.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/MWPhotoBrowser/MWPhotoBrowser.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/RBQFetchedResultsController/RBQFetchedResultsController.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/RBQSafeRealmObject/RBQSafeRealmObject.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/ReactiveCocoa/ReactiveCocoa.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/ReactiveViewModel/ReactiveViewModel.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/Realm/Realm.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/Realm+JSON/Realm_JSON.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/RealmUtilities/RealmUtilities.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/SAMKeychain/SAMKeychain.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/SDWebImage/SDWebImage.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/OCMock/OCMock.framework"
+fi
+if [[ "$CONFIGURATION" == "Release" ]]; then
+  install_framework "${BUILT_PRODUCTS_DIR}/AFNetworking/AFNetworking.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/DACircularProgress/DACircularProgress.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/FMMosaicLayout/FMMosaicLayout.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/KVNProgress/KVNProgress.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/MBProgressHUD/MBProgressHUD.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/MWPhotoBrowser/MWPhotoBrowser.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/RBQFetchedResultsController/RBQFetchedResultsController.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/RBQSafeRealmObject/RBQSafeRealmObject.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/ReactiveCocoa/ReactiveCocoa.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/ReactiveViewModel/ReactiveViewModel.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/Realm/Realm.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/Realm+JSON/Realm_JSON.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/RealmUtilities/RealmUtilities.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/SAMKeychain/SAMKeychain.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/SDWebImage/SDWebImage.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/OCMock/OCMock.framework"
+fi
 if [ "${COCOAPODS_PARALLEL_CODE_SIGN}" == "true" ]; then
   wait
 fi

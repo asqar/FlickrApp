@@ -14,7 +14,7 @@
         <!--Search Result View Controller-->
         <scene sceneID="KLU-RI-5Ux">
             <objects>
-                <viewController storyboardIdentifier="SearchResultViewController" id="8JT-Sf-hOK" customClass="SearchResultViewController" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="SearchResultViewController" id="8JT-Sf-hOK" customClass="SearchResultViewController" customModule="FlickrApp" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="ALg-05-5b9"/>
                         <viewControllerLayoutGuide type="bottom" id="Q6v-IN-b0J"/>
@@ -28,7 +28,7 @@
                                 <color key="backgroundColor" red="0.1215686275" green="0.1215686275" blue="0.1215686275" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <collectionViewLayout key="collectionViewLayout" id="g9b-mN-Z8x" customClass="FMMosaicLayout"/>
                                 <cells>
-                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="ImageCell" id="Pvn-Kj-aMq" customClass="ImageCell">
+                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="ImageCell" id="Pvn-Kj-aMq" customClass="ImageCell" customModule="FlickrApp" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="0.0" width="150" height="150"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
@@ -98,7 +98,7 @@
                     <navigationItem key="navigationItem" id="uuX-gb-9Np"/>
                     <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>
                     <connections>
-                        <outlet property="collectionView" destination="cWH-wZ-oVb" id="bPa-bS-pS0"/>
+                        <outlet property="collectionView" destination="cWH-wZ-oVb" id="n4R-Og-TpC"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="OLN-Uw-zvn" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -108,7 +108,7 @@
         <!--Search View Controller-->
         <scene sceneID="Ih8-2n-nxV">
             <objects>
-                <tableViewController storyboardIdentifier="SearchViewController" id="DMY-ck-muZ" customClass="SearchViewController" sceneMemberID="viewController">
+                <tableViewController storyboardIdentifier="SearchViewController" id="DMY-ck-muZ" customClass="SearchViewController" customModule="FlickrApp" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="b0r-Db-U9M">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="603"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -124,7 +124,7 @@
                             </connections>
                         </searchBar>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="gray" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="SearchAttemptCell" id="tHi-Sk-6ka" customClass="SearchAttemptCell">
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="gray" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="SearchAttemptCell" id="tHi-Sk-6ka" customClass="SearchAttemptCell" customModule="FlickrApp" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="72" width="375" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="tHi-Sk-6ka" id="7EP-Vg-Cj7">
@@ -207,7 +207,7 @@
         <!--Popular Feeds View Controller-->
         <scene sceneID="2TW-i3-L1I">
             <objects>
-                <viewController storyboardIdentifier="PopularFeedsViewController" id="iPp-7I-VXs" customClass="PopularFeedsViewController" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="PopularFeedsViewController" id="iPp-7I-VXs" customClass="PopularFeedsViewController" customModule="FlickrApp" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="DMP-K4-daY"/>
                         <viewControllerLayoutGuide type="bottom" id="VSx-TO-UJ6"/>
@@ -221,7 +221,7 @@
                                 <color key="backgroundColor" red="0.1215686275" green="0.1215686275" blue="0.1215686275" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <collectionViewLayout key="collectionViewLayout" id="WTN-55-7nb" customClass="FMMosaicLayout"/>
                                 <cells>
-                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="ImageCell" id="McR-ba-Qfr" customClass="ImageCell">
+                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="ImageCell" id="McR-ba-Qfr" customClass="ImageCell" customModule="FlickrApp" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="0.0" width="150" height="150"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
@@ -291,13 +291,13 @@
                     <navigationItem key="navigationItem" id="htT-nd-pkN">
                         <barButtonItem key="rightBarButtonItem" systemItem="search" id="Fqm-hb-LuW">
                             <connections>
-                                <segue destination="DMY-ck-muZ" kind="show" id="Z8N-Zw-TzT"/>
+                                <segue destination="DMY-ck-muZ" kind="show" id="I5h-gt-uab"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
                     <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>
                     <connections>
-                        <outlet property="collectionView" destination="LCL-85-Xx3" id="O0h-kd-dhk"/>
+                        <outlet property="collectionView" destination="LCL-85-Xx3" id="mbz-aR-57X"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="CRz-ho-RW1" userLabel="First Responder" sceneMemberID="firstResponder"/>

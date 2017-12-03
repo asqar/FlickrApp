@@ -27,10 +27,13 @@ class Language {
      */
     class func setLanguage(l:String!) {
         let path:String! = Bundle.main.path(forResource: l, ofType:"lproj")
-        bundle = Bundle(path: path)
+        bundle = path == nil ? Bundle.main : Bundle(path: path)
     }
 
     class func get(key:String!, alter alternate:String!) -> String! {
+        if bundle == nil {
+            initialize()
+        }
         let v:String! = bundle.localizedString(forKey: key, value:alternate, table:nil)
         return v == nil ? key : v
     }

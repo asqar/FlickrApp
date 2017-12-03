@@ -11,18 +11,19 @@ import Realm_JSON
 
 class SearchAttempt : Entity {
 
-    var searchTerm:String!
-    var dateSearched:Date!
-    var isSuccessful:Bool!
-    private(set) var photos:RLMLinkingObjects<RLMObject>!
-
+    @objc dynamic var searchTerm:String!
+    @objc dynamic var dateSearched:Date!
+    @objc dynamic var isSuccessful:Bool = false
+//    @objc dynamic var photos:RLMLinkingObjects<RLMObject>!
+    @objc dynamic var photos = RLMArray<AnyObject>(objectClassName: Photo.className())
+    
     override class func primaryKey() -> String? {
         return "searchTerm"
     }
 
-    func linkingObjectsProperties() -> NSDictionary! {
-        return [
-            "photos": RLMPropertyDescriptor(with: Photo.self, propertyName:"searchAttempt"),
-                 ]
-    }
+//    func linkingObjectsProperties() -> NSDictionary! {
+//        return [
+//            "photos": RLMPropertyDescriptor(with: Photo.self, propertyName:"searchAttempt"),
+//                 ]
+//    }
 }
