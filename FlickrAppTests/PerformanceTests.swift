@@ -6,7 +6,9 @@
 //  Copyright © 2017 Askar Bakirov. All rights reserved.
 //
 
+@testable import FlickrApp
 import Foundation
+import XCTest
 
 class PerformanceTests : BaseViewModelTestCase {
 
@@ -21,19 +23,19 @@ class PerformanceTests : BaseViewModelTestCase {
     }
 
     func testPerformance_FeedFetcher() {
-        self.measureBlock({ 
-            FeedFetcher.sharedFetcher.fetchManyFromPath("", synchronoulsy:true, success:{ (operation,mappingResult) in
+        self.measure({ 
+            FeedFetcher.sharedFetcher.fetchManyFromPath(restServiceUrl: "", synchronoulsy:true, success:{ (operation,mappingResult) in
             }, failure:{ (operation,error) in
-                XCTFail("Failed with error: %@", error)
+                XCTFail()
             })
         })
     }
 
     func testPerformance_PhotoFetcher() {
-        self.measureBlock({ 
-            PhotoFetcher.sharedFetcher.fetchManyFromPath("text=kittens", synchronoulsy:true, success:{ (operation,mappingResult) in
+        self.measure({ 
+            PhotoFetcher.sharedFetcher.fetchManyFromPath(restServiceUrl: "text=kittens", synchronoulsy:true, success:{ (operation,mappingResult) in
             }, failure:{ (operation,error) in
-                XCTFail("Failed with error: %@", error)
+                XCTFail()
             })
         })
     }

@@ -6,8 +6,9 @@
 //  Copyright © 2017 Askar Bakirov. All rights reserved.
 //
 
-import OCMock
+@testable import FlickrApp
 import XCTest
+import Realm
 
 class PopularFeedsViewModelTests : BaseViewModelTestCase {
 
@@ -19,6 +20,20 @@ class PopularFeedsViewModelTests : BaseViewModelTestCase {
     override func tearDown() {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
         super.tearDown()
+    }
+    
+    class MockPopularFeedsViewModel : PopularFeedsViewModel {
+        var _realm:RLMRealm!
+        
+        init(realm: RLMRealm!)
+        {
+            _realm = realm
+            super.init()
+        }
+        
+        override func realm() -> RLMRealm! {
+            return _realm
+        }
     }
 
     func testContent() {
@@ -38,21 +53,19 @@ class PopularFeedsViewModelTests : BaseViewModelTestCase {
         self.realm.add(feed2)
 
         do {
-            try self.realm.commitWriteTransaction(&error)
-        } catch {
-            
+            try self.realm.commitWriteTransaction()
+        } catch let error {
+            XCTAssertNil(error, "error should be nill")
         }
-        XCTAssertNil(error, "error should be nill")
 
-        let mockViewModel:AnyObject! = OCMockObject.partialMockForObject(PopularFeedsViewModel())
-        mockViewModel.stub().andReturn(self.realm).realm()
+        let mockViewModel:PopularFeedsViewModel! = MockPopularFeedsViewModel(realm: self.realm)
 
         XCTAssertNotNil(mockViewModel, "The view model should not be nil.")
         XCTAssertEqual(mockViewModel.numberOfSections(), 1)
-        XCTAssertEqual(mockViewModel.numberOfItemsInSection(0), 2)
+        XCTAssertEqual(mockViewModel.numberOfItemsInSection(section: 0), 2)
 
-        let imageViewModel:ImageViewModel! = mockViewModel.objectAtIndex(IndexPath.indexPathForRow(0, inSection:0))
-        XCTAssertTrue((imageViewModel.url.absoluteString == "http://mofo.com/1.jpg"), "The item should be equal to the value that was passed in.")
+        let imageViewModel:ImageViewModel! = mockViewModel.objectAtIndexPath(indexPath: IndexPath(row:0, section:0))
+        XCTAssertTrue((imageViewModel.url(isThumbnail: false).absoluteString == "http://mofo.com/1.jpg"), "The item should be equal to the value that was passed in.")
         XCTAssertTrue((imageViewModel.caption == "@asqar"), "The item should be equal to the value that was passed in.")
     }
 }

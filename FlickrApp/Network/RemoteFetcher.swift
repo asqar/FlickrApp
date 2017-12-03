@@ -42,7 +42,7 @@ class RemoteFetcher {
     }
 
     func fetchItemsWithMethod(method:RestMethod, fromPath restServiceUrl:String!, parameters:AnyObject!, one:Bool, synchronoulsy synchronously:Bool, success:@escaping (URLSessionTask?,Any?)->Void, failure:@escaping (URLSessionDataTask?, Error) -> Void) {
-#if DEBUG_VERBOSE
+#if DEBUG
         let methodStart:NSDate! = NSDate.date()
 #endif
 
@@ -80,11 +80,11 @@ class RemoteFetcher {
 #endif
                 do {
                     try realm.commitWriteTransaction()
-                } catch {
-                    
+                } catch let error {
+                    print(error)
                 }
 
-#if DEBUG_VERBOSE
+#if DEBUG
                 let methodFinish:NSDate! = NSDate.date()
                 let executionTime:NSTimeInterval = methodFinish.timeIntervalSinceDate(methodStart)
                 NSLog("executionTime = %f", executionTime)

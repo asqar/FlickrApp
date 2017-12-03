@@ -36,10 +36,8 @@ class MyUserDefaults {
             query.synchronizationMode = SAMKeychainQuerySynchronizationMode.no
             do {
                 try query.save()
-            } catch {
-#if DEBUG
-                NSLog("Error save to keychain: %@", error)
-#endif
+            } catch let error {
+                print("Error save to keychain: ", error)
             }
         }
         return strApplicationUUID

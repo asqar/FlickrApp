@@ -10,7 +10,7 @@ import XCTest
 
 class FlickrAppUITests : XCTestCase {
 
-    func setUp() {
+    override func setUp() {
         super.setUp()
 
         // Put setup code here. This method is called before the invocation of each test method in the class.
@@ -23,7 +23,7 @@ class FlickrAppUITests : XCTestCase {
         // In UI tests it’s important to set the initial state - such as interface orientation - required for your tests before they run. The setUp method is a good place to do this.
     }
 
-    func tearDown() {
+    override func tearDown() {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
         super.tearDown()
     }
@@ -32,9 +32,9 @@ class FlickrAppUITests : XCTestCase {
         let app:XCUIApplication! = XCUIApplication()
         app.swipeDown()
 
-        app.collectionViews.cells.otherElements.elementBoundByIndex(0).tap()
+        app.collectionViews.cells.otherElements.element(boundBy: 0).tap()
 
-        let currentNavigationBar:XCUIElement! = app.navigationBars.elementBoundByIndex(0)
+        let currentNavigationBar:XCUIElement! = app.navigationBars.element(boundBy: 0)
         XCTAssertTrue(currentNavigationBar.identifier.hasPrefix("1 of "))
     }
 
@@ -43,15 +43,14 @@ class FlickrAppUITests : XCTestCase {
 
         app.navigationBars["Popular Feeds"].buttons["Search"].tap()
 
-        let pullToRefreshTable:XCUIElement! = app.tables.elementBoundByIndex(0)
-        pullToRefreshTable.childrenMatchingType(XCUIElementTypeSearchField).element.tap()
-        pullToRefreshTable.childrenMatchingType(XCUIElementTypeSearchField).element.typeText("Kittens\n")
+        let pullToRefreshTable:XCUIElement! = app.tables.element(boundBy: 0)
+        pullToRefreshTable.children(matching: XCUIElementType.searchField).element.tap()
+        pullToRefreshTable.children(matching: XCUIElementType.searchField).element.typeText("Kittens\n")
 
         app.swipeUp()
 
-        app.collectionViews.cells.otherElements.elementBoundByIndex(0).tap()
-
-        let currentNavigationBar:XCUIElement! = app.navigationBars.elementBoundByIndex(0)
+        app.collectionViews.cells.otherElements.element(boundBy: 0).tap()        
+        let currentNavigationBar:XCUIElement! = app.navigationBars.element(boundBy: 0)
         XCTAssertTrue(currentNavigationBar.identifier.hasPrefix("1 of "))
     }
 }

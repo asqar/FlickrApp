@@ -15,6 +15,11 @@ class SearchViewController : UITableViewController, UISearchBarDelegate {
     @IBOutlet weak var pullToRefreshView: SVPullToRefreshView?
     
     var viewModel:SearchViewModel!
+    
+    deinit {
+        self.tableView?.delegate = nil;
+        self.tableView?.dataSource = nil;
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()

@@ -56,7 +56,8 @@ class AppDelegate : UIResponder, UIApplicationDelegate {
             do{
                 try FileManager.default.removeItem(atPath: defaultRealmPath)
                 try FileManager.default.copyItem(atPath: v0Path, toPath:defaultRealmPath)
-            } catch {
+            } catch let error {
+                print(error)
             }
         }
 
@@ -92,18 +93,17 @@ class AppDelegate : UIResponder, UIApplicationDelegate {
         // trying to open an outdated realm file without first registering a new schema version and migration block
         // with throw
         do {
-            RLMRealm.default()
-        }
-        catch is NSException {
+            let realm = RLMRealm.default()
+            realm.beginWriteTransaction()
+            try realm.commitWriteTransaction()
+        } catch {
 #if DEBUG
             NSLog("Trying to open an outdated realm a migration block threw an exception.")
 #endif
             do {
                 try FileManager.default.removeItem(atPath: defaultRealmPath)
-            } catch {
-#if DEBUG
-                NSLog("%@", error)
-#endif
+            } catch let error {
+                print(error)
             }
         }
     }

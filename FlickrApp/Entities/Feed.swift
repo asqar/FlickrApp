@@ -73,8 +73,8 @@ class Feed : Entity {
                     item.author = matchText
                 }
              }
-        } catch {
-            
+        } catch let error {
+            print(error)
         }
         return result
     }

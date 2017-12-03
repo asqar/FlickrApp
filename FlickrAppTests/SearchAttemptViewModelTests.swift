@@ -6,6 +6,7 @@
 //  Copyright © 2017 Askar Bakirov. All rights reserved.
 //
 
+@testable import FlickrApp
 import Foundation
 import XCTest
 
@@ -22,13 +23,13 @@ class SearchAttemptViewModelTests : BaseViewModelTestCase {
     }
 
     func testInitialization() {
-        let components:DateComponents! = DateComponents()
+        var components:DateComponents! = DateComponents()
         components.year = 2017
         components.month = 1
         components.day = 2
         components.hour = 6
         components.minute = 51
-        let date:Date! = NSCalendar(calendarIdentifier:NSCalendarIdentifierGregorian)!.dateFromComponents(components)
+        let date:Date! = NSCalendar(calendarIdentifier:NSCalendar.Identifier.gregorian)!.date(from: components)
 
         let searchAttempt:SearchAttempt! = SearchAttempt()
         searchAttempt.searchTerm = "kittens"

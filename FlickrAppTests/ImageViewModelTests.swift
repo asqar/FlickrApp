@@ -6,6 +6,7 @@
 //  Copyright © 2017 Askar Bakirov. All rights reserved.
 //
 
+@testable import FlickrApp
 import XCTest
 
 class ImageViewModelTests : BaseViewModelTestCase {

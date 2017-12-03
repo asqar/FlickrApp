@@ -27,6 +27,9 @@ class ImageListViewController : UIViewController, UICollectionViewDelegate, UICo
     deinit {
         _photoBrowser?.delegate = nil
         _photoBrowser = nil
+        
+        self.collectionView?.delegate = nil;
+        self.collectionView?.dataSource = nil;
     }
     
     private var _photoBrowser:MWPhotoBrowser!
@@ -51,7 +54,7 @@ class ImageListViewController : UIViewController, UICollectionViewDelegate, UICo
         // Do any additional setup after loading the view.
 
         self.title = self.viewModel.title
-
+        
         self.collectionView?.addPullToRefresh(actionHandler: {
             self.viewModel.downloadImagesUpdating(updating: true)
         })

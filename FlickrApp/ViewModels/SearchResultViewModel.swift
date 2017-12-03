@@ -27,8 +27,8 @@ class SearchResultViewModel : ImageListViewModel {
         self.realm().addOrUpdate(searchAttempt)
         do {
             try self.realm().commitWriteTransaction()
-        } catch {
-            
+        } catch let error {
+            print(error)
         }
         self.searchAttempt = searchAttempt
     }
@@ -46,7 +46,7 @@ class SearchResultViewModel : ImageListViewModel {
         let sortDescriptors:[RLMSortDescriptor]! = [ sd1 ]
 
         let fetchRequest:RBQFetchRequest! = RBQFetchRequest(entityName:"Photo", in:self.realm(), predicate:nil)
-        fetchRequest.predicate = NSPredicate(format:"searchAttempt.searchTerm == %@", self.searchAttempt.searchTerm)
+        fetchRequest.predicate = NSPredicate(format:"searchAttempt.searchTerm == '\(self.searchAttempt.searchTerm!)'")
         fetchRequest.sortDescriptors = sortDescriptors
         return fetchRequest
     }
@@ -66,8 +66,8 @@ class SearchResultViewModel : ImageListViewModel {
         }
         do {
             try self.realm().commitWriteTransaction()
-        } catch {
-            
+        } catch let error {
+            print(error)
         }
     }
 

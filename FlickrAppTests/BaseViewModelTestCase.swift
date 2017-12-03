@@ -6,8 +6,10 @@
 //  Copyright © 2017 Askar Bakirov. All rights reserved.
 //
 
+@testable import FlickrApp
 import Realm
 import XCTest
+import Foundation
 
 class BaseViewModelTestCase : XCTestCase {
 
@@ -17,14 +19,15 @@ class BaseViewModelTestCase : XCTestCase {
         super.setUp()
         // Put setup code here. This method is called before the invocation of each test method in the class.
 
-        let config:RLMRealmConfiguration! = RLMRealmConfiguration.defaultConfiguration()
-        config.schemaVersion = 1
-        config.deleteRealmIfMigrationNeeded = true
-        config.inMemoryIdentifier = self.self.description()
-        RLMRealmConfiguration.defaultConfiguration = config
+        let config:RLMRealmConfiguration! = RLMRealmConfiguration.default()
+        config.inMemoryIdentifier = self.name
+        RLMRealmConfiguration.setDefault(config)
 
-        let error:NSError! = nil
-        self.realm = RLMRealm.realmWithConfiguration(config, error: &error)
+        do {
+            self.realm = try RLMRealm(configuration: config)
+        } catch let error {
+            print(error)
+        }
     }
 
     override func tearDown() {

@@ -12,28 +12,8 @@
 		1356AD801FC9C47700BB4140 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 1356AD7A1FC9C47700BB4140 /* Localizable.strings */; };
 		1356AD811FC9C47700BB4140 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 1356AD7C1FC9C47700BB4140 /* InfoPlist.strings */; };
 		135870A41FD1A5F500DA226F /* Entity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 135870A31FD1A5F500DA226F /* Entity.swift */; };
-		135870A51FD36B6900DA226F /* Feed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 137E1FDC1FD1604700A1B38E /* Feed.swift */; };
-		135870A61FD36B6900DA226F /* Photo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 137E1FDD1FD1604700A1B38E /* Photo.swift */; };
-		135870A71FD36B6900DA226F /* SearchAttempt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 137E1FDB1FD1604700A1B38E /* SearchAttempt.swift */; };
-		135870A81FD36B6900DA226F /* RLMSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 137E1FD91FD15DFA00A1B38E /* RLMSupport.swift */; };
-		135870A91FD36B6900DA226F /* Entity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 135870A31FD1A5F500DA226F /* Entity.swift */; };
-		135870AA1FD36B6F00DA226F /* FeedFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 137E1FE31FD1605C00A1B38E /* FeedFetcher.swift */; };
-		135870AB1FD36B6F00DA226F /* PhotoFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 137E1FE41FD1605C00A1B38E /* PhotoFetcher.swift */; };
-		135870AC1FD36B6F00DA226F /* RemoteFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 137E1FE21FD1605C00A1B38E /* RemoteFetcher.swift */; };
-		135870AD1FD36B7500DA226F /* BaseViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 137E1FF61FD160A700A1B38E /* BaseViewModel.swift */; };
-		135870AE1FD36B7500DA226F /* ImageListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 137E1FF21FD160A700A1B38E /* ImageListViewModel.swift */; };
-		135870AF1FD36B7500DA226F /* ImageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 137E1FF11FD160A600A1B38E /* ImageViewModel.swift */; };
-		135870B01FD36B7500DA226F /* PopularFeedsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 137E1FF51FD160A700A1B38E /* PopularFeedsViewModel.swift */; };
-		135870B11FD36B7500DA226F /* SearchAttemptViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 137E1FF71FD160A800A1B38E /* SearchAttemptViewModel.swift */; };
-		135870B21FD36B7500DA226F /* SearchResultViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 137E1FF31FD160A700A1B38E /* SearchResultViewModel.swift */; };
-		135870B31FD36B7500DA226F /* SearchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 137E1FF41FD160A700A1B38E /* SearchViewModel.swift */; };
-		135870B41FD36D4000DA226F /* Language.swift in Sources */ = {isa = PBXBuildFile; fileRef = 137E1FEE1FD1609C00A1B38E /* Language.swift */; };
-		135870B51FD36D4000DA226F /* UserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 137E1FED1FD1609B00A1B38E /* UserDefaults.swift */; };
-		135870B61FD36D4000DA226F /* MyLocalizedString.swift in Sources */ = {isa = PBXBuildFile; fileRef = 137E20291FD1667300A1B38E /* MyLocalizedString.swift */; };
 		135870B81FD37D6800DA226F /* PhotoImageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 135870B71FD37D6800DA226F /* PhotoImageViewModel.swift */; };
-		135870B91FD37D6800DA226F /* PhotoImageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 135870B71FD37D6800DA226F /* PhotoImageViewModel.swift */; };
 		135870BB1FD37D8400DA226F /* FeedImageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 135870BA1FD37D8400DA226F /* FeedImageViewModel.swift */; };
-		135870BC1FD37D8400DA226F /* FeedImageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 135870BA1FD37D8400DA226F /* FeedImageViewModel.swift */; };
 		137E1FC41FD1597300A1B38E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 137E1FC31FD1597300A1B38E /* AppDelegate.swift */; };
 		137E1FC71FD15B8400A1B38E /* FlickrAppUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 137E1FC61FD15B8400A1B38E /* FlickrAppUITests.swift */; };
 		137E1FD11FD15BA000A1B38E /* SearchResultViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 137E1FC91FD15B9F00A1B38E /* SearchResultViewModelTests.swift */; };
@@ -618,7 +598,6 @@
 				"${BUILT_PRODUCTS_DIR}/RealmUtilities/RealmUtilities.framework",
 				"${BUILT_PRODUCTS_DIR}/SAMKeychain/SAMKeychain.framework",
 				"${BUILT_PRODUCTS_DIR}/SDWebImage/SDWebImage.framework",
-				"${BUILT_PRODUCTS_DIR}/OCMock/OCMock.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
@@ -637,7 +616,6 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RealmUtilities.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SAMKeychain.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SDWebImage.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/OCMock.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -856,33 +834,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				135870B11FD36B7500DA226F /* SearchAttemptViewModel.swift in Sources */,
-				135870B21FD36B7500DA226F /* SearchResultViewModel.swift in Sources */,
-				135870AE1FD36B7500DA226F /* ImageListViewModel.swift in Sources */,
 				137E1FD41FD15BA000A1B38E /* ImageViewModelTests.swift in Sources */,
-				135870A51FD36B6900DA226F /* Feed.swift in Sources */,
-				135870AD1FD36B7500DA226F /* BaseViewModel.swift in Sources */,
-				135870B51FD36D4000DA226F /* UserDefaults.swift in Sources */,
 				137E1FD11FD15BA000A1B38E /* SearchResultViewModelTests.swift in Sources */,
-				135870B91FD37D6800DA226F /* PhotoImageViewModel.swift in Sources */,
 				137E1FD71FD15BA000A1B38E /* PerformanceTests.swift in Sources */,
-				135870A61FD36B6900DA226F /* Photo.swift in Sources */,
-				135870AB1FD36B6F00DA226F /* PhotoFetcher.swift in Sources */,
-				135870B01FD36B7500DA226F /* PopularFeedsViewModel.swift in Sources */,
 				137E1FD51FD15BA000A1B38E /* PopularFeedsViewModelTests.swift in Sources */,
-				135870BC1FD37D8400DA226F /* FeedImageViewModel.swift in Sources */,
 				137E1FD61FD15BA000A1B38E /* SearchAttemptViewModelTests.swift in Sources */,
-				135870A81FD36B6900DA226F /* RLMSupport.swift in Sources */,
-				135870B31FD36B7500DA226F /* SearchViewModel.swift in Sources */,
-				135870A71FD36B6900DA226F /* SearchAttempt.swift in Sources */,
-				135870AA1FD36B6F00DA226F /* FeedFetcher.swift in Sources */,
-				135870AC1FD36B6F00DA226F /* RemoteFetcher.swift in Sources */,
 				137E1FD31FD15BA000A1B38E /* ExpectationTests.swift in Sources */,
-				135870A91FD36B6900DA226F /* Entity.swift in Sources */,
 				137E1FD81FD15BA000A1B38E /* SearchViewModelTests.swift in Sources */,
-				135870B41FD36D4000DA226F /* Language.swift in Sources */,
-				135870AF1FD36B7500DA226F /* ImageViewModel.swift in Sources */,
-				135870B61FD36D4000DA226F /* MyLocalizedString.swift in Sources */,
 				137E1FD21FD15BA000A1B38E /* BaseViewModelTestCase.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -973,6 +931,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -1030,6 +989,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_PREFIX_HEADER = "FlickrApp/FlickrApp-Prefix.pch";
