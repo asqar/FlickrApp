@@ -69,7 +69,7 @@ class Feed : Entity {
                 let matches:[NSTextCheckingResult]! = regex.matches(in: searchedString, options:NSRegularExpression.MatchingOptions(rawValue: 0), range: NSMakeRange(0, searchedString.count))
                 let match:NSTextCheckingResult! = matches.first
                 if (match != nil) {
-                    let matchText:String! = searchedString[Range(match.range, in: searchedString)!]
+                    let matchText:String! = String(searchedString[Range(match.range, in: searchedString)!])
                     item.author = matchText
                 }
              }

@@ -47,10 +47,25 @@ class FlickrAppUITests : XCTestCase {
         pullToRefreshTable.children(matching: XCUIElementType.searchField).element.tap()
         pullToRefreshTable.children(matching: XCUIElementType.searchField).element.typeText("Kittens\n")
 
-        app.swipeUp()
+        app.swipeDown()
 
-        app.collectionViews.cells.otherElements.element(boundBy: 0).tap()        
+        app.collectionViews.cells.otherElements.element(boundBy: 0).tap()
         let currentNavigationBar:XCUIElement! = app.navigationBars.element(boundBy: 0)
+        self.waitForElementToAppear(element: currentNavigationBar)
         XCTAssertTrue(currentNavigationBar.identifier.hasPrefix("1 of "))
+    }
+    
+    func waitForElementToAppear(element: XCUIElement, timeout: TimeInterval = 5,  file: String = #file, line: UInt = #line) {
+        let existsPredicate = NSPredicate(format: "exists == true")
+        
+        expectation(for: existsPredicate,
+                    evaluatedWith: element, handler: nil)
+        
+        waitForExpectations(timeout: timeout) { (error) -> Void in
+            if (error != nil) {
+                let message = "Failed to find \(element) after \(timeout) seconds."
+                self.recordFailure(withDescription: message, inFile: file, atLine: line, expected: true)
+            }
+        }
     }
 }
